@@ -42,7 +42,7 @@ function NavigationBar() {
           <Nav className="ml-auto">
             <Nav.Item><Link to="/" class="styledLink">Orders</Link></Nav.Item>
             <Nav.Item><Link to="/Email" class="styledLink">Emails</Link></Nav.Item>
-            <Nav.Item><Link to="/About" class="styledLink">About</Link></Nav.Item>
+            <Nav.Item><Link to="/Upload" class="styledLink">Upload</Link></Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

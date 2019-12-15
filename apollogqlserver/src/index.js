@@ -14,11 +14,11 @@ const resolvers = {
     },
   },
   Mutation:{
-    createOrder(parent, {orderid, createdby, createdbyemail, recipient, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, itemtype, userstartdate, sla}, ctx, info){
+    createOrder(parent, {orderid, createdby, createdbyemail, recipient, newhire, hirename, hiredate, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, itemtype, userstartdate, sla}, ctx, info){
       return ctx.db.mutation.createOrder(
         {
           data:{
-            orderid, createdby, createdbyemail, recipient, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, itemtype, userstartdate, sla
+            orderid, createdby, createdbyemail, recipient, newhire, hirename, hiredate, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, itemtype, userstartdate, sla
           },
         },
         info,

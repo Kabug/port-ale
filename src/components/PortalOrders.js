@@ -1,6 +1,8 @@
 import React from "react";
 import Orders from "./Orders"
 import styled from "styled-components";
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
 const Styles = styled.div`
   .btn{
@@ -27,7 +29,7 @@ const Styles = styled.div`
       border-color: #F5B800 !important;
     }
     &:active{
-      box-shadow: 0px 0px 2px 3px rgba(255,204,0,0.5) !important;
+      box-shadow: 0px 0px 1px 3px rgba(255,204,0,0.7) !important;
     }
 
   }
@@ -35,8 +37,31 @@ const Styles = styled.div`
   .btn-group{
     display: block !important;
   }
-
 `
+const orders_query = gql`
+  {
+    orders{
+      orderid
+      createdby
+      createdbyemail
+      recipient
+      newhire
+      hiredate
+      hirename
+      approvalmanager
+      businessunit
+      attention
+      shippingaddress
+      items
+      total
+      comments
+      itemtype
+      userstartdate
+      sla
+    }
+  }
+`
+
 class PortalOrders extends React.Component {
   constructor(props) {
     super(props);
@@ -88,9 +113,19 @@ class PortalOrders extends React.Component {
           </div>
           <div class="row">
             <div class="col-sm ordersStyles">
-            <Orders isITAM={this.state.isITAM} isTech={this.state.isTech}/>
-            <Orders isITAM={this.state.isITAM} isTech={this.state.isTech}/>
-            <Orders isITAM={this.state.isITAM} isTech={this.state.isTech}/>
+            <Query query={orders_query}>
+              {({ loading, error, data }) => {
+                if (loading) return <div>Fetching</div>
+                if (error) return <div>Error</div>
+                const ordersToRender = data.orders
+                console.log(data.orders)
+                return(
+                  <div>
+                    {ordersToRender.map(orders => <Orders key={orders.id} orders={orders} isITAM={this.state.isITAM} isTech={this.state.isTech}/>)}
+                  </div>
+                )
+              }}
+            </Query>
             </div>
           </div>
         </div>

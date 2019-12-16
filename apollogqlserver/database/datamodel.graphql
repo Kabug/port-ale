@@ -1,6 +1,8 @@
 type Order{
   id: ID! @unique
   orderid: Float!
+  datecreated: DateTime!
+  dateapproved: DateTime!
   createdby: String!
   createdbyemail: String!
   recipient: String!

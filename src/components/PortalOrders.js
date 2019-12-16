@@ -42,6 +42,8 @@ const orders_query = gql`
   {
     orders{
       orderid
+      datecreated
+      dateapproved
       createdby
       createdbyemail
       recipient
@@ -118,7 +120,6 @@ class PortalOrders extends React.Component {
                 if (loading) return <div>Fetching</div>
                 if (error) return <div>Error</div>
                 const ordersToRender = data.orders
-                console.log(data.orders)
                 return(
                   <div>
                     {ordersToRender.map(orders => <Orders key={orders.id} orders={orders} isITAM={this.state.isITAM} isTech={this.state.isTech}/>)}

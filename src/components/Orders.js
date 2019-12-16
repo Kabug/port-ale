@@ -45,7 +45,6 @@ const Styles = styled.div`
 class Orders extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isNotNewHire: !this.props.orders.newhire
     };
@@ -68,6 +67,22 @@ class Orders extends React.Component {
                   <span class="input-group-text" id="orderNum">Order #</span>
                 </div>
                 <input type="text" class="form-control" placeholder="Order Number" aria-label="Order Number" aria-describedby="orderNum" value={this.props.orders.orderid}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="dateCreated">Date Created</span>
+                </div>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated" value={this.props.orders.datecreated.split("T")[0]}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="dateApproved">Date Approved</span>
+                </div>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={this.props.orders.dateapproved.split("T")[0]}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -111,7 +126,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="hireDate">Hire Date</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire}/>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire} value={this.props.orders.hiredate.split("T")[0]}/>
                   </div>
                 </div>
               </Fade>
@@ -135,7 +150,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="hireStartDate">Hire Start Date</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireStartDate" disabled={this.state.isNotNewHire} value={this.props.orders.hiredate}/>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireStartDate" disabled={this.state.isNotNewHire}/>
                   </div>
                 </div>
               </Fade>
@@ -197,7 +212,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="orderTotal">Order Total $</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal" value={this.props.orders.total}/>
+                <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal" value={this.props.orders.total.toFixed(2)}/>
               </div>
             </div>
             <div class="col-sm-4">

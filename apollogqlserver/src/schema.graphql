@@ -7,7 +7,9 @@ type Query{
 
 type Mutation{
   createOrder(
-  orderid: Float!
+  orderid: Float!,
+  datecreated: DateTime!,
+  dateapproved: DateTime!,
   createdby: String!,
   createdbyemail: String!,
   recipient: String!,

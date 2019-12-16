@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Thu Dec 12 2019 12:46:51 GMT-0800 (Pacific Standard Time)
+# timestamp: Sun Dec 15 2019 19:21:04 GMT-0800 (Pacific Standard Time)
 
 type AggregateITAM {
   count: Int!
@@ -1081,6 +1081,8 @@ interface Node {
 type Order implements Node {
   id: ID!
   orderid: Float!
+  datecreated: DateTime!
+  dateapproved: DateTime!
   createdby: String!
   createdbyemail: String!
   recipient: String!
@@ -1111,6 +1113,8 @@ type OrderConnection {
 
 input OrderCreateInput {
   orderid: Float!
+  datecreated: DateTime!
+  dateapproved: DateTime!
   createdby: String!
   createdbyemail: String!
   recipient: String!
@@ -1143,6 +1147,10 @@ enum OrderOrderByInput {
   id_DESC
   orderid_ASC
   orderid_DESC
+  datecreated_ASC
+  datecreated_DESC
+  dateapproved_ASC
+  dateapproved_DESC
   createdby_ASC
   createdby_DESC
   createdbyemail_ASC
@@ -1184,6 +1192,8 @@ enum OrderOrderByInput {
 type OrderPreviousValues {
   id: ID!
   orderid: Float!
+  datecreated: DateTime!
+  dateapproved: DateTime!
   createdby: String!
   createdbyemail: String!
   recipient: String!
@@ -1241,6 +1251,8 @@ input OrderSubscriptionWhereInput {
 
 input OrderUpdateInput {
   orderid: Float
+  datecreated: DateTime
+  dateapproved: DateTime
   createdby: String
   createdbyemail: String
   recipient: String
@@ -1330,6 +1342,50 @@ input OrderWhereInput {
 
   """All values greater than or equal the given value."""
   orderid_gte: Float
+  datecreated: DateTime
+
+  """All values that are not equal to given value."""
+  datecreated_not: DateTime
+
+  """All values that are contained in given list."""
+  datecreated_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  datecreated_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  datecreated_lt: DateTime
+
+  """All values less than or equal the given value."""
+  datecreated_lte: DateTime
+
+  """All values greater than the given value."""
+  datecreated_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  datecreated_gte: DateTime
+  dateapproved: DateTime
+
+  """All values that are not equal to given value."""
+  dateapproved_not: DateTime
+
+  """All values that are contained in given list."""
+  dateapproved_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  dateapproved_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  dateapproved_lt: DateTime
+
+  """All values less than or equal the given value."""
+  dateapproved_lte: DateTime
+
+  """All values greater than the given value."""
+  dateapproved_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  dateapproved_gte: DateTime
   createdby: String
 
   """All values that are not equal to given value."""

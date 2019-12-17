@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import Fade from "react-bootstrap/Fade";
+import { Mutation } from "react-apollo";
+import gql from "graphql-tag";
 
 const Styles = styled.div`
   .container-fluid{
@@ -42,11 +44,24 @@ const Styles = styled.div`
   }
 `
 
+const DELETE_ORDER = gql`
+  mutation deleteOrder(
+    $id: ID!,
+  ) {
+    deleteOrder(
+      id: $id,
+    ) {
+      id
+    }
+  }
+`
+
 class Orders extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNotNewHire: !this.props.orders.newhire
+      isNotNewHire: !this.props.orders.newhire,
+      isDeleted: false
     };
   }
 
@@ -56,9 +71,22 @@ class Orders extends React.Component {
     });
   }
 
+  formatDate = (date) =>{
+    if(date){
+      return date.split("T")[0]
+    }
+    else{
+      return ""
+    }
+  }
+
+  verifyDelete = () => {
+    this.setState({isDeleted: true})
+  }
+
   render(){
     return (
-      <Styles>
+      <Styles style={{display: `${!this.state.isDeleted ? "inline":"none"}`}}>
         <div class="container-fluid">
           <div class="row orders">
             <div class="col-sm-4">
@@ -74,7 +102,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dateCreated">Date Created</span>
                 </div>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated" value={this.props.orders.datecreated.split("T")[0]}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated" value={this.formatDate(this.props.orders.datecreated)}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -82,7 +110,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dateApproved">Date Approved</span>
                 </div>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={this.props.orders.dateapproved.split("T")[0]}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={this.formatDate(this.props.orders.dateapproved)}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -126,7 +154,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="hireDate">Hire Date</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire} value={this.props.orders.hiredate.split("T")[0]}/>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire} value={this.formatDate(this.props.orders.hiredate)}/>
                   </div>
                 </div>
               </Fade>
@@ -224,7 +252,6 @@ class Orders extends React.Component {
                   <option selected>Choose...</option>
                   <option value="1">PC</option>
                   <option value="2">Accessory</option>
-                  <option value="3">Mobile</option>
                 </select>
               </div>
             </div>
@@ -521,7 +548,9 @@ class Orders extends React.Component {
               <button type="button" class="btn btn-primary">Edit</button>
             </div>
             <div class="col-sm">
-              <button type="button" class="btn btn-danger">Delete</button>
+              <Mutation mutation={DELETE_ORDER} variables={{id: this.props.orders.id}}>
+                {deleteOrder => <button type="button" class="btn btn-danger" onClick={() => {deleteOrder(); window.location.reload();}}>Delete</button>}
+              </Mutation>
             </div>
           </div>
         </div>

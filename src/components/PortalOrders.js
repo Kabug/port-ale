@@ -41,6 +41,7 @@ const Styles = styled.div`
 const orders_query = gql`
   {
     orders{
+      id
       orderid
       datecreated
       dateapproved
@@ -122,7 +123,7 @@ class PortalOrders extends React.Component {
                 const ordersToRender = data.orders
                 return(
                   <div>
-                    {ordersToRender.map(orders => <Orders key={orders.id} orders={orders} isITAM={this.state.isITAM} isTech={this.state.isTech}/>)}
+                    {ordersToRender.slice(0).reverse().map(orders => <Orders key={orders.id} orders={orders} isITAM={this.state.isITAM} isTech={this.state.isTech}/>)}
                   </div>
                 )
               }}

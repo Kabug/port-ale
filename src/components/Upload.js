@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import CSVReader from "react-csv-reader";
 import { Mutation } from "react-apollo";
-import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
 
 const Styles = styled.div`
@@ -36,16 +35,21 @@ const Styles = styled.div`
   }
 
   .btn{
-    margin-bottom: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
     width: 15em;
     height: 3em;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
 
+  .buttonDiv{
+    background-color: #393733;
+  }
+
 `
 
-const POST_MUTATION = gql`
-  mutation PostMutation(
+const CREATE_ORDER = gql`
+  mutation createOrder(
     $orderid: Float!,
     $datecreated: DateTime!,
     $dateapproved: DateTime!,
@@ -53,8 +57,8 @@ const POST_MUTATION = gql`
     $createdbyemail: String!,
     $recipient: String!,
     $newhire: Boolean!,
-    $hiredate: DateTime!,
-    $hirename: String!,
+    $hiredate: DateTime,
+    $hirename: String,
     $approvalmanager: String!,
     $businessunit: String!,
     $attention: String!,
@@ -82,22 +86,6 @@ const POST_MUTATION = gql`
       comments: $comments
     ) {
         id
-        orderid
-        datecreated
-        dateapproved
-        createdby
-        createdbyemail
-        recipient
-        newhire
-        hirename
-        hiredate
-        approvalmanager
-        businessunit
-        attention
-        shippingaddress
-        items
-        total
-        comments
     }
   }
 `
@@ -131,12 +119,15 @@ class Upload extends React.Component{
       data[order][1] = this.formatDate(data[order][1]);
       data[order][2] = this.formatDate(data[order][2]);
       data[order][14] = parseFloat(data[order][14].replace("$","").replace(",",""));
-      if(data[order][6] == "Yes"){
+      if(data[order][6] === "Yes"){
         data[order][6] = true;
         data[order][7] = this.formatDate(data[order][7])
       }
       else{
         data[order][6] = false;
+      }
+      if(data[order][7] === ""){
+        data[order][7] = null
       }
       if(data[order][13].match(/\d -/g).length > 1){
         var items = (data[order][13].split(/\d -/)).filter(Boolean);
@@ -155,6 +146,13 @@ class Upload extends React.Component{
     return (new Date(originalDate).toISOString().split("T")[0]).toString();
   }
 
+  removeFromState = (orderId) =>{
+    console.log(orderId)
+    var updatedOrders = [...this.state.newOrders];
+    updatedOrders.splice(orderId, 1)
+    this.setState({newOrders: updatedOrders})
+  }
+
   render(){
     return (
       <Styles>
@@ -165,10 +163,10 @@ class Upload extends React.Component{
             </div>
 
             <div class ="col-sm-12">
-              <p style={{display: `${this.state.newOrders[0] ? "inline":"none"}`}}>Scroll to the bottom and click <b>Submit</b> after verifying.</p>
+              <p style={{display: `${this.state.newOrders[0] ? "inline":"none"}`}}>Click <b>Submit</b> after verifying.</p>
             </div>
           </div>
-            {this.state.newOrders.map(order =>
+            {this.state.newOrders.map((order, index) =>
               <div class="row newOrdersDiv">
                 <div class="col-sm-3">
                   <b>ID:</b><br /> {order[0]}
@@ -218,35 +216,29 @@ class Upload extends React.Component{
                 <div class="col-sm-3">
                   <b>Notes:</b><br /> {order[15]}
                 </div>
+                <div class="col-sm-12 buttonDiv">
+                  <Mutation mutation={CREATE_ORDER} variables={{
+                        orderid: order[0],
+                        datecreated: order[1],
+                        dateapproved: order[2],
+                        createdby: order[3],
+                        createdbyemail: order[4],
+                        recipient: order[5],
+                        newhire: order[6],
+                        hiredate: order[7],
+                        hirename: order[8],
+                        approvalmanager: order[9],
+                        businessunit: order[10],
+                        attention: order[11],
+                        shippingaddress: order[12],
+                        items: order[13],
+                        total: order[14],
+                        comments: order[15]}}>
+                    {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); this.removeFromState(index)}}>Submit</button>}
+                  </Mutation>
+                </div>
               </div>
             )}
-          <div class="row">
-            <div class="col-sm-12" style={{display: `${this.state.newOrders[0] ? "inline":"none"}`}}>
-              <button type="button" class="btn btn-success" onClick={this.state.newOrders.map(order =>
-                createOrder({
-                  variables: {
-                    orderid: order[0],
-                    datecreated: order[1],
-                    dateapproved: order[2],
-                    createdby: order[3],
-                    createdbyemail: order[4],
-                    recipient: order[5],
-                    newhire: order[6],
-                    hiredate: order[7],
-                    hirename: order[8],
-                    approvalmanager: order[9],
-                    businessunit: order[10],
-                    attention: order[11],
-                    shippingaddress: order[12],
-                    items: order[13],
-                    total: order[14],
-                    comments: order[15]
-                  }
-                })
-              )}>Submit
-              </button>
-            </div>
-          </div>
         </div>
       </Styles>
     );

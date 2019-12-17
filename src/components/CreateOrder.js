@@ -56,11 +56,11 @@ const DELETE_ORDER = gql`
   }
 `
 
-class Orders extends React.Component {
+class CreateOrder extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNotNewHire: !this.props.orders.newhire,
+      isNotNewHire: true,
       isDeleted: false,
       orderHidden: false
     };
@@ -72,35 +72,17 @@ class Orders extends React.Component {
     });
   }
 
-  formatDate = (date) =>{
-    if(date){
-      return date.split("T")[0]
-    }
-    else{
-      return ""
-    }
-  }
-
-  verifyDelete = () => {
-    this.setState({isDeleted: true})
-  }
-
-  hideOrder = () => {
-    console.log("Test")
-    this.setState({orderHidden: true})
-  }
-
   render(){
     return (
       <Styles>
-        <div class="container-fluid"  style={{display: `${this.state.orderHidden ? "none":"inlnie"}`}}>
+        <div class="container-fluid">
           <div class="row orders">
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="orderNum">Order #</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Order Number" aria-label="Order Number" aria-describedby="orderNum" value={this.props.orders.orderid}/>
+                <input type="text" class="form-control" placeholder="Order Number" aria-label="Order Number" aria-describedby="orderNum"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -108,7 +90,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dateCreated">Date Created</span>
                 </div>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated" value={this.formatDate(this.props.orders.datecreated)}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -116,7 +98,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dateApproved">Date Approved</span>
                 </div>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={this.formatDate(this.props.orders.dateapproved)}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -124,7 +106,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="createdBy">Created By</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="createdBy" value={this.props.orders.createdby}/>
+                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="createdBy"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -132,7 +114,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="createdByEmail">Email</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Created By Email" aria-label="Created By Email" aria-describedby="createdByEmail" value={this.props.orders.createdbyemail}/>
+                <input type="text" class="form-control" placeholder="Created By Email" aria-label="Created By Email" aria-describedby="createdByEmail"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -140,14 +122,14 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="recipient">Recipient</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="recipient" value={this.props.orders.recipient}/>
+                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="recipient"/>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <div class="input-group-text">
-                    <input type="checkbox" id="newHire" aria-label="New Hire" onClick={this.newHireToggle} checked={this.props.orders.newhire}/>
+                    <input type="checkbox" id="newHire" aria-label="New Hire" onClick={this.newHireToggle}/>
                   </div>
                 </div>
                 <input type="text" class="form-control" placeholder ="New Hire" aria-label="New Hire" disabled/>
@@ -160,7 +142,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="hireDate">Hire Date</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire} value={this.formatDate(this.props.orders.hiredate)}/>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire}/>
                   </div>
                 </div>
               </Fade>
@@ -172,7 +154,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="hireName">Hire Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="hireName" disabled={this.state.isNotNewHire} value={this.props.orders.hirename}/>
+                    <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="hireName" disabled={this.state.isNotNewHire}/>
                   </div>
                 </div>
               </Fade>
@@ -206,7 +188,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="appManager">Approval Manager</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="appManager" value={this.props.orders.approvalmanager}/>
+                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="appManager"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -214,7 +196,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="bussUnit">Business Unit</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Business Unit" aria-label="Business Unit" aria-describedby="bussUnit" value={this.props.orders.businessunit}/>
+                <input type="text" class="form-control" placeholder="Business Unit" aria-label="Business Unit" aria-describedby="bussUnit"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -222,7 +204,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="attention">Attention</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="attention" value={this.props.orders.attention}/>
+                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="attention"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -230,7 +212,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="shipAddress">Shipping Address</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Street, City, Province,  Postal" aria-label="Street, City, Province,  Postal" aria-describedby="shipAddress" value={this.props.orders.shippingaddress}/>
+                <input type="text" class="form-control" placeholder="Street, City, Province,  Postal" aria-label="Street, City, Province,  Postal" aria-describedby="shipAddress"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -238,7 +220,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="orderItem">Order Item</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Order Item" aria-label="Order Item" aria-describedby="orderItem" value={this.props.orders.items}/>
+                <input type="text" class="form-control" placeholder="Order Item" aria-label="Order Item" aria-describedby="orderItem"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -246,7 +228,7 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="orderTotal">Order Total $</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal" value={this.props.orders.total.toFixed(2)}/>
+                <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal"/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -542,24 +524,13 @@ class Orders extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="comments">Comments</span>
                 </div>
-                <textarea class="form-control" aria-label="With textarea" aria-describedby="comments" value={this.props.orders.comments}></textarea>
+                <textarea class="form-control" aria-label="With textarea" aria-describedby="comments"></textarea>
               </div>
             </div>
           </div>
           <div class="row buttons">
             <div class="col-sm">
-              <button type="button" class="btn btn-success">Save</button>
-            </div>
-            <div class="col-sm">
-              <button type="button" class="btn btn-primary">Edit</button>
-            </div>
-            <div class="col-sm">
-              <button type="button" class="btn btn-danger" onClick={this.verifyDelete} style={{display: `${!this.state.isDeleted ? "inline":"none"}`}}>Delete</button>
-              <div style={{display: `${this.state.isDeleted ? "inline":"none"}`}}>
-                <Mutation mutation={DELETE_ORDER} variables={{id: this.props.orders.id}}>
-                  {deleteOrder => <button type="button" class="btn btn-danger" onClick={() => {deleteOrder(); this.hideOrder()}}>Permanently Delete</button>}
-                </Mutation>
-              </div>
+              <button type="button" class="btn btn-success">Create</button>
             </div>
           </div>
         </div>
@@ -567,4 +538,4 @@ class Orders extends React.Component {
     );
   }
 }
-export default Orders;
+export default CreateOrder;

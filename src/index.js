@@ -18,6 +18,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
+client.defaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+  },
+  query: {
+    fetchPolicy: 'network-only',
+    errorPolicy: 'all',
+  },
+};
 
 
 ReactDOM.render(

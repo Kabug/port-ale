@@ -1,5 +1,6 @@
 import React from "react";
 import Orders from "./Orders"
+import CreateOrder from "./CreateOrder"
 import styled from "styled-components";
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -116,6 +117,7 @@ class PortalOrders extends React.Component {
           </div>
           <div class="row">
             <div class="col-sm ordersStyles">
+            <CreateOrder  isITAM={this.state.isITAM} isTech={this.state.isTech}/>
             <Query query={orders_query}>
               {({ loading, error, data }) => {
                 if (loading) return <div>Fetching</div>

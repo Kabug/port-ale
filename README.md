@@ -1,7 +1,10 @@
 # port-ale
 Webapp redo of ITAM Portal Orders Spreadsheet
 
+# Stack
+### React, Apollo, GraphQL, Prisma
 
+Create Order Mutation
 ```
 mutation order{
 	createOrder(data:{

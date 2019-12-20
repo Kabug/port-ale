@@ -9,6 +9,9 @@ const resolvers = {
     orders(parent, args, ctx, info){
       return ctx.db.query.orders({}, info)
     },
+    users(parent, args, ctx, info){
+      return ctx.db.query.users({}, info)
+    },
     order(parent, args, ctx, info){
       return ctx.db.query.order({where: {id: args.id}}, info)
     },

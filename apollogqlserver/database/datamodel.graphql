@@ -19,49 +19,46 @@ type Order{
   itemtype: String
   userstartdate: DateTime
   sla: Int
+  itam: ITAMProgress
+  tech: TechnicianProgress
 }
 
 type ITAMProgress{
   id: ID! @unique
-  itamowner: ITAM!
-  status: String!
-  verificationemailsent: DateTime!
-  comments: String!
-  productsource: String!
-  oldassettag: String!
-  oldmodel: String!
-  modelofmonitor: String!
-  numofmonitor: String!
-  connectortypes: String!
-  orderpendingemailsent: DateTime!
-  confirmednewhire: DateTime!
-  poordernum: String!
-  dellordernum: String!
-  dellemailnotif: String!
+  order: Order!
+  itamowner: User
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
 }
 
 type TechnicianProgress{
   id: ID! @unique
-  techowner: Technician!
-  status: String!
-  attention: String!
-  confirmeduser: String!
-  costcenter: String!
-  servicetag: String!
-  initialemailsent: DateTime!
-  followupemailsent: DateTime!
-  datecompleted: DateTime!
-  comments: String!
+  order: Order!
+  techowner: User
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
 }
 
-type ITAM{
+type User{
   id: ID! @unique
   name: String!
-  orders: [ITAMProgress!]!
-}
-
-type Technician{
-  id: ID! @unique
-  name: String!
-  orders: [TechnicianProgress!]!
+  itamorders: [ITAMProgress!]!
+  techorders: [TechnicianProgress!]!
 }

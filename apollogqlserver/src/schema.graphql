@@ -1,7 +1,11 @@
 # import Order from "./generated/prisma.graphql"
+# import ITAMProgress from "./generated/prisma.graphql"
+# import TechnicianProgress from "./generated/prisma.graphql"
+# import User from "./generated/prisma.graphql"
 
 type Query{
   orders: [Order!]!
+  users: [User!]!
   order(id: ID!): Order
 }
 
@@ -25,8 +29,40 @@ type Mutation{
   comments: String!,
   itemtype: String,
   userstartdate: DateTime,
-  sla: Int,
+  sla: Int
   ): Order
+
+  createITAMProgress(
+  status: String,
+  verificationemailsent: DateTime,
+  productsource: String,
+  oldassettag: String,
+  oldmodel: String,
+  modelofmonitor: String,
+  numofmonitor: String,
+  connectortypes: String,
+  orderpendingemailsent: DateTime,
+  confirmednewhire: DateTime,
+  poordernum: String,
+  dellordernum: String,
+  dellemailnotif: String
+  ): ITAMProgress
+
+  createTechnicianProgress(
+  status: String,
+  attention: String,
+  confirmeduser: String,
+  costcenter: String,
+  servicetag: String,
+  initialemailsent: DateTime,
+  followupemailsent: DateTime,
+  datecompleted: DateTime
+  ): TechnicianProgress
+
+  createUser(
+  name: String!,
+  ): User
+
 
   deleteOrder(id: ID!): Order
 }

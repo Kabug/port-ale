@@ -130,9 +130,9 @@ class Orders extends React.Component {
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="createdByEmail">Email</span>
+                  <span class="input-group-text" id="createdByEmail">Created By Email</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Created By Email" aria-label="Created By Email" aria-describedby="createdByEmail" value={this.props.orders.createdbyemail}/>
+                <input type="text" class="form-control" placeholder="***@email.com" aria-label="Created By Email" aria-describedby="createdByEmail" value={this.props.orders.createdbyemail}/>
               </div>
             </div>
             <div class="col-sm-4">

@@ -118,6 +118,7 @@ class Upload extends React.Component{
       data[order][0] = parseFloat(data[order][0]);
       data[order][1] = this.formatDate(data[order][1]);
       data[order][2] = this.formatDate(data[order][2]);
+      data[order][10] = data[order][10].replace("Facility: ","").replace("Cost Center: ","")
       data[order][14] = parseFloat(data[order][14].replace("$","").replace(",",""));
       if(data[order][6] === "Yes"){
         data[order][6] = true;
@@ -139,6 +140,7 @@ class Upload extends React.Component{
       }
 
     }
+    console.log(finalOrders);
     this.setState({newOrders: finalOrders});
   }
 
@@ -214,7 +216,7 @@ class Upload extends React.Component{
                   <b>Order Total:</b><br /> {order[14].toFixed(2)}
                 </div>
                 <div class="col-sm-3">
-                  <b>Notes:</b><br /> {order[15]}
+                  <b>Comments:</b><br /> {order[15]}
                 </div>
                 <div class="col-sm-12 buttonDiv">
                   <Mutation mutation={CREATE_ORDER} variables={{

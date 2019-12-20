@@ -1,9 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sun Dec 15 2019 19:21:04 GMT-0800 (Pacific Standard Time)
-
-type AggregateITAM {
-  count: Int!
-}
+# timestamp: Thu Dec 19 2019 12:47:04 GMT-0800 (Pacific Standard Time)
 
 type AggregateITAMProgress {
   count: Int!
@@ -13,11 +9,11 @@ type AggregateOrder {
   count: Int!
 }
 
-type AggregateTechnician {
+type AggregateTechnicianProgress {
   count: Int!
 }
 
-type AggregateTechnicianProgress {
+type AggregateUser {
   count: Int!
 }
 
@@ -28,78 +24,23 @@ type BatchPayload {
 
 scalar DateTime
 
-type ITAM implements Node {
-  id: ID!
-  name: String!
-  orders(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ITAMProgress!]
-}
-
-"""A connection to a list of items."""
-type ITAMConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ITAMEdge]!
-  aggregate: AggregateITAM!
-}
-
-input ITAMCreateInput {
-  name: String!
-  orders: ITAMProgressCreateManyWithoutItamownerInput
-}
-
-input ITAMCreateOneWithoutOrdersInput {
-  create: ITAMCreateWithoutOrdersInput
-  connect: ITAMWhereUniqueInput
-}
-
-input ITAMCreateWithoutOrdersInput {
-  name: String!
-}
-
-"""An edge in a connection."""
-type ITAMEdge {
-  """The item at the end of the edge."""
-  node: ITAM!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ITAMOrderByInput {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type ITAMPreviousValues {
-  id: ID!
-  name: String!
-}
-
 type ITAMProgress implements Node {
   id: ID!
-  itamowner(where: ITAMWhereInput): ITAM!
-  status: String!
-  verificationemailsent: DateTime!
-  comments: String!
-  productsource: String!
-  oldassettag: String!
-  oldmodel: String!
-  modelofmonitor: String!
-  numofmonitor: String!
-  connectortypes: String!
-  orderpendingemailsent: DateTime!
-  confirmednewhire: DateTime!
-  poordernum: String!
-  dellordernum: String!
-  dellemailnotif: String!
+  order(where: OrderWhereInput): Order!
+  itamowner(where: UserWhereInput): User!
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
 }
 
 """A connection to a list of items."""
@@ -113,21 +54,21 @@ type ITAMProgressConnection {
 }
 
 input ITAMProgressCreateInput {
-  status: String!
-  verificationemailsent: DateTime!
-  comments: String!
-  productsource: String!
-  oldassettag: String!
-  oldmodel: String!
-  modelofmonitor: String!
-  numofmonitor: String!
-  connectortypes: String!
-  orderpendingemailsent: DateTime!
-  confirmednewhire: DateTime!
-  poordernum: String!
-  dellordernum: String!
-  dellemailnotif: String!
-  itamowner: ITAMCreateOneWithoutOrdersInput!
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
+  order: OrderCreateOneWithoutItamInput!
+  itamowner: UserCreateOneWithoutItamordersInput!
 }
 
 input ITAMProgressCreateManyWithoutItamownerInput {
@@ -135,21 +76,43 @@ input ITAMProgressCreateManyWithoutItamownerInput {
   connect: [ITAMProgressWhereUniqueInput!]
 }
 
+input ITAMProgressCreateOneWithoutOrderInput {
+  create: ITAMProgressCreateWithoutOrderInput
+  connect: ITAMProgressWhereUniqueInput
+}
+
 input ITAMProgressCreateWithoutItamownerInput {
-  status: String!
-  verificationemailsent: DateTime!
-  comments: String!
-  productsource: String!
-  oldassettag: String!
-  oldmodel: String!
-  modelofmonitor: String!
-  numofmonitor: String!
-  connectortypes: String!
-  orderpendingemailsent: DateTime!
-  confirmednewhire: DateTime!
-  poordernum: String!
-  dellordernum: String!
-  dellemailnotif: String!
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
+  order: OrderCreateOneWithoutItamInput!
+}
+
+input ITAMProgressCreateWithoutOrderInput {
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
+  itamowner: UserCreateOneWithoutItamordersInput!
 }
 
 """An edge in a connection."""
@@ -168,8 +131,6 @@ enum ITAMProgressOrderByInput {
   status_DESC
   verificationemailsent_ASC
   verificationemailsent_DESC
-  comments_ASC
-  comments_DESC
   productsource_ASC
   productsource_DESC
   oldassettag_ASC
@@ -200,20 +161,19 @@ enum ITAMProgressOrderByInput {
 
 type ITAMProgressPreviousValues {
   id: ID!
-  status: String!
-  verificationemailsent: DateTime!
-  comments: String!
-  productsource: String!
-  oldassettag: String!
-  oldmodel: String!
-  modelofmonitor: String!
-  numofmonitor: String!
-  connectortypes: String!
-  orderpendingemailsent: DateTime!
-  confirmednewhire: DateTime!
-  poordernum: String!
-  dellordernum: String!
-  dellemailnotif: String!
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
 }
 
 type ITAMProgressSubscriptionPayload {
@@ -256,7 +216,6 @@ input ITAMProgressSubscriptionWhereInput {
 input ITAMProgressUpdateInput {
   status: String
   verificationemailsent: DateTime
-  comments: String
   productsource: String
   oldassettag: String
   oldmodel: String
@@ -268,7 +227,8 @@ input ITAMProgressUpdateInput {
   poordernum: String
   dellordernum: String
   dellemailnotif: String
-  itamowner: ITAMUpdateOneWithoutOrdersInput
+  order: OrderUpdateOneWithoutItamInput
+  itamowner: UserUpdateOneWithoutItamordersInput
 }
 
 input ITAMProgressUpdateManyWithoutItamownerInput {
@@ -280,10 +240,18 @@ input ITAMProgressUpdateManyWithoutItamownerInput {
   upsert: [ITAMProgressUpsertWithWhereUniqueWithoutItamownerInput!]
 }
 
+input ITAMProgressUpdateOneWithoutOrderInput {
+  create: ITAMProgressCreateWithoutOrderInput
+  connect: ITAMProgressWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ITAMProgressUpdateWithoutOrderDataInput
+  upsert: ITAMProgressUpsertWithoutOrderInput
+}
+
 input ITAMProgressUpdateWithoutItamownerDataInput {
   status: String
   verificationemailsent: DateTime
-  comments: String
   productsource: String
   oldassettag: String
   oldmodel: String
@@ -295,11 +263,34 @@ input ITAMProgressUpdateWithoutItamownerDataInput {
   poordernum: String
   dellordernum: String
   dellemailnotif: String
+  order: OrderUpdateOneWithoutItamInput
+}
+
+input ITAMProgressUpdateWithoutOrderDataInput {
+  status: String
+  verificationemailsent: DateTime
+  productsource: String
+  oldassettag: String
+  oldmodel: String
+  modelofmonitor: String
+  numofmonitor: String
+  connectortypes: String
+  orderpendingemailsent: DateTime
+  confirmednewhire: DateTime
+  poordernum: String
+  dellordernum: String
+  dellemailnotif: String
+  itamowner: UserUpdateOneWithoutItamordersInput
 }
 
 input ITAMProgressUpdateWithWhereUniqueWithoutItamownerInput {
   where: ITAMProgressWhereUniqueInput!
   data: ITAMProgressUpdateWithoutItamownerDataInput!
+}
+
+input ITAMProgressUpsertWithoutOrderInput {
+  update: ITAMProgressUpdateWithoutOrderDataInput!
+  create: ITAMProgressCreateWithoutOrderInput!
 }
 
 input ITAMProgressUpsertWithWhereUniqueWithoutItamownerInput {
@@ -419,46 +410,6 @@ input ITAMProgressWhereInput {
 
   """All values greater than or equal the given value."""
   verificationemailsent_gte: DateTime
-  comments: String
-
-  """All values that are not equal to given value."""
-  comments_not: String
-
-  """All values that are contained in given list."""
-  comments_in: [String!]
-
-  """All values that are not contained in given list."""
-  comments_not_in: [String!]
-
-  """All values less than the given value."""
-  comments_lt: String
-
-  """All values less than or equal the given value."""
-  comments_lte: String
-
-  """All values greater than the given value."""
-  comments_gt: String
-
-  """All values greater than or equal the given value."""
-  comments_gte: String
-
-  """All values containing the given string."""
-  comments_contains: String
-
-  """All values not containing the given string."""
-  comments_not_contains: String
-
-  """All values starting with the given string."""
-  comments_starts_with: String
-
-  """All values not starting with the given string."""
-  comments_not_starts_with: String
-
-  """All values ending with the given string."""
-  comments_ends_with: String
-
-  """All values not ending with the given string."""
-  comments_not_ends_with: String
   productsource: String
 
   """All values that are not equal to given value."""
@@ -863,167 +814,11 @@ input ITAMProgressWhereInput {
 
   """All values not ending with the given string."""
   dellemailnotif_not_ends_with: String
-  itamowner: ITAMWhereInput
+  order: OrderWhereInput
+  itamowner: UserWhereInput
 }
 
 input ITAMProgressWhereUniqueInput {
-  id: ID
-}
-
-type ITAMSubscriptionPayload {
-  mutation: MutationType!
-  node: ITAM
-  updatedFields: [String!]
-  previousValues: ITAMPreviousValues
-}
-
-input ITAMSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ITAMSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ITAMSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ITAMSubscriptionWhereInput!]
-
-  """The subscription event gets dispatched when it's listed in mutation_in"""
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ITAMWhereInput
-}
-
-input ITAMUpdateInput {
-  name: String
-  orders: ITAMProgressUpdateManyWithoutItamownerInput
-}
-
-input ITAMUpdateOneWithoutOrdersInput {
-  create: ITAMCreateWithoutOrdersInput
-  connect: ITAMWhereUniqueInput
-  delete: Boolean
-  update: ITAMUpdateWithoutOrdersDataInput
-  upsert: ITAMUpsertWithoutOrdersInput
-}
-
-input ITAMUpdateWithoutOrdersDataInput {
-  name: String
-}
-
-input ITAMUpsertWithoutOrdersInput {
-  update: ITAMUpdateWithoutOrdersDataInput!
-  create: ITAMCreateWithoutOrdersInput!
-}
-
-input ITAMWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ITAMWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ITAMWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ITAMWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  orders_every: ITAMProgressWhereInput
-  orders_some: ITAMProgressWhereInput
-  orders_none: ITAMProgressWhereInput
-}
-
-input ITAMWhereUniqueInput {
   id: ID
 }
 
@@ -1037,33 +832,27 @@ type Mutation {
   createOrder(data: OrderCreateInput!): Order!
   createITAMProgress(data: ITAMProgressCreateInput!): ITAMProgress!
   createTechnicianProgress(data: TechnicianProgressCreateInput!): TechnicianProgress!
-  createITAM(data: ITAMCreateInput!): ITAM!
-  createTechnician(data: TechnicianCreateInput!): Technician!
+  createUser(data: UserCreateInput!): User!
   updateOrder(data: OrderUpdateInput!, where: OrderWhereUniqueInput!): Order
   updateITAMProgress(data: ITAMProgressUpdateInput!, where: ITAMProgressWhereUniqueInput!): ITAMProgress
   updateTechnicianProgress(data: TechnicianProgressUpdateInput!, where: TechnicianProgressWhereUniqueInput!): TechnicianProgress
-  updateITAM(data: ITAMUpdateInput!, where: ITAMWhereUniqueInput!): ITAM
-  updateTechnician(data: TechnicianUpdateInput!, where: TechnicianWhereUniqueInput!): Technician
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteITAMProgress(where: ITAMProgressWhereUniqueInput!): ITAMProgress
   deleteTechnicianProgress(where: TechnicianProgressWhereUniqueInput!): TechnicianProgress
-  deleteITAM(where: ITAMWhereUniqueInput!): ITAM
-  deleteTechnician(where: TechnicianWhereUniqueInput!): Technician
+  deleteUser(where: UserWhereUniqueInput!): User
   upsertOrder(where: OrderWhereUniqueInput!, create: OrderCreateInput!, update: OrderUpdateInput!): Order!
   upsertITAMProgress(where: ITAMProgressWhereUniqueInput!, create: ITAMProgressCreateInput!, update: ITAMProgressUpdateInput!): ITAMProgress!
   upsertTechnicianProgress(where: TechnicianProgressWhereUniqueInput!, create: TechnicianProgressCreateInput!, update: TechnicianProgressUpdateInput!): TechnicianProgress!
-  upsertITAM(where: ITAMWhereUniqueInput!, create: ITAMCreateInput!, update: ITAMUpdateInput!): ITAM!
-  upsertTechnician(where: TechnicianWhereUniqueInput!, create: TechnicianCreateInput!, update: TechnicianUpdateInput!): Technician!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyOrders(data: OrderUpdateInput!, where: OrderWhereInput): BatchPayload!
   updateManyITAMProgresses(data: ITAMProgressUpdateInput!, where: ITAMProgressWhereInput): BatchPayload!
   updateManyTechnicianProgresses(data: TechnicianProgressUpdateInput!, where: TechnicianProgressWhereInput): BatchPayload!
-  updateManyITAMs(data: ITAMUpdateInput!, where: ITAMWhereInput): BatchPayload!
-  updateManyTechnicians(data: TechnicianUpdateInput!, where: TechnicianWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   deleteManyOrders(where: OrderWhereInput): BatchPayload!
   deleteManyITAMProgresses(where: ITAMProgressWhereInput): BatchPayload!
   deleteManyTechnicianProgresses(where: TechnicianProgressWhereInput): BatchPayload!
-  deleteManyITAMs(where: ITAMWhereInput): BatchPayload!
-  deleteManyTechnicians(where: TechnicianWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -1099,6 +888,8 @@ type Order implements Node {
   itemtype: String
   userstartdate: DateTime
   sla: Int
+  itam(where: ITAMProgressWhereInput): ITAMProgress
+  tech(where: TechnicianProgressWhereInput): TechnicianProgress
 }
 
 """A connection to a list of items."""
@@ -1131,6 +922,64 @@ input OrderCreateInput {
   itemtype: String
   userstartdate: DateTime
   sla: Int
+  itam: ITAMProgressCreateOneWithoutOrderInput
+  tech: TechnicianProgressCreateOneWithoutOrderInput
+}
+
+input OrderCreateOneWithoutItamInput {
+  create: OrderCreateWithoutItamInput
+  connect: OrderWhereUniqueInput
+}
+
+input OrderCreateOneWithoutTechInput {
+  create: OrderCreateWithoutTechInput
+  connect: OrderWhereUniqueInput
+}
+
+input OrderCreateWithoutItamInput {
+  orderid: Float!
+  datecreated: DateTime!
+  dateapproved: DateTime!
+  createdby: String!
+  createdbyemail: String!
+  recipient: String!
+  newhire: Boolean
+  hiredate: DateTime
+  hirename: String
+  approvalmanager: String!
+  businessunit: String!
+  attention: String!
+  shippingaddress: String!
+  items: String!
+  total: Float!
+  comments: String!
+  itemtype: String
+  userstartdate: DateTime
+  sla: Int
+  tech: TechnicianProgressCreateOneWithoutOrderInput
+}
+
+input OrderCreateWithoutTechInput {
+  orderid: Float!
+  datecreated: DateTime!
+  dateapproved: DateTime!
+  createdby: String!
+  createdbyemail: String!
+  recipient: String!
+  newhire: Boolean
+  hiredate: DateTime
+  hirename: String
+  approvalmanager: String!
+  businessunit: String!
+  attention: String!
+  shippingaddress: String!
+  items: String!
+  total: Float!
+  comments: String!
+  itemtype: String
+  userstartdate: DateTime
+  sla: Int
+  itam: ITAMProgressCreateOneWithoutOrderInput
 }
 
 """An edge in a connection."""
@@ -1269,6 +1118,80 @@ input OrderUpdateInput {
   itemtype: String
   userstartdate: DateTime
   sla: Int
+  itam: ITAMProgressUpdateOneWithoutOrderInput
+  tech: TechnicianProgressUpdateOneWithoutOrderInput
+}
+
+input OrderUpdateOneWithoutItamInput {
+  create: OrderCreateWithoutItamInput
+  connect: OrderWhereUniqueInput
+  delete: Boolean
+  update: OrderUpdateWithoutItamDataInput
+  upsert: OrderUpsertWithoutItamInput
+}
+
+input OrderUpdateOneWithoutTechInput {
+  create: OrderCreateWithoutTechInput
+  connect: OrderWhereUniqueInput
+  delete: Boolean
+  update: OrderUpdateWithoutTechDataInput
+  upsert: OrderUpsertWithoutTechInput
+}
+
+input OrderUpdateWithoutItamDataInput {
+  orderid: Float
+  datecreated: DateTime
+  dateapproved: DateTime
+  createdby: String
+  createdbyemail: String
+  recipient: String
+  newhire: Boolean
+  hiredate: DateTime
+  hirename: String
+  approvalmanager: String
+  businessunit: String
+  attention: String
+  shippingaddress: String
+  items: String
+  total: Float
+  comments: String
+  itemtype: String
+  userstartdate: DateTime
+  sla: Int
+  tech: TechnicianProgressUpdateOneWithoutOrderInput
+}
+
+input OrderUpdateWithoutTechDataInput {
+  orderid: Float
+  datecreated: DateTime
+  dateapproved: DateTime
+  createdby: String
+  createdbyemail: String
+  recipient: String
+  newhire: Boolean
+  hiredate: DateTime
+  hirename: String
+  approvalmanager: String
+  businessunit: String
+  attention: String
+  shippingaddress: String
+  items: String
+  total: Float
+  comments: String
+  itemtype: String
+  userstartdate: DateTime
+  sla: Int
+  itam: ITAMProgressUpdateOneWithoutOrderInput
+}
+
+input OrderUpsertWithoutItamInput {
+  update: OrderUpdateWithoutItamDataInput!
+  create: OrderCreateWithoutItamInput!
+}
+
+input OrderUpsertWithoutTechInput {
+  update: OrderUpdateWithoutTechDataInput!
+  create: OrderCreateWithoutTechInput!
 }
 
 input OrderWhereInput {
@@ -1918,6 +1841,8 @@ input OrderWhereInput {
 
   """All values greater than or equal the given value."""
   sla_gte: Int
+  itam: ITAMProgressWhereInput
+  tech: TechnicianProgressWhereInput
 }
 
 input OrderWhereUniqueInput {
@@ -1943,18 +1868,15 @@ type Query {
   orders(where: OrderWhereInput, orderBy: OrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Order]!
   iTAMProgresses(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ITAMProgress]!
   technicianProgresses(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechnicianProgress]!
-  iTAMs(where: ITAMWhereInput, orderBy: ITAMOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ITAM]!
-  technicians(where: TechnicianWhereInput, orderBy: TechnicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Technician]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   order(where: OrderWhereUniqueInput!): Order
   iTAMProgress(where: ITAMProgressWhereUniqueInput!): ITAMProgress
   technicianProgress(where: TechnicianProgressWhereUniqueInput!): TechnicianProgress
-  iTAM(where: ITAMWhereUniqueInput!): ITAM
-  technician(where: TechnicianWhereUniqueInput!): Technician
+  user(where: UserWhereUniqueInput!): User
   ordersConnection(where: OrderWhereInput, orderBy: OrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OrderConnection!
   iTAMProgressesConnection(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ITAMProgressConnection!
   technicianProgressesConnection(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TechnicianProgressConnection!
-  iTAMsConnection(where: ITAMWhereInput, orderBy: ITAMOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ITAMConnection!
-  techniciansConnection(where: TechnicianWhereInput, orderBy: TechnicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TechnicianConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -1967,77 +1889,21 @@ type Subscription {
   order(where: OrderSubscriptionWhereInput): OrderSubscriptionPayload
   iTAMProgress(where: ITAMProgressSubscriptionWhereInput): ITAMProgressSubscriptionPayload
   technicianProgress(where: TechnicianProgressSubscriptionWhereInput): TechnicianProgressSubscriptionPayload
-  iTAM(where: ITAMSubscriptionWhereInput): ITAMSubscriptionPayload
-  technician(where: TechnicianSubscriptionWhereInput): TechnicianSubscriptionPayload
-}
-
-type Technician implements Node {
-  id: ID!
-  name: String!
-  orders(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechnicianProgress!]
-}
-
-"""A connection to a list of items."""
-type TechnicianConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [TechnicianEdge]!
-  aggregate: AggregateTechnician!
-}
-
-input TechnicianCreateInput {
-  name: String!
-  orders: TechnicianProgressCreateManyWithoutTechownerInput
-}
-
-input TechnicianCreateOneWithoutOrdersInput {
-  create: TechnicianCreateWithoutOrdersInput
-  connect: TechnicianWhereUniqueInput
-}
-
-input TechnicianCreateWithoutOrdersInput {
-  name: String!
-}
-
-"""An edge in a connection."""
-type TechnicianEdge {
-  """The item at the end of the edge."""
-  node: Technician!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum TechnicianOrderByInput {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type TechnicianPreviousValues {
-  id: ID!
-  name: String!
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type TechnicianProgress implements Node {
   id: ID!
-  techowner(where: TechnicianWhereInput): Technician!
-  status: String!
-  attention: String!
-  confirmeduser: String!
-  costcenter: String!
-  servicetag: String!
-  initialemailsent: DateTime!
-  followupemailsent: DateTime!
-  datecompleted: DateTime!
-  comments: String!
+  order(where: OrderWhereInput): Order!
+  techowner(where: UserWhereInput): User!
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
 }
 
 """A connection to a list of items."""
@@ -2051,16 +1917,16 @@ type TechnicianProgressConnection {
 }
 
 input TechnicianProgressCreateInput {
-  status: String!
-  attention: String!
-  confirmeduser: String!
-  costcenter: String!
-  servicetag: String!
-  initialemailsent: DateTime!
-  followupemailsent: DateTime!
-  datecompleted: DateTime!
-  comments: String!
-  techowner: TechnicianCreateOneWithoutOrdersInput!
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
+  order: OrderCreateOneWithoutTechInput!
+  techowner: UserCreateOneWithoutTechordersInput!
 }
 
 input TechnicianProgressCreateManyWithoutTechownerInput {
@@ -2068,16 +1934,33 @@ input TechnicianProgressCreateManyWithoutTechownerInput {
   connect: [TechnicianProgressWhereUniqueInput!]
 }
 
+input TechnicianProgressCreateOneWithoutOrderInput {
+  create: TechnicianProgressCreateWithoutOrderInput
+  connect: TechnicianProgressWhereUniqueInput
+}
+
+input TechnicianProgressCreateWithoutOrderInput {
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
+  techowner: UserCreateOneWithoutTechordersInput!
+}
+
 input TechnicianProgressCreateWithoutTechownerInput {
-  status: String!
-  attention: String!
-  confirmeduser: String!
-  costcenter: String!
-  servicetag: String!
-  initialemailsent: DateTime!
-  followupemailsent: DateTime!
-  datecompleted: DateTime!
-  comments: String!
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
+  order: OrderCreateOneWithoutTechInput!
 }
 
 """An edge in a connection."""
@@ -2108,8 +1991,6 @@ enum TechnicianProgressOrderByInput {
   followupemailsent_DESC
   datecompleted_ASC
   datecompleted_DESC
-  comments_ASC
-  comments_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -2118,15 +1999,14 @@ enum TechnicianProgressOrderByInput {
 
 type TechnicianProgressPreviousValues {
   id: ID!
-  status: String!
-  attention: String!
-  confirmeduser: String!
-  costcenter: String!
-  servicetag: String!
-  initialemailsent: DateTime!
-  followupemailsent: DateTime!
-  datecompleted: DateTime!
-  comments: String!
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
 }
 
 type TechnicianProgressSubscriptionPayload {
@@ -2175,8 +2055,8 @@ input TechnicianProgressUpdateInput {
   initialemailsent: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
-  comments: String
-  techowner: TechnicianUpdateOneWithoutOrdersInput
+  order: OrderUpdateOneWithoutTechInput
+  techowner: UserUpdateOneWithoutTechordersInput
 }
 
 input TechnicianProgressUpdateManyWithoutTechownerInput {
@@ -2188,6 +2068,27 @@ input TechnicianProgressUpdateManyWithoutTechownerInput {
   upsert: [TechnicianProgressUpsertWithWhereUniqueWithoutTechownerInput!]
 }
 
+input TechnicianProgressUpdateOneWithoutOrderInput {
+  create: TechnicianProgressCreateWithoutOrderInput
+  connect: TechnicianProgressWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: TechnicianProgressUpdateWithoutOrderDataInput
+  upsert: TechnicianProgressUpsertWithoutOrderInput
+}
+
+input TechnicianProgressUpdateWithoutOrderDataInput {
+  status: String
+  attention: String
+  confirmeduser: String
+  costcenter: String
+  servicetag: String
+  initialemailsent: DateTime
+  followupemailsent: DateTime
+  datecompleted: DateTime
+  techowner: UserUpdateOneWithoutTechordersInput
+}
+
 input TechnicianProgressUpdateWithoutTechownerDataInput {
   status: String
   attention: String
@@ -2197,12 +2098,17 @@ input TechnicianProgressUpdateWithoutTechownerDataInput {
   initialemailsent: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
-  comments: String
+  order: OrderUpdateOneWithoutTechInput
 }
 
 input TechnicianProgressUpdateWithWhereUniqueWithoutTechownerInput {
   where: TechnicianProgressWhereUniqueInput!
   data: TechnicianProgressUpdateWithoutTechownerDataInput!
+}
+
+input TechnicianProgressUpsertWithoutOrderInput {
+  update: TechnicianProgressUpdateWithoutOrderDataInput!
+  create: TechnicianProgressCreateWithoutOrderInput!
 }
 
 input TechnicianProgressUpsertWithWhereUniqueWithoutTechownerInput {
@@ -2526,69 +2432,98 @@ input TechnicianProgressWhereInput {
 
   """All values greater than or equal the given value."""
   datecompleted_gte: DateTime
-  comments: String
-
-  """All values that are not equal to given value."""
-  comments_not: String
-
-  """All values that are contained in given list."""
-  comments_in: [String!]
-
-  """All values that are not contained in given list."""
-  comments_not_in: [String!]
-
-  """All values less than the given value."""
-  comments_lt: String
-
-  """All values less than or equal the given value."""
-  comments_lte: String
-
-  """All values greater than the given value."""
-  comments_gt: String
-
-  """All values greater than or equal the given value."""
-  comments_gte: String
-
-  """All values containing the given string."""
-  comments_contains: String
-
-  """All values not containing the given string."""
-  comments_not_contains: String
-
-  """All values starting with the given string."""
-  comments_starts_with: String
-
-  """All values not starting with the given string."""
-  comments_not_starts_with: String
-
-  """All values ending with the given string."""
-  comments_ends_with: String
-
-  """All values not ending with the given string."""
-  comments_not_ends_with: String
-  techowner: TechnicianWhereInput
+  order: OrderWhereInput
+  techowner: UserWhereInput
 }
 
 input TechnicianProgressWhereUniqueInput {
   id: ID
 }
 
-type TechnicianSubscriptionPayload {
-  mutation: MutationType!
-  node: Technician
-  updatedFields: [String!]
-  previousValues: TechnicianPreviousValues
+type User implements Node {
+  id: ID!
+  name: String!
+  itamorders(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ITAMProgress!]
+  techorders(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechnicianProgress!]
 }
 
-input TechnicianSubscriptionWhereInput {
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
+}
+
+input UserCreateInput {
+  name: String!
+  itamorders: ITAMProgressCreateManyWithoutItamownerInput
+  techorders: TechnicianProgressCreateManyWithoutTechownerInput
+}
+
+input UserCreateOneWithoutItamordersInput {
+  create: UserCreateWithoutItamordersInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutTechordersInput {
+  create: UserCreateWithoutTechordersInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutItamordersInput {
+  name: String!
+  techorders: TechnicianProgressCreateManyWithoutTechownerInput
+}
+
+input UserCreateWithoutTechordersInput {
+  name: String!
+  itamorders: ITAMProgressCreateManyWithoutItamownerInput
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge."""
+  node: User!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+input UserSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [TechnicianSubscriptionWhereInput!]
+  AND: [UserSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [TechnicianSubscriptionWhereInput!]
+  OR: [UserSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [TechnicianSubscriptionWhereInput!]
+  NOT: [UserSubscriptionWhereInput!]
 
   """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
@@ -2607,40 +2542,60 @@ input TechnicianSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: TechnicianWhereInput
+  node: UserWhereInput
 }
 
-input TechnicianUpdateInput {
+input UserUpdateInput {
   name: String
-  orders: TechnicianProgressUpdateManyWithoutTechownerInput
+  itamorders: ITAMProgressUpdateManyWithoutItamownerInput
+  techorders: TechnicianProgressUpdateManyWithoutTechownerInput
 }
 
-input TechnicianUpdateOneWithoutOrdersInput {
-  create: TechnicianCreateWithoutOrdersInput
-  connect: TechnicianWhereUniqueInput
+input UserUpdateOneWithoutItamordersInput {
+  create: UserCreateWithoutItamordersInput
+  connect: UserWhereUniqueInput
   delete: Boolean
-  update: TechnicianUpdateWithoutOrdersDataInput
-  upsert: TechnicianUpsertWithoutOrdersInput
+  update: UserUpdateWithoutItamordersDataInput
+  upsert: UserUpsertWithoutItamordersInput
 }
 
-input TechnicianUpdateWithoutOrdersDataInput {
+input UserUpdateOneWithoutTechordersInput {
+  create: UserCreateWithoutTechordersInput
+  connect: UserWhereUniqueInput
+  delete: Boolean
+  update: UserUpdateWithoutTechordersDataInput
+  upsert: UserUpsertWithoutTechordersInput
+}
+
+input UserUpdateWithoutItamordersDataInput {
   name: String
+  techorders: TechnicianProgressUpdateManyWithoutTechownerInput
 }
 
-input TechnicianUpsertWithoutOrdersInput {
-  update: TechnicianUpdateWithoutOrdersDataInput!
-  create: TechnicianCreateWithoutOrdersInput!
+input UserUpdateWithoutTechordersDataInput {
+  name: String
+  itamorders: ITAMProgressUpdateManyWithoutItamownerInput
 }
 
-input TechnicianWhereInput {
+input UserUpsertWithoutItamordersInput {
+  update: UserUpdateWithoutItamordersDataInput!
+  create: UserCreateWithoutItamordersInput!
+}
+
+input UserUpsertWithoutTechordersInput {
+  update: UserUpdateWithoutTechordersDataInput!
+  create: UserCreateWithoutTechordersInput!
+}
+
+input UserWhereInput {
   """Logical AND on all given filters."""
-  AND: [TechnicianWhereInput!]
+  AND: [UserWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [TechnicianWhereInput!]
+  OR: [UserWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [TechnicianWhereInput!]
+  NOT: [UserWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -2721,11 +2676,14 @@ input TechnicianWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
-  orders_every: TechnicianProgressWhereInput
-  orders_some: TechnicianProgressWhereInput
-  orders_none: TechnicianProgressWhereInput
+  itamorders_every: ITAMProgressWhereInput
+  itamorders_some: ITAMProgressWhereInput
+  itamorders_none: ITAMProgressWhereInput
+  techorders_every: TechnicianProgressWhereInput
+  techorders_some: TechnicianProgressWhereInput
+  techorders_none: TechnicianProgressWhereInput
 }
 
-input TechnicianWhereUniqueInput {
+input UserWhereUniqueInput {
   id: ID
 }

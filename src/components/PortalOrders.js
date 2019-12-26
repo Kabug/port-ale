@@ -62,6 +62,14 @@ const orders_query = gql`
       itemtype
       userstartdate
       sla
+      itam{
+        id
+        status
+      }
+      tech{
+        id
+        status
+      }
     }
   }
 `

@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Thu Dec 19 2019 12:47:04 GMT-0800 (Pacific Standard Time)
+# timestamp: Fri Dec 20 2019 13:10:00 GMT-0800 (Pacific Standard Time)
 
 type AggregateITAMProgress {
   count: Int!
@@ -27,7 +27,7 @@ scalar DateTime
 type ITAMProgress implements Node {
   id: ID!
   order(where: OrderWhereInput): Order!
-  itamowner(where: UserWhereInput): User!
+  itamowner(where: UserWhereInput): User
   status: String
   verificationemailsent: DateTime
   productsource: String
@@ -68,7 +68,7 @@ input ITAMProgressCreateInput {
   dellordernum: String
   dellemailnotif: String
   order: OrderCreateOneWithoutItamInput!
-  itamowner: UserCreateOneWithoutItamordersInput!
+  itamowner: UserCreateOneWithoutItamordersInput
 }
 
 input ITAMProgressCreateManyWithoutItamownerInput {
@@ -112,7 +112,7 @@ input ITAMProgressCreateWithoutOrderInput {
   poordernum: String
   dellordernum: String
   dellemailnotif: String
-  itamowner: UserCreateOneWithoutItamordersInput!
+  itamowner: UserCreateOneWithoutItamordersInput
 }
 
 """An edge in a connection."""
@@ -1895,7 +1895,7 @@ type Subscription {
 type TechnicianProgress implements Node {
   id: ID!
   order(where: OrderWhereInput): Order!
-  techowner(where: UserWhereInput): User!
+  techowner(where: UserWhereInput): User
   status: String
   attention: String
   confirmeduser: String
@@ -1926,7 +1926,7 @@ input TechnicianProgressCreateInput {
   followupemailsent: DateTime
   datecompleted: DateTime
   order: OrderCreateOneWithoutTechInput!
-  techowner: UserCreateOneWithoutTechordersInput!
+  techowner: UserCreateOneWithoutTechordersInput
 }
 
 input TechnicianProgressCreateManyWithoutTechownerInput {
@@ -1948,7 +1948,7 @@ input TechnicianProgressCreateWithoutOrderInput {
   initialemailsent: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
-  techowner: UserCreateOneWithoutTechordersInput!
+  techowner: UserCreateOneWithoutTechordersInput
 }
 
 input TechnicianProgressCreateWithoutTechownerInput {
@@ -2554,6 +2554,7 @@ input UserUpdateInput {
 input UserUpdateOneWithoutItamordersInput {
   create: UserCreateWithoutItamordersInput
   connect: UserWhereUniqueInput
+  disconnect: Boolean
   delete: Boolean
   update: UserUpdateWithoutItamordersDataInput
   upsert: UserUpsertWithoutItamordersInput
@@ -2562,6 +2563,7 @@ input UserUpdateOneWithoutItamordersInput {
 input UserUpdateOneWithoutTechordersInput {
   create: UserCreateWithoutTechordersInput
   connect: UserWhereUniqueInput
+  disconnect: Boolean
   delete: Boolean
   update: UserUpdateWithoutTechordersDataInput
   upsert: UserUpsertWithoutTechordersInput

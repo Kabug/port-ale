@@ -19,13 +19,13 @@ type Order{
   itemtype: String
   userstartdate: DateTime
   sla: Int
-  itam: ITAMProgress
-  tech: TechnicianProgress
+  itam: ITAMProgress @relation(name: "ITAMOrderProgress" onDelete: CASCADE)
+  tech: TechnicianProgress @relation(name: "TechOrderProgress" onDelete: CASCADE)
 }
 
 type ITAMProgress{
   id: ID! @unique
-  order: Order!
+  order: Order! @relation(name: "ITAMOrderProgress")
   itamowner: User
   status: String
   verificationemailsent: DateTime
@@ -44,7 +44,7 @@ type ITAMProgress{
 
 type TechnicianProgress{
   id: ID! @unique
-  order: Order!
+  order: Order! @relation(name: "TechOrderProgress")
   techowner: User
   status: String
   attention: String

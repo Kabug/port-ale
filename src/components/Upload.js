@@ -65,7 +65,7 @@ const CREATE_ORDER = gql`
     $shippingaddress: String!,
     $items: String!,
     $total: Float!,
-    $comments: String!
+    $comments: String!,
   ) {
     createOrder(
       orderid: $orderid,
@@ -83,7 +83,7 @@ const CREATE_ORDER = gql`
       shippingaddress: $shippingaddress,
       items: $items,
       total: $total,
-      comments: $comments
+      comments: $comments,
     ) {
         id
     }

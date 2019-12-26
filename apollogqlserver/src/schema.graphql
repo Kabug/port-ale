@@ -29,7 +29,9 @@ type Mutation{
   comments: String!,
   itemtype: String,
   userstartdate: DateTime,
-  sla: Int
+  sla: Int,
+  itam: ITAMProgressCreateOneWithoutOrderInput,
+  tech: TechnicianProgressCreateOneWithoutOrderInput
   ): Order
 
   createITAMProgress(

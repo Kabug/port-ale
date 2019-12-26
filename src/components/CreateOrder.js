@@ -51,7 +51,9 @@ const CREATE_ORDER = gql`
     $shippingaddress: String!,
     $items: String!,
     $total: Float!,
-    $comments: String!
+    $comments: String!,
+    $itam: ITAMProgressCreateOneWithoutOrderInput,
+    $tech: TechnicianProgressCreateOneWithoutOrderInput
   ) {
     createOrder(
       orderid: $orderid,
@@ -347,7 +349,8 @@ class CreateOrder extends React.Component {
                 shippingaddress: shippingAddress,
                 items: item,
                 total: total,
-                comments: comments}}>
+                comments: comments,
+                }}>
                 {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); window.location.reload();}} disabled={!(this.state.isValidID * this.state.isValidCreated * this.state.isValidApproved * this.state.isValidHire * this.state.isValidEmail)}>Create</button>}
               </Mutation>
             </div>

@@ -71,7 +71,8 @@ const CREATE_ORDER = gql`
       shippingaddress: $shippingaddress,
       items: $items,
       total: $total,
-      comments: $comments
+      comments: $comments,
+      itam: $itam
     ) {
         id
     }
@@ -84,32 +85,62 @@ class CreateOrder extends React.Component {
     this.state = {
       isNotNewHire: true,
       orderid: null,
-      dateCreated: null,
-      dateApproved: null,
+      dateCreated: new Date().toISOString().split("T")[0],
+      dateApproved: new Date().toISOString().split("T")[0],
       createdBy: "",
       createdByEmail: null,
       recipient: "",
       newHire: false,
       hireName: "",
       hireDate: null,
+      hireStartDate: null,
+      sla: null,
       approvalManager: "",
       businessUnit: "",
       attention: "",
       shippingAddress: "",
       item: "",
+      itemType: "Choose...",
       total: 0,
       comments: "",
+      itamStatus: "Not Started",
+      itamName: null,
+      itamVerifEmail: false,
+      itamProductSource: null,
+      itamOldAssetTag: null,
+      itamOldModel: null,
+      itamMonitorModel: null,
+      itamMonitorNum: 0,
+      itamConnectorType: null,
+      itamOrderPendEmail: null,
+      itamConfirmedNewhire: null,
+      itamPOOrder: null,
+      itamDellOrder: null,
+      itamDellEmailNotif: false,
+      techStatus: "Not Started",
+      techConfirmedNewHire: null,
+      techCostCenter: null,
+      techServiceTag: null,
+      techEmailPCSent: null,
+      techFullowUpSent: null,
+      techDateSetupCompleted: null,
       isValidID: false,
-      isValidCreated: false,
-      isValidApproved: false,
+      isValidCreated: true,
+      isValidApproved: true,
       isValidHire: true,
-      isValidEmail: false
+      isValidEmail: false,
+      isValidStartDate: true,
+      isValidPendEmail: true
     };
   }
 
   newHireToggle = () =>{
-      this.setState({newHire: !this.state.newHire});
-      this.setState({isNotNewHire: !this.state.isNotNewHire});
+    this.setState({newHire: !this.state.newHire});
+    this.setState({isNotNewHire: !this.state.isNotNewHire});
+  }
+
+  verifEmailToggle = () =>{
+    this.setState({itamVerifEmail: !this.state.itamVerifEmail});
   }
 
   toValidFloat = (usrInput, selectedFloat) =>{
@@ -127,6 +158,9 @@ class CreateOrder extends React.Component {
     }
     else if(selectedFloat === "Total"){ //Need to figure out how to fix decimals for Total
       this.setState({total: parseFloat(num)});
+    }
+    else if(selectedFloat === "MonitorNum"){ //Need to figure out how to fix decimals for Total
+      this.setState({itamMonitorNum: parseFloat(num)});
     }
   }
 
@@ -154,6 +188,22 @@ class CreateOrder extends React.Component {
       this.setState({hireDate: usrInputDate});
       this.setState({isValidHire: valid});
     }
+    else if(selectedDate === "hireStartDate"){
+      if(usrInputDate === ""){
+        valid = true;
+        usrInputDate = null;
+      }
+      this.setState({hireStartDate: usrInputDate});
+      this.setState({isValidStartDate: valid});
+    }
+    else if(selectedDate === "orderPendEmail"){
+      if(usrInputDate === ""){
+        valid = true;
+        usrInputDate = null;
+      }
+      this.setState({hireStartDate: usrInputDate});
+      this.setState({isValidPendEmail: valid});
+    }
   }
 
   validateEmail = (usrInputEmail) =>{
@@ -179,14 +229,39 @@ class CreateOrder extends React.Component {
       newHire,
       hireName,
       hireDate,
+      hireStartDate,
       approvalManager,
       businessUnit,
       attention,
       shippingAddress,
       item,
+      itemType,
       total,
-      comments
+      sla,
+      comments,
+      itamStatus,
+      itamName,
+      itamVerifEmail,
+      itamProductSource,
+      itamOldAssetTag,
+      itamOldModel,
+      itamMonitorModel,
+      itamMonitorNum,
+      itamConnectorType,
+      itamOrderPendEmail,
+      itamConfirmedNewhire,
+      itamPOOrder,
+      itamDellOrder,
+      itamDellEmailNotif,
+      techStatus,
+      techConfirmedNewHire,
+      techCostCenter,
+      techServiceTag,
+      techEmailPCSent,
+      techFullowUpSent,
+      techDateSetupCompleted,
     } = this.state
+
 
     return (
       <Styles>
@@ -197,7 +272,7 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="orderNum">Order #</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Order Number" aria-label="Order Number" aria-describedby="orderNum" value={orderid} onChange={e=>this.toValidFloat(e.target.value,"ID")} style={{boxShadow: `${this.state.isValidID ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control" placeholder="Natural Number" aria-label="Order Number" aria-describedby="orderNum" value={orderid} onChange={e=>this.toValidFloat(e.target.value,"ID")} style={{boxShadow: `${this.state.isValidID ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -274,6 +349,30 @@ class CreateOrder extends React.Component {
                 </div>
               </Fade>
             </div>
+            <div class="col-sm-4" style={{display: `${!this.state.isNotNewHire ? "inline":"none"}`}}>
+              <Fade in={!this.state.isNotNewHire}>
+                <div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="hireStartDate">Hire Start Date</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireStartDate" disabled={this.state.isNotNewHire} value={hireStartDate} onChange={e=>this.toValidDate(e.target.value, "hireStartDate")} style={{boxShadow: `${this.state.isValidStartDate ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                  </div>
+                </div>
+              </Fade>
+            </div>
+            <div class="col-sm-4" style={{display: `${!this.state.isNotNewHire ? "inline":"none"}`}}>
+              <Fade in={!this.state.isNotNewHire}>
+                <div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="sla">SLA</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="sla" disabled={this.state.isNotNewHire}/>
+                  </div>
+                </div>
+              </Fade>
+            </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -322,6 +421,202 @@ class CreateOrder extends React.Component {
                 <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal" value={total} onChange={e=>this.toValidFloat(e.target.value,"Total")}/>
               </div>
             </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="inputGroupSelect01">Item Type</label>
+                </div>
+                <select class="custom-select" id="inputGroupSelect01" value={itemType} onChange={e=>this.setState({itemType: e.target.value})}>
+                  <option selected>Choose...</option>
+                  <option value="PC">PC</option>
+                  <option value="Accessory">Accessory</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="ITAMStatus">ITAM Status</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="ITAM Status" aria-label="ITAM Status" aria-describedby="ITAMStatus" value={itamStatus} onChange={e=>this.setState({itamStatus: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="ITAMName">ITAM Name</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="ITAM Name" aria-label="ITAM Name" aria-describedby="ITAMName" value={itamName} onChange={e=>this.setState({itamName: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <input type="checkbox" id="verificationSent" aria-label="Verification Email Sent" onClick={this.verifEmailToggle}/>
+                  </div>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder ="Verification Email Sent?" aria-label="Verification Email Sent" disabled/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="productSource">Product Source</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="Emerge/Dell etc." aria-label="Emerge/Dell etc." aria-describedby="productSource" value={itamProductSource} onChange={e=>this.setState({itamProductSource: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="oldAssetTag">Old Asset Tag</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="FIN##### etc." aria-label="FIN##### etc." aria-describedby="oldAssetTag" value={itamOldAssetTag} onChange={e=>this.setState({itamOldAssetTag: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="oldModel">Old Model</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="T440, Lat5490 etc." aria-label="T440, Lat5490 etc." aria-describedby="oldModel" value={itamOldModel} onChange={e=>this.setState({itamOldModel: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="monitorModel">Monitor Model</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="Viewsonic etc." aria-label="Viewsonic etc." aria-describedby="monitorModel" value={itamMonitorModel} onChange={e=>this.setState({itamMonitorModel: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="monitorNum"># of Monitors</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="monitorNum" value={itamMonitorNum} onChange={e=>this.toValidFloat(e.target.value,"MonitorNum")}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="connectorTypes">Type of Connectors</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="VGA, DVI etc." aria-label="VGA, DVI etc." aria-describedby="connectorTypes" value={itamConnectorType} onChange={e=>this.setState({itamConnectorType: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="orderPendEmail">Order Pending Email</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="orderPendEmail" value={itamOrderPendEmail} onChange={e=>this.toValidDate(e.target.value, "orderPendEmail")} style={{boxShadow: `${this.state.isValidPendEmail ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+              </div>
+            </div>
+            <div class="col-sm-4" style={{display: `${!this.state.isNotNewHire ? "inline":"none"}`}}>
+              <Fade in={!this.state.isNotNewHire}>
+                <div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="confirmedNewHire">Confirmed as Newhire</span>
+                    </div>
+                    <input type="text" class="form-control ITAMInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="confirmedNewHire" disabled={this.state.isNotNewHire}/>
+                  </div>
+                </div>
+              </Fade>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="PONumber">PO/Order #</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="PONumber"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="dellOrderNum">Dell Order #</span>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="dellOrderNum"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <input type="checkbox" id="dellEmailNotif" aria-label="Dell Email Notification Sent?"/>
+                  </div>
+                </div>
+                <input type="text" class="form-control ITAMInput" placeholder ="Dell Email Notification Sent?" aria-label="dellEmailNotif" disabled/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="techOwner">Tech Owner</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="Tech Name" aria-label="Tech Status" aria-describedby="Tech Name"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="techStatus">Tech Status</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="Tech Status" aria-label="Tech Status" aria-describedby="techStatus"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="confirmedUser">Confirmed User</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="Firstname Lastname" aria-label="Firstname Lastname" aria-describedby="confirmedUser"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="costCenter">Cost Center</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="Location" aria-label="Location" aria-describedby="costCenter"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="serviceTag">Service Tag</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="CAL-*******" aria-label="CAL-*******" aria-describedby="serviceTag"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="techEmailSent">Email/PC Sent</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="techEmailSent"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="techFollowupEmail">Tech Followup Email Sent</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="techFollowupEmail"/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="setupComplete">Date Setup Completed</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="setupComplete"/>
+              </div>
+            </div>
             <div class="col-sm-12">
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -351,7 +646,7 @@ class CreateOrder extends React.Component {
                 total: total,
                 comments: comments,
                 }}>
-                {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); window.location.reload();}} disabled={!(this.state.isValidID * this.state.isValidCreated * this.state.isValidApproved * this.state.isValidHire * this.state.isValidEmail)}>Create</button>}
+                {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); window.location.reload();}} disabled={!(this.state.isValidID * this.state.isValidCreated * this.state.isValidApproved * this.state.isValidHire * this.state.isValidEmail * this.state.isValidStartDate * this.state.isValidPendEmail)}>Create</button>}
               </Mutation>
             </div>
           </div>

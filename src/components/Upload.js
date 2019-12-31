@@ -65,7 +65,8 @@ const CREATE_ORDER = gql`
     $shippingaddress: String!,
     $items: String!,
     $total: Float!,
-    $comments: String!,
+    $comments: String!
+    $itam: ITAMProgressCreateOneWithoutOrderInput
   ) {
     createOrder(
       orderid: $orderid,
@@ -84,6 +85,7 @@ const CREATE_ORDER = gql`
       items: $items,
       total: $total,
       comments: $comments,
+      itam: { create: $itam }
     ) {
         id
     }
@@ -235,7 +237,9 @@ class Upload extends React.Component{
                         shippingaddress: order[12],
                         items: order[13],
                         total: order[14],
-                        comments: order[15]}}>
+                        comments: order[15],
+                        itam: {status:"Not Started"}
+                  }}>
                     {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); this.removeFromState(index)}}>Submit</button>}
                   </Mutation>
                 </div>

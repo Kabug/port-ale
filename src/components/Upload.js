@@ -65,8 +65,9 @@ const CREATE_ORDER = gql`
     $shippingaddress: String!,
     $items: String!,
     $total: Float!,
-    $comments: String!
-    $itam: ITAMProgressCreateOneWithoutOrderInput
+    $comments: String!,
+    $itam: ITAMProgressCreateOneWithoutOrderInput!,
+    $tech: TechnicianProgressCreateOneWithoutOrderInput!,
   ) {
     createOrder(
       orderid: $orderid,
@@ -85,7 +86,8 @@ const CREATE_ORDER = gql`
       items: $items,
       total: $total,
       comments: $comments,
-      itam: { create: $itam }
+      itam: $itam,
+      tech: $tech
     ) {
         id
     }
@@ -97,13 +99,14 @@ class Upload extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      newOrders: []
+      newOrders: [],
     };
   }
 
   setDataToState = (data) =>{
     var tempData = data;
 
+    try{
     //Remove uneeded columns
     for(var order in tempData){
       if(!(data[order]) || data[order][0] === ""){
@@ -142,8 +145,11 @@ class Upload extends React.Component{
       }
 
     }
-    console.log(finalOrders);
     this.setState({newOrders: finalOrders});
+    }
+    catch(error){
+      alert("Invalid CSV Format: \n" + error);
+    }
   }
 
   formatDate(originalDate){
@@ -151,13 +157,17 @@ class Upload extends React.Component{
   }
 
   removeFromState = (orderId) =>{
-    console.log(orderId)
     var updatedOrders = [...this.state.newOrders];
     updatedOrders.splice(orderId, 1)
     this.setState({newOrders: updatedOrders})
   }
 
   render(){
+    const createNested = {
+      create: {
+        status: "Not Started"
+      }
+    }
     return (
       <Styles>
         <div class="container-fluid">
@@ -238,7 +248,8 @@ class Upload extends React.Component{
                         items: order[13],
                         total: order[14],
                         comments: order[15],
-                        itam: {status:"Not Started"}
+                        itam: createNested,
+                        tech: createNested
                   }}>
                     {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); this.removeFromState(index)}}>Submit</button>}
                   </Mutation>

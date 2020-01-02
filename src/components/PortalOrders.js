@@ -4,6 +4,7 @@ import CreateOrder from "./CreateOrder"
 import styled from "styled-components";
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import OImage from "../assets/OTest.png"
 
 const Styles = styled.div`
   .btn{
@@ -113,7 +114,7 @@ class PortalOrders extends React.Component {
     return (
       <Styles>
         <div class ="container-fluid">
-          <h1>Portal Orders</h1>
+          <h1>Portal <img src={OImage} alt="O"/>rders</h1>
           <div class="row mainBtnDivStyles">
             <div class="col-sm">
             <div class="btn-group btn-group-justified">

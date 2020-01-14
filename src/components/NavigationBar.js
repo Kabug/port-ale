@@ -41,6 +41,7 @@ function NavigationBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
             <Nav.Item><Link to="/" class="styledLink">Orders</Link></Nav.Item>
+            <Nav.Item><Link to="/Users" class="styledLink">Users</Link></Nav.Item>
             <Nav.Item><Link to="/Email" class="styledLink">Emails</Link></Nav.Item>
             <Nav.Item><Link to="/Upload" class="styledLink">Upload</Link></Nav.Item>
           </Nav>

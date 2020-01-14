@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Fade from "react-bootstrap/Fade";
-import { Mutation } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 import gql from "graphql-tag";
 
 const Styles = styled.div`
@@ -43,14 +43,16 @@ const CREATE_ORDER = gql`
     $createdbyemail: String!,
     $recipient: String!,
     $newhire: Boolean!,
-    $hiredate: DateTime,
     $hirename: String,
+    $hirestartdate: DateTime,
     $approvalmanager: String!,
     $businessunit: String!,
     $attention: String!,
     $shippingaddress: String!,
     $items: String!,
     $total: Float!,
+    $sla: Int,
+    $ordercategory: String!,
     $comments: String!,
     $itam: ITAMProgressCreateOneWithoutOrderInput,
     $tech: TechnicianProgressCreateOneWithoutOrderInput
@@ -63,28 +65,40 @@ const CREATE_ORDER = gql`
       createdbyemail: $createdbyemail,
       recipient: $recipient,
       newhire: $newhire,
-      hiredate: $hiredate,
       hirename: $hirename,
+      hirestartdate: $hirestartdate,
       approvalmanager: $approvalmanager,
       businessunit: $businessunit,
       attention: $attention,
       shippingaddress: $shippingaddress,
       items: $items,
       total: $total,
+      sla: $sla,
+      ordercategory: $ordercategory,
       comments: $comments,
-      itam: $itam
+      itam: $itam,
+      tech: $tech
     ) {
         id
     }
   }
-`
+`;
+
+const QUERY_USERS = gql`
+  {
+    users{
+      id
+      name
+    }
+  }
+`;
 
 class CreateOrder extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isNotNewHire: true,
-      orderid: null,
+      orderid: 0,
       dateCreated: new Date().toISOString().split("T")[0],
       dateApproved: new Date().toISOString().split("T")[0],
       createdBy: "",
@@ -92,7 +106,6 @@ class CreateOrder extends React.Component {
       recipient: "",
       newHire: false,
       hireName: "",
-      hireDate: null,
       hireStartDate: null,
       sla: null,
       approvalManager: "",
@@ -101,12 +114,13 @@ class CreateOrder extends React.Component {
       shippingAddress: "",
       item: "",
       itemType: "Choose...",
-      total: 0,
+      total: 0.00,
       comments: "",
+      orderCategory: "New Order",
       itamStatus: "Not Started",
-      itamName: null,
-      itamVerifEmail: false,
-      itamProductSource: null,
+      itamName: "Unassigned",
+      itamVerifEmail: null,
+      itamProductSource: "",
       itamOldAssetTag: null,
       itamOldModel: null,
       itamMonitorModel: null,
@@ -116,26 +130,30 @@ class CreateOrder extends React.Component {
       itamConfirmedNewhire: null,
       itamPOOrder: null,
       itamDellOrder: null,
-      itamDellEmailNotif: false,
+      itamDellEmailNotif: null,
       techStatus: "Not Started",
-      techName: null,
+      techName: "Unassigned",
       techConfirmedUser: null,
       techCostCenter: null,
       techServiceTag: null,
       techEmailPCSent: null,
       techFollowupEmail: null,
+      techDateFollowupTemp: null,
       techDateSetupCompleted: null,
-      isValidID: false,
+      isValidID: true,
       isValidCreated: true,
       isValidApproved: true,
-      isValidHire: true,
       isValidEmail: false,
       isValidStartDate: true,
       isValidPendEmail: true,
       isValidConfirmedHireDate: true,
       isValidPCEmailDate: true,
+      isValidDateFollowup: true,
       isValidFollowupEmail: true,
-      isValidDateSetupCompleted: true
+      isValidDateSetupCompleted: true,
+      isValidVerifEmail: true,
+      isValidEmailNotif: true,
+      buttonClicked: false
     };
   }
 
@@ -143,12 +161,9 @@ class CreateOrder extends React.Component {
     this.setState({newHire: !this.state.newHire, isNotNewHire: !this.state.isNotNewHire});
   }
 
-  verifEmailToggle = () =>{
-    this.setState({itamVerifEmail: !this.state.itamVerifEmail});
-  }
-
-  dellEmailNotifToggle = () =>{
-    this.setState({itamDellEmailNotif: !this.state.itamDellEmailNotif});
+  toCashMoney = (usrInput) =>{
+    usrInput = parseFloat(parseFloat(usrInput).toFixed(2));
+    this.setState({total: usrInput})
   }
 
   toValidFloat = (usrInput, selectedFloat) =>{
@@ -165,11 +180,19 @@ class CreateOrder extends React.Component {
       this.setState({orderid: parseFloat(num)});
     }
     else if(selectedFloat === "Total"){ //Need to figure out how to fix decimals for Total
-      console.log(num)
-      this.setState({total: parseFloat(num)});
+      this.setState({total: num});
     }
     else if(selectedFloat === "MonitorNum"){
       this.setState({itamMonitorNum: parseFloat(num)});
+    }
+    else if(selectedFloat === "sla"){
+      this.setState({sla: parseFloat(num)});
+    }
+    else if(selectedFloat === "POOrderNum"){
+      this.setState({itamPOOrder: parseFloat(num)});
+    }
+    else if(selectedFloat === "DellOrderNum"){
+      this.setState({itamDellOrder: parseFloat(num)});
     }
   }
 
@@ -178,60 +201,50 @@ class CreateOrder extends React.Component {
     if(usrInputDate.match(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/g)){
       valid = true;
     }
+    if(usrInputDate === ""){
+      valid = true;
+      usrInputDate = null;
+    }
     switch(selectedDate){
       case "dateCreated":
+        if(usrInputDate === null){
+          valid = false;
+          usrInputDate = null;
+        }
         this.setState({dateCreated: usrInputDate, isValidCreated: valid});
         break;
       case "dateApproved":
-        this.setState({dateApproved: usrInputDate, isValidApproved: valid});
-        break;
-      case "orderPendEmail":
-        if(usrInputDate === ""){
-          valid = true;
+        if(usrInputDate === null){
+          valid = false;
           usrInputDate = null;
         }
+        this.setState({dateApproved: usrInputDate, isValidApproved: valid});
+        break;
+      case "verificationEmail":
+        this.setState({itamVerifEmail: usrInputDate, isValidVerifEmail: valid})
+        break;
+      case "orderPendEmail":
         this.setState({itamOrderPendEmail: usrInputDate, isValidPendEmail: valid});
         break;
       case "EmailPCSent":
-        if(usrInputDate === ""){
-          valid = true;
-          usrInputDate = null;
-        }
         this.setState({techEmailPCSent: usrInputDate, isValidPCEmailDate: valid});
         break;
       case "FollowupEmail":
-        if(usrInputDate === ""){
-          valid = true;
-          usrInputDate = null;
-        }
         this.setState({techFollowupEmail: usrInputDate, isValidFollowupEmail: valid});
         break;
+      case "DateFollowupTemp":
+        this.setState({techDateFollowupTemp: usrInputDate, isValidDateFollowup: valid});
+        break;
+      case "EmailNotif":
+        this.setState({itamDellEmailNotif: usrInputDate, isValidEmailNotif: valid});
+        break;
       case "SetupCompleted":
-        if(usrInputDate === ""){
-          valid = true;
-          usrInputDate = null;
-        }
         this.setState({techDateSetupCompleted: usrInputDate, isValidDateSetupCompleted: valid});
         break;
       case "confirmedNewHire":
-        if(usrInputDate === ""){
-          valid = true;
-          usrInputDate = null;
-        }
         this.setState({itamConfirmedNewhire: usrInputDate, isValidConfirmedHireDate: valid});
         break;
-      case "hireDate":
-        if(usrInputDate === ""){
-          valid = true;
-          usrInputDate = null;
-        }
-        this.setState({hireDate: usrInputDate, isValidHire: valid});
-        break;
       case "hireStartDate":
-        if(usrInputDate === ""){
-          valid = true;
-          usrInputDate = null;
-        }
         this.setState({hireStartDate: usrInputDate, isValidStartDate: valid});
         break;
     }
@@ -259,7 +272,6 @@ class CreateOrder extends React.Component {
       recipient,
       newHire,
       hireName,
-      hireDate,
       hireStartDate,
       approvalManager,
       businessUnit,
@@ -269,6 +281,7 @@ class CreateOrder extends React.Component {
       itemType,
       total,
       sla,
+      orderCategory,
       comments,
       itamStatus,
       itamName,
@@ -291,9 +304,54 @@ class CreateOrder extends React.Component {
       techServiceTag,
       techEmailPCSent,
       techFollowupEmail,
+      techDateFollowupTemp,
       techDateSetupCompleted,
     } = this.state
 
+    const itamOwner = {
+      connect: {
+        name: itamName
+      }
+    }
+
+    const techOwner = {
+      connect: {
+        name: techName
+      }
+    }
+
+    const createITAM = {
+      create: {
+        status: itamStatus,
+        verificationemailsent: itamVerifEmail,
+        productsource: itamProductSource,
+        oldassettag: itamOldAssetTag,
+        oldmodel: itamOldModel,
+        modelofmonitor: itamMonitorModel,
+        numofmonitor: itamMonitorNum,
+        connectortypes: itamConnectorType,
+        orderpendingemailsent: itamOrderPendEmail,
+        confirmednewhire: itamConfirmedNewhire,
+        poordernum: itamPOOrder,
+        dellordernum: itamDellOrder,
+        dellemailnotif: itamDellEmailNotif,
+        itamowner: itamOwner
+      }
+    }
+
+    const createTech = {
+      create: {
+        status: techStatus,
+        confirmeduser: techConfirmedUser,
+        costcenter: techCostCenter,
+        servicetag: techServiceTag,
+        initialemailsent: techEmailPCSent,
+        followupemailsent: techFollowupEmail,
+        datefollowuptemp: techDateFollowupTemp,
+        datecompleted: techDateSetupCompleted,
+        techowner: techOwner
+      }
+    }
 
     return (
       <Styles>
@@ -304,7 +362,29 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="orderNum">Order #</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Natural Number" aria-label="Order Number" aria-describedby="orderNum" value={orderid} onChange={e=>this.toValidFloat(e.target.value,"ID")} style={{boxShadow: `${this.state.isValidID ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control" placeholder="Natural Number" aria-label="Order Number" aria-describedby="orderNum" disabled value={orderid} onChange={e=>this.toValidFloat(e.target.value,"ID")}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="orderItem">Order Item</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Order Item" aria-label="Order Item" aria-describedby="orderItem" value={item} onChange={e=>this.setState({item: e.target.value})}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="orderCategory">Order Category</label>
+                </div>
+                <select class="custom-select" id="orderCategory" onChange={e=>this.setState({orderCategory:e.target.value})}>
+                  <option value="New Order" selected>New Order</option>
+                  <option value="Accessory">Accessory</option>
+                  <option value="New Hire">New Hire</option>
+                  <option value="Priority Deployment">Priority Deployment</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
               </div>
             </div>
             <div class="col-sm-4">
@@ -312,7 +392,7 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dateCreated">Date Created</span>
                 </div>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated" value={dateCreated} onChange={e=>this.toValidDate(e.target.value, "dateCreated")} style={{boxShadow: `${this.state.isValidCreated ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateCreated" value={dateCreated} onChange={e=>this.toValidDate(e.target.value, "dateCreated")} style={{boxShadow: `${this.state.isValidCreated ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -320,7 +400,7 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dateApproved">Date Approved</span>
                 </div>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={dateApproved} onChange={e=>this.toValidDate(e.target.value, "dateApproved")} style={{boxShadow: `${this.state.isValidApproved ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={dateApproved} onChange={e=>this.toValidDate(e.target.value, "dateApproved")} style={{boxShadow: `${this.state.isValidApproved ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -336,7 +416,7 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="createdByEmail">Created By Email</span>
                 </div>
-                <input type="text" class="form-control" placeholder="***@email.com" aria-label="Created By Email" aria-describedby="createdByEmail" value={createdByEmail} onChange={e=>this.validateEmail(e.target.value)} style={{boxShadow: `${this.state.isValidEmail ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control" placeholder="***@email.com" aria-label="Created By Email" aria-describedby="createdByEmail" value={createdByEmail} onChange={e=>this.validateEmail(e.target.value)} style={{boxShadow: `${this.state.isValidEmail ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -358,18 +438,6 @@ class CreateOrder extends React.Component {
               </div>
             </div>
             <div class="col-sm-4" style={{display: `${!this.state.isNotNewHire ? "inline":"none"}`}}>
-               <Fade in={!this.state.isNotNewHire}>
-                <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="hireDate">Hire Date</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireDate" disabled={this.state.isNotNewHire} value={hireDate} onChange={e=>this.toValidDate(e.target.value, "hireDate")} style={{boxShadow: `${this.state.isValidHire ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
-                  </div>
-                </div>
-              </Fade>
-            </div>
-            <div class="col-sm-4" style={{display: `${!this.state.isNotNewHire ? "inline":"none"}`}}>
               <Fade in={!this.state.isNotNewHire}>
                 <div>
                   <div class="input-group mb-3">
@@ -388,7 +456,7 @@ class CreateOrder extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="hireStartDate">Hire Start Date</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireStartDate" disabled={this.state.isNotNewHire} value={hireStartDate} onChange={e=>this.toValidDate(e.target.value, "hireStartDate")} style={{boxShadow: `${this.state.isValidStartDate ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="hireStartDate" disabled={this.state.isNotNewHire} value={hireStartDate} onChange={e=>this.toValidDate(e.target.value, "hireStartDate")} style={{boxShadow: `${this.state.isValidStartDate ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
                   </div>
                 </div>
               </Fade>
@@ -400,7 +468,7 @@ class CreateOrder extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="sla">SLA</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="sla" disabled={this.state.isNotNewHire}/>
+                    <input type="text" class="form-control" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="sla" disabled={this.state.isNotNewHire} value={sla} onChange={e=>this.toValidFloat(e.target.value,"sla")}/>
                   </div>
                 </div>
               </Fade>
@@ -440,63 +508,60 @@ class CreateOrder extends React.Component {
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="orderItem">Order Item</span>
-                </div>
-                <input type="text" class="form-control" placeholder="Order Item" aria-label="Order Item" aria-describedby="orderItem" value={item} onChange={e=>this.setState({item: e.target.value})}/>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
                   <span class="input-group-text" id="orderTotal">Order Total $</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal" value={total} onChange={e=>this.toValidFloat(e.target.value,"Total")}/>
+                <input type="text" class="form-control" placeholder="Order Total" aria-label="Order Total" aria-describedby="orderTotal" value={total} onChange={e=>this.toValidFloat(e.target.value,"Total")} onBlur={e=>this.toCashMoney(e.target.value)}/>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" for="inputGroupSelect01">Item Type</label>
+                  <label class="input-group-text" for="ITAMStatus">ITAM Status</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect01" value={itemType} onChange={e=>this.setState({itemType: e.target.value})}>
-                  <option selected>Choose...</option>
-                  <option value="PC">PC</option>
-                  <option value="Accessory">Accessory</option>
+                <select class="custom-select" id="ITAMStatus" onChange={e=>this.setState({itamStatus:e.target.value})}>
+                  <option value="New" selected>New</option>
+                  <option value="Emailed">Emailed</option>
                 </select>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="ITAMStatus">ITAM Status</span>
+                  <label class="input-group-text" for="ITAMName">ITAM Name</label>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder="ITAM Status" aria-label="ITAM Status" aria-describedby="ITAMStatus" value={itamStatus} onChange={e=>this.setState({itamStatus: e.target.value})}/>
+                <Query query={QUERY_USERS}>
+                  {({loading, error, data}) => {
+                    if (loading) return <select class="custom-select" id="ITAMName">Fetching</select>
+                    if (error) return <select class="custom-select" id="ITAMName">Error</select>
+                    const usersToRender = data.users
+                    return(
+                      <select class="custom-select" id="ITAMName" onChange={e=>this.setState({itamName:e.target.value})}>
+                      {usersToRender.slice(0).map(user => <option value={user.name}>{user.name}</option>)}
+                      </select>
+                    )
+                  }}
+                </Query>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="ITAMName">ITAM Name</span>
+                  <span class="input-group-text" id="dateApproved">Verification Email</span>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder="ITAM Name" aria-label="ITAM Name" aria-describedby="ITAMName" value={itamName} onChange={e=>this.setState({itamName: e.target.value})}/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateApproved" value={itamVerifEmail} onChange={e=>this.toValidDate(e.target.value, "verificationEmail")} style={{boxShadow: `${this.state.isValidVerifEmail ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <input type="checkbox" id="verificationSent" aria-label="Verification Email Sent" onClick={this.verifEmailToggle}/>
-                  </div>
+                  <label class="input-group-text" for="productSource">Product Source</label>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder ="Verification Email Sent?" aria-label="Verification Email Sent" disabled/>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="productSource">Product Source</span>
-                </div>
-                <input type="text" class="form-control ITAMInput" placeholder="Emerge/Dell etc." aria-label="Emerge/Dell etc." aria-describedby="productSource" value={itamProductSource} onChange={e=>this.setState({itamProductSource: e.target.value})}/>
+                <select class="custom-select" id="productSource" onChange={e=>this.setState({itamProductSource:e.target.value})}>
+                  <option value="" Selected>Select...</option>
+                  <option value="Inhouse">Inhouse</option>
+                  <option value="Emerge">Emerge</option>
+                  <option value="Dell">Dell</option>
+                </select>
               </div>
             </div>
             <div class="col-sm-4">
@@ -542,9 +607,9 @@ class CreateOrder extends React.Component {
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="orderPendEmail">Order Pending Email</span>
+                  <span class="input-group-text" id="orderPendEmail">Order Pending Followup</span>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="orderPendEmail" value={itamOrderPendEmail} onChange={e=>this.toValidDate(e.target.value, "orderPendEmail")} style={{boxShadow: `${this.state.isValidPendEmail ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control ITAMInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="orderPendEmail" value={itamOrderPendEmail} onChange={e=>this.toValidDate(e.target.value, "orderPendEmail")} style={{boxShadow: `${this.state.isValidPendEmail ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4" style={{display: `${!this.state.isNotNewHire ? "inline":"none"}`}}>
@@ -554,7 +619,7 @@ class CreateOrder extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="confirmedNewHire">Confirmed as Newhire</span>
                     </div>
-                    <input type="text" class="form-control ITAMInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="confirmedNewHire" disabled={this.state.isNotNewHire} value={itamConfirmedNewhire} onChange={e=>this.toValidDate(e.target.value, "confirmedNewHire")} style={{boxShadow: `${this.state.isValidPendEmail ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                    <input type="text" class="form-control ITAMInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="confirmedNewHire" disabled={this.state.isNotNewHire} value={itamConfirmedNewhire} onChange={e=>this.toValidDate(e.target.value, "confirmedNewHire")} style={{boxShadow: `${this.state.isValidConfirmedHireDate ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
                   </div>
                 </div>
               </Fade>
@@ -564,7 +629,7 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="PONumber">PO/Order #</span>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="PONumber" value={itamPOOrder} onChange={e=>this.setState({itamPOOrder: e.target.value})}/>
+                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="PONumber" value={itamPOOrder} onChange={e=>this.toValidFloat(e.target.value,"POOrderNum")}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -572,33 +637,47 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="dellOrderNum">Dell Order #</span>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="dellOrderNum" value={itamDellOrder} onChange={e=>this.setState({itamDellOrder: e.target.value})}/>
+                <input type="text" class="form-control ITAMInput" placeholder="Natural Number" aria-label="Natural Number" aria-describedby="dellOrderNum" value={itamDellOrder} onChange={e=>this.toValidFloat(e.target.value,"DellOrderNum")}/>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <input type="checkbox" id="dellEmailNotif" aria-label="Dell Email Notification Sent?" onClick={this.dellEmailNotifToggle}/>
-                  </div>
+                  <span class="input-group-text" id="dellEmailNotif">Dell Email Notification</span>
                 </div>
-                <input type="text" class="form-control ITAMInput" placeholder ="Dell Email Notification Sent?" aria-label="dellEmailNotif" disabled/>
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dellEmailNotif" value={itamDellEmailNotif} onChange={e=>this.toValidDate(e.target.value, "EmailNotif")} style={{boxShadow: `${this.state.isValidEmailNotif ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="techOwner">Tech Owner</span>
+                  <label class="input-group-text" for="techName">Tech Name</label>
                 </div>
-                <input type="text" class="form-control techInput" placeholder="Tech Name" aria-label="Tech Status" aria-describedby="Tech Name" value={techName} onChange={e=>this.setState({techName : e.target.value})}/>
+                <Query query={QUERY_USERS}>
+                  {({loading, error, data}) => {
+                    if (loading) return <select class="custom-select" id="techName">Fetching</select>
+                    if (error) return <select class="custom-select" id="techName">Error</select>
+                    const usersToRender = data.users
+                    return(
+                      <select class="custom-select" id="techName" onChange={e=>this.setState({techName:e.target.value})}>
+                      {usersToRender.slice(0).map(user => <option value={user.name}>{user.name}</option>)}
+                      </select>
+                    )
+                  }}
+                </Query>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="techStatus">Tech Status</span>
+                  <label class="input-group-text" for="techStatus">Tech Status</label>
                 </div>
-                <input type="text" class="form-control techInput" placeholder="Tech Status" aria-label="Tech Status" aria-describedby="techStatus" value={techStatus} onChange={e=>this.setState({techStatus : e.target.value})}/>
+                <select class="custom-select" id="techStatus" onChange={e=>this.setState({techStatus:e.target.value})}>
+                  <option value ="Not Started" selected>Not Started</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Shipped to User">Shipped to User</option>
+                  <option value="Done">Done</option>
+                </select>
               </div>
             </div>
             <div class="col-sm-4">
@@ -630,15 +709,15 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="techEmailSent">Email/PC Sent</span>
                 </div>
-                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="techEmailSent" value={techEmailPCSent} onChange={e=>this.toValidDate(e.target.value, "EmailPCSent")} style={{boxShadow: `${this.state.isValidPCEmailDate ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="techEmailSent" value={techEmailPCSent} onChange={e=>this.toValidDate(e.target.value, "EmailPCSent")} style={{boxShadow: `${this.state.isValidPCEmailDate ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="techFollowupEmail">Tech Followup Email Sent</span>
+                  <span class="input-group-text" id="dateFollowupTemp2">Date Followup Template #2</span>
                 </div>
-                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="techFollowupEmail" value={techFollowupEmail} onChange={e=>this.toValidDate(e.target.value, "FollowupEmail")} style={{boxShadow: `${this.state.isValidFollowupEmail ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="dateFollowupTemp2" value={techDateFollowupTemp} onChange={e=>this.toValidDate(e.target.value, "DateFollowupTemp")} style={{boxShadow: `${this.state.isValidDateFollowup ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -646,7 +725,15 @@ class CreateOrder extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="setupComplete">Date Setup Completed</span>
                 </div>
-                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="setupComplete" value={techDateSetupCompleted} onChange={e=>this.toValidDate(e.target.value, "SetupCompleted")} style={{boxShadow: `${this.state.isValidDateSetupCompleted ? "0px 0px 2px 3px rgba(0, 230, 64, 0.5)":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="setupComplete" value={techDateSetupCompleted} onChange={e=>this.toValidDate(e.target.value, "SetupCompleted")} style={{boxShadow: `${this.state.isValidDateSetupCompleted ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="techFollowupEmail">Tech Followup Template #3</span>
+                </div>
+                <input type="text" class="form-control techInput" placeholder="YYYY-MM-DD" aria-label="YYYY-MM-DD" aria-describedby="techFollowupEmail" value={techFollowupEmail} onChange={e=>this.toValidDate(e.target.value, "FollowupEmail")} style={{boxShadow: `${this.state.isValidFollowupEmail ? "":"0px 0px 2px 3px rgba(242, 38, 19, 0.5)"}`}}/>
               </div>
             </div>
             <div class="col-sm-12">
@@ -668,17 +755,21 @@ class CreateOrder extends React.Component {
                 createdbyemail: createdByEmail,
                 recipient: recipient,
                 newhire: newHire,
-                hiredate: hireDate,
                 hirename: hireName,
+                hirestartdate: hireStartDate,
                 approvalmanager: approvalManager,
                 businessunit: businessUnit,
                 attention: attention,
                 shippingaddress: shippingAddress,
                 items: item,
                 total: total,
+                sla: sla,
+                ordercategory: orderCategory,
                 comments: comments,
-                }}>
-                {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); window.location.reload();}} disabled={!(this.state.isValidID * this.state.isValidCreated * this.state.isValidApproved * this.state.isValidHire * this.state.isValidEmail * this.state.isValidStartDate * this.state.isValidPendEmail * this.state.isValidConfirmedHireDate * this.state.isValidPCEmailDate * this.state.isValidFollowupEmail * this.state.isValidDateSetupCompleted)}>Create</button>}
+                itam: createITAM,
+                tech: createTech
+              }}>
+                {createOrder => <button type="button" class="btn btn-success" onClick={() =>{console.log(createITAM);this.setState({buttonClicked: true}); createOrder(); window.location.reload();}} disabled={!(this.state.isValidID * this.state.isValidCreated * this.state.isValidApproved * this.state.isValidVerifEmail  * this.state.isValidEmail * this.state.isValidStartDate * this.state.isValidPendEmail * this.state.isValidConfirmedHireDate * this.state.isValidPCEmailDate * this.state.isValidFollowupEmail * this.state.isValidDateSetupCompleted * this.state.isValidEmailNotif * this.state.isValidDateFollowup * !this.state.buttonClicked)}>Create</button>}
               </Mutation>
             </div>
           </div>

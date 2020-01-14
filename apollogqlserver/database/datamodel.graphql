@@ -7,7 +7,7 @@ type Order{
   createdbyemail: String!
   recipient: String!
   newhire: Boolean @default(value: "false")
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String!
   businessunit: String!
@@ -16,8 +16,7 @@ type Order{
   items: String!
   total: Float!
   comments: String!
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String!
   sla: Int
   itam: ITAMProgress @relation(name: "ITAMOrderProgress" onDelete: CASCADE)
   tech: TechnicianProgress @relation(name: "TechOrderProgress" onDelete: CASCADE)
@@ -33,13 +32,13 @@ type ITAMProgress{
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
 }
 
 type TechnicianProgress{
@@ -47,18 +46,18 @@ type TechnicianProgress{
   order: Order! @relation(name: "TechOrderProgress")
   techowner: User
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
 }
 
 type User{
   id: ID! @unique
-  name: String!
+  name: String! @unique
   itamorders: [ITAMProgress!]!
   techorders: [TechnicianProgress!]!
 }

@@ -9,6 +9,9 @@ const resolvers = {
     orders(parent, args, ctx, info){
       return ctx.db.query.orders({}, info)
     },
+    filteredOrders(parent, args, ctx, info){
+      return ctx.db.query.orders({where: {ordercategory: args.ordercategory}}, info)
+    },
     users(parent, args, ctx, info){
       return ctx.db.query.users({}, info)
     },
@@ -17,20 +20,29 @@ const resolvers = {
     },
   },
   Mutation:{
-    createOrder(parent, {orderid, datecreated, dateapproved, createdby, createdbyemail, recipient, newhire, hirename, hiredate, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, itemtype, userstartdate, sla, itam, tech}, ctx, info){
+    createOrder(parent, {orderid, datecreated, dateapproved, createdby, createdbyemail, recipient, newhire, hirename, hirestartdate, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, ordercategory, sla, itam, tech}, ctx, info){
       return ctx.db.mutation.createOrder(
         {
           data:{
-            orderid, datecreated, dateapproved, createdby, createdbyemail, recipient, newhire, hirename, hiredate, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, itemtype, userstartdate, sla, itam, tech
+            orderid, datecreated, dateapproved, createdby, createdbyemail, recipient, newhire, hirename, hirestartdate, approvalmanager, businessunit, attention, shippingaddress, items, total, comments, ordercategory, sla, itam, tech
           },
         },
         info,
       )
     },
+    createUser(parent, {name}, ctx, info){
+      return ctx.db.mutation.createUser({data: {name}},info)
+    },
     deleteOrder(parent, {id}, ctx, info){
       return ctx.db.mutation.deleteOrder({where: {id}}, info)
     },
-  },
+    deleteUser(parent, {id}, ctx, info){
+      return ctx.db.mutation.deleteUser({where: {id}}, info)
+    },
+    updateUser(parent, {id, name}, ctx, info){
+      return ctx.db.mutation.updateUser({data: {name}, where:{id}, info})
+    }
+  }
 }
 
 const server = new ApolloServer({

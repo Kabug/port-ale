@@ -46,7 +46,7 @@ const Styles = styled.div`
     background-color: #393733;
   }
 
-`
+`;
 
 const CREATE_ORDER = gql`
   mutation createOrder(
@@ -57,7 +57,7 @@ const CREATE_ORDER = gql`
     $createdbyemail: String!,
     $recipient: String!,
     $newhire: Boolean!,
-    $hiredate: DateTime,
+    $hirestartdate: DateTime,
     $hirename: String,
     $approvalmanager: String!,
     $businessunit: String!,
@@ -65,6 +65,7 @@ const CREATE_ORDER = gql`
     $shippingaddress: String!,
     $items: String!,
     $total: Float!,
+    $ordercategory: String!,
     $comments: String!,
     $itam: ITAMProgressCreateOneWithoutOrderInput!,
     $tech: TechnicianProgressCreateOneWithoutOrderInput!,
@@ -77,7 +78,7 @@ const CREATE_ORDER = gql`
       createdbyemail: $createdbyemail,
       recipient: $recipient,
       newhire: $newhire,
-      hiredate: $hiredate,
+      hirestartdate: $hirestartdate,
       hirename: $hirename,
       approvalmanager: $approvalmanager,
       businessunit: $businessunit,
@@ -85,6 +86,7 @@ const CREATE_ORDER = gql`
       shippingaddress: $shippingaddress,
       items: $items,
       total: $total,
+      ordercategory: $ordercategory,
       comments: $comments,
       itam: $itam,
       tech: $tech
@@ -92,7 +94,7 @@ const CREATE_ORDER = gql`
         id
     }
   }
-`
+`;
 
 class Upload extends React.Component{
 
@@ -108,7 +110,8 @@ class Upload extends React.Component{
 
     try{
     //Remove uneeded columns
-    for(var order in tempData){
+    var order;
+    for(order in tempData){
       if(!(data[order]) || data[order][0] === ""){
         data.splice(order, 1);
       }
@@ -119,7 +122,7 @@ class Upload extends React.Component{
 
     //Formatting value types
     var finalOrders = []
-    for(var order in data){
+    for(order in data){
       data[order][0] = parseFloat(data[order][0]);
       data[order][1] = this.formatDate(data[order][1]);
       data[order][2] = this.formatDate(data[order][2]);
@@ -163,9 +166,30 @@ class Upload extends React.Component{
   }
 
   render(){
-    const createNested = {
+
+    const itamOwner = {
+      connect: {
+        name: "Unassigned"
+      }
+    }
+
+    const techOwner = {
+      connect: {
+        name: "Unassigned"
+      }
+    }
+
+    const createITAM = {
       create: {
-        status: "Not Started"
+        status: "Not Started",
+        itamowner: itamOwner
+      }
+    }
+
+    const createTech = {
+      create: {
+        status: "Not Started",
+        techowner: techOwner
       }
     }
     return (
@@ -204,7 +228,7 @@ class Upload extends React.Component{
                   <b>New Hire:</b><br /> {order[6].toString()}
                 </div>
                 <div class="col-sm-3">
-                  <b>Hire Date:</b><br /> {order[7]}
+                  <b>Hire Start Date:</b><br /> {order[7]}
                 </div>
                 <div class="col-sm-3">
                   <b>Hire Name:</b><br /> {order[8]}
@@ -239,7 +263,7 @@ class Upload extends React.Component{
                         createdbyemail: order[4],
                         recipient: order[5],
                         newhire: order[6],
-                        hiredate: order[7],
+                        hirestartdate: order[7],
                         hirename: order[8],
                         approvalmanager: order[9],
                         businessunit: order[10],
@@ -247,9 +271,10 @@ class Upload extends React.Component{
                         shippingaddress: order[12],
                         items: order[13],
                         total: order[14],
+                        ordercategory: "New Order",
                         comments: order[15],
-                        itam: createNested,
-                        tech: createNested
+                        itam: createITAM,
+                        tech: createTech
                   }}>
                     {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); this.removeFromState(index)}}>Submit</button>}
                   </Mutation>

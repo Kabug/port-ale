@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Fri Dec 20 2019 13:10:00 GMT-0800 (Pacific Standard Time)
+# timestamp: Fri Jan 10 2020 13:26:40 GMT-0800 (Pacific Standard Time)
 
 type AggregateITAMProgress {
   count: Int!
@@ -34,13 +34,13 @@ type ITAMProgress implements Node {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
 }
 
 """A connection to a list of items."""
@@ -60,13 +60,13 @@ input ITAMProgressCreateInput {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
   order: OrderCreateOneWithoutItamInput!
   itamowner: UserCreateOneWithoutItamordersInput
 }
@@ -88,13 +88,13 @@ input ITAMProgressCreateWithoutItamownerInput {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
   order: OrderCreateOneWithoutItamInput!
 }
 
@@ -105,13 +105,13 @@ input ITAMProgressCreateWithoutOrderInput {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
   itamowner: UserCreateOneWithoutItamordersInput
 }
 
@@ -167,13 +167,13 @@ type ITAMProgressPreviousValues {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
 }
 
 type ITAMProgressSubscriptionPayload {
@@ -220,13 +220,13 @@ input ITAMProgressUpdateInput {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
   order: OrderUpdateOneWithoutItamInput
   itamowner: UserUpdateOneWithoutItamordersInput
 }
@@ -256,13 +256,13 @@ input ITAMProgressUpdateWithoutItamownerDataInput {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
   order: OrderUpdateOneWithoutItamInput
 }
 
@@ -273,13 +273,13 @@ input ITAMProgressUpdateWithoutOrderDataInput {
   oldassettag: String
   oldmodel: String
   modelofmonitor: String
-  numofmonitor: String
+  numofmonitor: Float
   connectortypes: String
   orderpendingemailsent: DateTime
   confirmednewhire: DateTime
-  poordernum: String
-  dellordernum: String
-  dellemailnotif: String
+  poordernum: Float
+  dellordernum: Float
+  dellemailnotif: DateTime
   itamowner: UserUpdateOneWithoutItamordersInput
 }
 
@@ -570,46 +570,28 @@ input ITAMProgressWhereInput {
 
   """All values not ending with the given string."""
   modelofmonitor_not_ends_with: String
-  numofmonitor: String
+  numofmonitor: Float
 
   """All values that are not equal to given value."""
-  numofmonitor_not: String
+  numofmonitor_not: Float
 
   """All values that are contained in given list."""
-  numofmonitor_in: [String!]
+  numofmonitor_in: [Float!]
 
   """All values that are not contained in given list."""
-  numofmonitor_not_in: [String!]
+  numofmonitor_not_in: [Float!]
 
   """All values less than the given value."""
-  numofmonitor_lt: String
+  numofmonitor_lt: Float
 
   """All values less than or equal the given value."""
-  numofmonitor_lte: String
+  numofmonitor_lte: Float
 
   """All values greater than the given value."""
-  numofmonitor_gt: String
+  numofmonitor_gt: Float
 
   """All values greater than or equal the given value."""
-  numofmonitor_gte: String
-
-  """All values containing the given string."""
-  numofmonitor_contains: String
-
-  """All values not containing the given string."""
-  numofmonitor_not_contains: String
-
-  """All values starting with the given string."""
-  numofmonitor_starts_with: String
-
-  """All values not starting with the given string."""
-  numofmonitor_not_starts_with: String
-
-  """All values ending with the given string."""
-  numofmonitor_ends_with: String
-
-  """All values not ending with the given string."""
-  numofmonitor_not_ends_with: String
+  numofmonitor_gte: Float
   connectortypes: String
 
   """All values that are not equal to given value."""
@@ -694,126 +676,72 @@ input ITAMProgressWhereInput {
 
   """All values greater than or equal the given value."""
   confirmednewhire_gte: DateTime
-  poordernum: String
+  poordernum: Float
 
   """All values that are not equal to given value."""
-  poordernum_not: String
+  poordernum_not: Float
 
   """All values that are contained in given list."""
-  poordernum_in: [String!]
+  poordernum_in: [Float!]
 
   """All values that are not contained in given list."""
-  poordernum_not_in: [String!]
+  poordernum_not_in: [Float!]
 
   """All values less than the given value."""
-  poordernum_lt: String
+  poordernum_lt: Float
 
   """All values less than or equal the given value."""
-  poordernum_lte: String
+  poordernum_lte: Float
 
   """All values greater than the given value."""
-  poordernum_gt: String
+  poordernum_gt: Float
 
   """All values greater than or equal the given value."""
-  poordernum_gte: String
-
-  """All values containing the given string."""
-  poordernum_contains: String
-
-  """All values not containing the given string."""
-  poordernum_not_contains: String
-
-  """All values starting with the given string."""
-  poordernum_starts_with: String
-
-  """All values not starting with the given string."""
-  poordernum_not_starts_with: String
-
-  """All values ending with the given string."""
-  poordernum_ends_with: String
-
-  """All values not ending with the given string."""
-  poordernum_not_ends_with: String
-  dellordernum: String
+  poordernum_gte: Float
+  dellordernum: Float
 
   """All values that are not equal to given value."""
-  dellordernum_not: String
+  dellordernum_not: Float
 
   """All values that are contained in given list."""
-  dellordernum_in: [String!]
+  dellordernum_in: [Float!]
 
   """All values that are not contained in given list."""
-  dellordernum_not_in: [String!]
+  dellordernum_not_in: [Float!]
 
   """All values less than the given value."""
-  dellordernum_lt: String
+  dellordernum_lt: Float
 
   """All values less than or equal the given value."""
-  dellordernum_lte: String
+  dellordernum_lte: Float
 
   """All values greater than the given value."""
-  dellordernum_gt: String
+  dellordernum_gt: Float
 
   """All values greater than or equal the given value."""
-  dellordernum_gte: String
-
-  """All values containing the given string."""
-  dellordernum_contains: String
-
-  """All values not containing the given string."""
-  dellordernum_not_contains: String
-
-  """All values starting with the given string."""
-  dellordernum_starts_with: String
-
-  """All values not starting with the given string."""
-  dellordernum_not_starts_with: String
-
-  """All values ending with the given string."""
-  dellordernum_ends_with: String
-
-  """All values not ending with the given string."""
-  dellordernum_not_ends_with: String
-  dellemailnotif: String
+  dellordernum_gte: Float
+  dellemailnotif: DateTime
 
   """All values that are not equal to given value."""
-  dellemailnotif_not: String
+  dellemailnotif_not: DateTime
 
   """All values that are contained in given list."""
-  dellemailnotif_in: [String!]
+  dellemailnotif_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  dellemailnotif_not_in: [String!]
+  dellemailnotif_not_in: [DateTime!]
 
   """All values less than the given value."""
-  dellemailnotif_lt: String
+  dellemailnotif_lt: DateTime
 
   """All values less than or equal the given value."""
-  dellemailnotif_lte: String
+  dellemailnotif_lte: DateTime
 
   """All values greater than the given value."""
-  dellemailnotif_gt: String
+  dellemailnotif_gt: DateTime
 
   """All values greater than or equal the given value."""
-  dellemailnotif_gte: String
-
-  """All values containing the given string."""
-  dellemailnotif_contains: String
-
-  """All values not containing the given string."""
-  dellemailnotif_not_contains: String
-
-  """All values starting with the given string."""
-  dellemailnotif_starts_with: String
-
-  """All values not starting with the given string."""
-  dellemailnotif_not_starts_with: String
-
-  """All values ending with the given string."""
-  dellemailnotif_ends_with: String
-
-  """All values not ending with the given string."""
-  dellemailnotif_not_ends_with: String
+  dellemailnotif_gte: DateTime
   order: OrderWhereInput
   itamowner: UserWhereInput
 }
@@ -876,7 +804,7 @@ type Order implements Node {
   createdbyemail: String!
   recipient: String!
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String!
   businessunit: String!
@@ -885,8 +813,7 @@ type Order implements Node {
   items: String!
   total: Float!
   comments: String!
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String!
   sla: Int
   itam(where: ITAMProgressWhereInput): ITAMProgress
   tech(where: TechnicianProgressWhereInput): TechnicianProgress
@@ -910,7 +837,7 @@ input OrderCreateInput {
   createdbyemail: String!
   recipient: String!
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String!
   businessunit: String!
@@ -919,8 +846,7 @@ input OrderCreateInput {
   items: String!
   total: Float!
   comments: String!
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String!
   sla: Int
   itam: ITAMProgressCreateOneWithoutOrderInput
   tech: TechnicianProgressCreateOneWithoutOrderInput
@@ -944,7 +870,7 @@ input OrderCreateWithoutItamInput {
   createdbyemail: String!
   recipient: String!
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String!
   businessunit: String!
@@ -953,8 +879,7 @@ input OrderCreateWithoutItamInput {
   items: String!
   total: Float!
   comments: String!
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String!
   sla: Int
   tech: TechnicianProgressCreateOneWithoutOrderInput
 }
@@ -967,7 +892,7 @@ input OrderCreateWithoutTechInput {
   createdbyemail: String!
   recipient: String!
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String!
   businessunit: String!
@@ -976,8 +901,7 @@ input OrderCreateWithoutTechInput {
   items: String!
   total: Float!
   comments: String!
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String!
   sla: Int
   itam: ITAMProgressCreateOneWithoutOrderInput
 }
@@ -1008,8 +932,8 @@ enum OrderOrderByInput {
   recipient_DESC
   newhire_ASC
   newhire_DESC
-  hiredate_ASC
-  hiredate_DESC
+  hirestartdate_ASC
+  hirestartdate_DESC
   hirename_ASC
   hirename_DESC
   approvalmanager_ASC
@@ -1026,10 +950,8 @@ enum OrderOrderByInput {
   total_DESC
   comments_ASC
   comments_DESC
-  itemtype_ASC
-  itemtype_DESC
-  userstartdate_ASC
-  userstartdate_DESC
+  ordercategory_ASC
+  ordercategory_DESC
   sla_ASC
   sla_DESC
   updatedAt_ASC
@@ -1047,7 +969,7 @@ type OrderPreviousValues {
   createdbyemail: String!
   recipient: String!
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String!
   businessunit: String!
@@ -1056,8 +978,7 @@ type OrderPreviousValues {
   items: String!
   total: Float!
   comments: String!
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String!
   sla: Int
 }
 
@@ -1106,7 +1027,7 @@ input OrderUpdateInput {
   createdbyemail: String
   recipient: String
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String
   businessunit: String
@@ -1115,8 +1036,7 @@ input OrderUpdateInput {
   items: String
   total: Float
   comments: String
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String
   sla: Int
   itam: ITAMProgressUpdateOneWithoutOrderInput
   tech: TechnicianProgressUpdateOneWithoutOrderInput
@@ -1146,7 +1066,7 @@ input OrderUpdateWithoutItamDataInput {
   createdbyemail: String
   recipient: String
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String
   businessunit: String
@@ -1155,8 +1075,7 @@ input OrderUpdateWithoutItamDataInput {
   items: String
   total: Float
   comments: String
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String
   sla: Int
   tech: TechnicianProgressUpdateOneWithoutOrderInput
 }
@@ -1169,7 +1088,7 @@ input OrderUpdateWithoutTechDataInput {
   createdbyemail: String
   recipient: String
   newhire: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
   hirename: String
   approvalmanager: String
   businessunit: String
@@ -1178,8 +1097,7 @@ input OrderUpdateWithoutTechDataInput {
   items: String
   total: Float
   comments: String
-  itemtype: String
-  userstartdate: DateTime
+  ordercategory: String
   sla: Int
   itam: ITAMProgressUpdateOneWithoutOrderInput
 }
@@ -1433,28 +1351,28 @@ input OrderWhereInput {
 
   """All values that are not equal to given value."""
   newhire_not: Boolean
-  hiredate: DateTime
+  hirestartdate: DateTime
 
   """All values that are not equal to given value."""
-  hiredate_not: DateTime
+  hirestartdate_not: DateTime
 
   """All values that are contained in given list."""
-  hiredate_in: [DateTime!]
+  hirestartdate_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  hiredate_not_in: [DateTime!]
+  hirestartdate_not_in: [DateTime!]
 
   """All values less than the given value."""
-  hiredate_lt: DateTime
+  hirestartdate_lt: DateTime
 
   """All values less than or equal the given value."""
-  hiredate_lte: DateTime
+  hirestartdate_lte: DateTime
 
   """All values greater than the given value."""
-  hiredate_gt: DateTime
+  hirestartdate_gt: DateTime
 
   """All values greater than or equal the given value."""
-  hiredate_gte: DateTime
+  hirestartdate_gte: DateTime
   hirename: String
 
   """All values that are not equal to given value."""
@@ -1757,68 +1675,46 @@ input OrderWhereInput {
 
   """All values not ending with the given string."""
   comments_not_ends_with: String
-  itemtype: String
+  ordercategory: String
 
   """All values that are not equal to given value."""
-  itemtype_not: String
+  ordercategory_not: String
 
   """All values that are contained in given list."""
-  itemtype_in: [String!]
+  ordercategory_in: [String!]
 
   """All values that are not contained in given list."""
-  itemtype_not_in: [String!]
+  ordercategory_not_in: [String!]
 
   """All values less than the given value."""
-  itemtype_lt: String
+  ordercategory_lt: String
 
   """All values less than or equal the given value."""
-  itemtype_lte: String
+  ordercategory_lte: String
 
   """All values greater than the given value."""
-  itemtype_gt: String
+  ordercategory_gt: String
 
   """All values greater than or equal the given value."""
-  itemtype_gte: String
+  ordercategory_gte: String
 
   """All values containing the given string."""
-  itemtype_contains: String
+  ordercategory_contains: String
 
   """All values not containing the given string."""
-  itemtype_not_contains: String
+  ordercategory_not_contains: String
 
   """All values starting with the given string."""
-  itemtype_starts_with: String
+  ordercategory_starts_with: String
 
   """All values not starting with the given string."""
-  itemtype_not_starts_with: String
+  ordercategory_not_starts_with: String
 
   """All values ending with the given string."""
-  itemtype_ends_with: String
+  ordercategory_ends_with: String
 
   """All values not ending with the given string."""
-  itemtype_not_ends_with: String
-  userstartdate: DateTime
-
-  """All values that are not equal to given value."""
-  userstartdate_not: DateTime
-
-  """All values that are contained in given list."""
-  userstartdate_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  userstartdate_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  userstartdate_lt: DateTime
-
-  """All values less than or equal the given value."""
-  userstartdate_lte: DateTime
-
-  """All values greater than the given value."""
-  userstartdate_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  userstartdate_gte: DateTime
+  ordercategory_not_ends_with: String
   sla: Int
 
   """All values that are not equal to given value."""
@@ -1897,11 +1793,11 @@ type TechnicianProgress implements Node {
   order(where: OrderWhereInput): Order!
   techowner(where: UserWhereInput): User
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
 }
@@ -1918,11 +1814,11 @@ type TechnicianProgressConnection {
 
 input TechnicianProgressCreateInput {
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
   order: OrderCreateOneWithoutTechInput!
@@ -1941,11 +1837,11 @@ input TechnicianProgressCreateOneWithoutOrderInput {
 
 input TechnicianProgressCreateWithoutOrderInput {
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
   techowner: UserCreateOneWithoutTechordersInput
@@ -1953,11 +1849,11 @@ input TechnicianProgressCreateWithoutOrderInput {
 
 input TechnicianProgressCreateWithoutTechownerInput {
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
   order: OrderCreateOneWithoutTechInput!
@@ -1977,8 +1873,6 @@ enum TechnicianProgressOrderByInput {
   id_DESC
   status_ASC
   status_DESC
-  attention_ASC
-  attention_DESC
   confirmeduser_ASC
   confirmeduser_DESC
   costcenter_ASC
@@ -1987,6 +1881,8 @@ enum TechnicianProgressOrderByInput {
   servicetag_DESC
   initialemailsent_ASC
   initialemailsent_DESC
+  datefollowuptemp_ASC
+  datefollowuptemp_DESC
   followupemailsent_ASC
   followupemailsent_DESC
   datecompleted_ASC
@@ -2000,11 +1896,11 @@ enum TechnicianProgressOrderByInput {
 type TechnicianProgressPreviousValues {
   id: ID!
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
 }
@@ -2048,11 +1944,11 @@ input TechnicianProgressSubscriptionWhereInput {
 
 input TechnicianProgressUpdateInput {
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
   order: OrderUpdateOneWithoutTechInput
@@ -2079,11 +1975,11 @@ input TechnicianProgressUpdateOneWithoutOrderInput {
 
 input TechnicianProgressUpdateWithoutOrderDataInput {
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
   techowner: UserUpdateOneWithoutTechordersInput
@@ -2091,11 +1987,11 @@ input TechnicianProgressUpdateWithoutOrderDataInput {
 
 input TechnicianProgressUpdateWithoutTechownerDataInput {
   status: String
-  attention: String
   confirmeduser: String
   costcenter: String
   servicetag: String
   initialemailsent: DateTime
+  datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
   order: OrderUpdateOneWithoutTechInput
@@ -2206,46 +2102,6 @@ input TechnicianProgressWhereInput {
 
   """All values not ending with the given string."""
   status_not_ends_with: String
-  attention: String
-
-  """All values that are not equal to given value."""
-  attention_not: String
-
-  """All values that are contained in given list."""
-  attention_in: [String!]
-
-  """All values that are not contained in given list."""
-  attention_not_in: [String!]
-
-  """All values less than the given value."""
-  attention_lt: String
-
-  """All values less than or equal the given value."""
-  attention_lte: String
-
-  """All values greater than the given value."""
-  attention_gt: String
-
-  """All values greater than or equal the given value."""
-  attention_gte: String
-
-  """All values containing the given string."""
-  attention_contains: String
-
-  """All values not containing the given string."""
-  attention_not_contains: String
-
-  """All values starting with the given string."""
-  attention_starts_with: String
-
-  """All values not starting with the given string."""
-  attention_not_starts_with: String
-
-  """All values ending with the given string."""
-  attention_ends_with: String
-
-  """All values not ending with the given string."""
-  attention_not_ends_with: String
   confirmeduser: String
 
   """All values that are not equal to given value."""
@@ -2388,6 +2244,28 @@ input TechnicianProgressWhereInput {
 
   """All values greater than or equal the given value."""
   initialemailsent_gte: DateTime
+  datefollowuptemp: DateTime
+
+  """All values that are not equal to given value."""
+  datefollowuptemp_not: DateTime
+
+  """All values that are contained in given list."""
+  datefollowuptemp_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  datefollowuptemp_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  datefollowuptemp_lt: DateTime
+
+  """All values less than or equal the given value."""
+  datefollowuptemp_lte: DateTime
+
+  """All values greater than the given value."""
+  datefollowuptemp_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  datefollowuptemp_gte: DateTime
   followupemailsent: DateTime
 
   """All values that are not equal to given value."""
@@ -2688,4 +2566,5 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  name: String
 }

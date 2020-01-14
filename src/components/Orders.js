@@ -42,19 +42,15 @@ const Styles = styled.div`
       box-shadow: 0px 0px 2px 3px rgba(0, 105, 217, 0.3)
     }
   }
-`
+`;
 
 const DELETE_ORDER = gql`
-  mutation deleteOrder(
-    $id: ID!,
-  ) {
-    deleteOrder(
-      id: $id,
-    ) {
+  mutation deleteOrder($id: ID!) {
+    deleteOrder(id: $id) {
       id
     }
   }
-`
+`;
 
 class Orders extends React.Component {
   constructor(props) {
@@ -86,7 +82,6 @@ class Orders extends React.Component {
   }
 
   hideOrder = () => {
-    console.log("Test")
     this.setState({orderHidden: true})
   }
 
@@ -101,6 +96,29 @@ class Orders extends React.Component {
                   <span class="input-group-text" id="orderNum">Order #</span>
                 </div>
                 <input type="text" class="form-control" placeholder="Order Number" aria-label="Order Number" aria-describedby="orderNum" value={this.props.orders.orderid}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="orderItem">Order Item</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Order Item" aria-label="Order Item" aria-describedby="orderItem" value={this.props.orders.items}/>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="orderCategory">Order Category</label>
+                </div>
+                <select class="custom-select" id="orderCategory" value={this.props.orders.ordercategory}>
+                  <option value="New Order">New Order</option>
+                  <option value="Accessory">Accessory</option>
+                  <option value="New Hire">New Hire</option>
+                  <option value="Accessory">Accessory</option>
+                  <option value="Priority Deployment">Priority Deployment</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
               </div>
             </div>
             <div class="col-sm-4">
@@ -217,12 +235,12 @@ class Orders extends React.Component {
                 <input type="text" class="form-control" placeholder="Business Unit" aria-label="Business Unit" aria-describedby="bussUnit" value={this.props.orders.businessunit}/>
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4" class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="attention">Attention</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="attention" value={this.props.orders.attention}/>
+                <input type="text" class="form-control techInput" placeholder="Firstname  Lastname" aria-label="Firstname  Lastname" aria-describedby="attention" value={this.props.orders.attention}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -231,14 +249,6 @@ class Orders extends React.Component {
                   <span class="input-group-text" id="shipAddress">Shipping Address</span>
                 </div>
                 <input type="text" class="form-control" placeholder="Street, City, Province,  Postal" aria-label="Street, City, Province,  Postal" aria-describedby="shipAddress" value={this.props.orders.shippingaddress}/>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="orderItem">Order Item</span>
-                </div>
-                <input type="text" class="form-control" placeholder="Order Item" aria-label="Order Item" aria-describedby="orderItem" value={this.props.orders.items}/>
               </div>
             </div>
             <div class="col-sm-4">
@@ -283,7 +293,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="ITAMName">ITAM Name</span>
                     </div>
-                    <input type="text" class="form-control ITAMInput" placeholder="ITAM Name" aria-label="ITAM Name" aria-describedby="ITAMName"/>
+                    <input type="text" class="form-control ITAMInput" placeholder="ITAM Name" aria-label="ITAM Name" aria-describedby="ITAMName" value={this.props.orders.itam.itamowner.name}/>
                   </div>
                 </div>
               </Fade>
@@ -448,7 +458,7 @@ class Orders extends React.Component {
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="techOwner">Tech Owner</span>
                     </div>
-                    <input type="text" class="form-control techInput" placeholder="Tech Name" aria-label="Tech Status" aria-describedby="Tech Name"/>
+                    <input type="text" class="form-control techInput" placeholder="Tech Name" aria-label="Tech Status" aria-describedby="Tech Name" value={this.props.orders.tech.techowner.name}/>
                   </div>
                 </div>
               </Fade>

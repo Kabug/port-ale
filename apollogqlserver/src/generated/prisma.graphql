@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Fri Jan 10 2020 13:26:40 GMT-0800 (Pacific Standard Time)
+# timestamp: Mon Jan 27 2020 12:53:37 GMT-0800 (Pacific Standard Time)
 
 type AggregateITAMProgress {
   count: Int!
@@ -243,7 +243,6 @@ input ITAMProgressUpdateManyWithoutItamownerInput {
 input ITAMProgressUpdateOneWithoutOrderInput {
   create: ITAMProgressCreateWithoutOrderInput
   connect: ITAMProgressWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
   update: ITAMProgressUpdateWithoutOrderDataInput
   upsert: ITAMProgressUpsertWithoutOrderInput
@@ -815,8 +814,8 @@ type Order implements Node {
   comments: String!
   ordercategory: String!
   sla: Int
-  itam(where: ITAMProgressWhereInput): ITAMProgress
-  tech(where: TechnicianProgressWhereInput): TechnicianProgress
+  itam(where: ITAMProgressWhereInput): ITAMProgress!
+  tech(where: TechnicianProgressWhereInput): TechnicianProgress!
 }
 
 """A connection to a list of items."""
@@ -848,8 +847,8 @@ input OrderCreateInput {
   comments: String!
   ordercategory: String!
   sla: Int
-  itam: ITAMProgressCreateOneWithoutOrderInput
-  tech: TechnicianProgressCreateOneWithoutOrderInput
+  itam: ITAMProgressCreateOneWithoutOrderInput!
+  tech: TechnicianProgressCreateOneWithoutOrderInput!
 }
 
 input OrderCreateOneWithoutItamInput {
@@ -881,7 +880,7 @@ input OrderCreateWithoutItamInput {
   comments: String!
   ordercategory: String!
   sla: Int
-  tech: TechnicianProgressCreateOneWithoutOrderInput
+  tech: TechnicianProgressCreateOneWithoutOrderInput!
 }
 
 input OrderCreateWithoutTechInput {
@@ -903,7 +902,7 @@ input OrderCreateWithoutTechInput {
   comments: String!
   ordercategory: String!
   sla: Int
-  itam: ITAMProgressCreateOneWithoutOrderInput
+  itam: ITAMProgressCreateOneWithoutOrderInput!
 }
 
 """An edge in a connection."""
@@ -1053,6 +1052,7 @@ input OrderUpdateOneWithoutItamInput {
 input OrderUpdateOneWithoutTechInput {
   create: OrderCreateWithoutTechInput
   connect: OrderWhereUniqueInput
+  disconnect: Boolean
   delete: Boolean
   update: OrderUpdateWithoutTechDataInput
   upsert: OrderUpsertWithoutTechInput
@@ -1790,7 +1790,7 @@ type Subscription {
 
 type TechnicianProgress implements Node {
   id: ID!
-  order(where: OrderWhereInput): Order!
+  order(where: OrderWhereInput): Order
   techowner(where: UserWhereInput): User
   status: String
   confirmeduser: String
@@ -1821,7 +1821,7 @@ input TechnicianProgressCreateInput {
   datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
-  order: OrderCreateOneWithoutTechInput!
+  order: OrderCreateOneWithoutTechInput
   techowner: UserCreateOneWithoutTechordersInput
 }
 
@@ -1856,7 +1856,7 @@ input TechnicianProgressCreateWithoutTechownerInput {
   datefollowuptemp: DateTime
   followupemailsent: DateTime
   datecompleted: DateTime
-  order: OrderCreateOneWithoutTechInput!
+  order: OrderCreateOneWithoutTechInput
 }
 
 """An edge in a connection."""
@@ -1967,7 +1967,6 @@ input TechnicianProgressUpdateManyWithoutTechownerInput {
 input TechnicianProgressUpdateOneWithoutOrderInput {
   create: TechnicianProgressCreateWithoutOrderInput
   connect: TechnicianProgressWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
   update: TechnicianProgressUpdateWithoutOrderDataInput
   upsert: TechnicianProgressUpsertWithoutOrderInput

@@ -46,6 +46,10 @@ const Styles = styled.div`
     background-color: #393733;
   }
 
+  .orders{
+    max-height: 91.7vh;
+    overflow-y: auto;
+  }
 `;
 
 const CREATE_ORDER = gql`
@@ -99,184 +103,189 @@ const CREATE_ORDER = gql`
 class Upload extends React.Component{
 
   constructor(props) {
-    super(props);
+    super( props );
     this.state = {
-      newOrders: [],
+      newOrders: []
     };
   }
 
-  setDataToState = (data) =>{
+  setDataToState = (data) => {
     var tempData = data;
 
-    try{
-    //Remove uneeded columns
+    try {
+    // Remove uneeded columns
     var order;
-    for(order in tempData){
-      if(!(data[order]) || data[order][0] === ""){
-        data.splice(order, 1);
-      }
-      else if(data[order][0].match(/^[0-9]+$/) == null){
-          data.splice(order, 1);
+    for ( order in tempData ) {
+      if ( !(data[ order ]) || data[ order ][ 0 ] === "") {
+        data.splice( order, 1 );
+      } else if ( data[ order ][ 0 ].match( /^[0-9]+$/ ) == null ) {
+          data.splice( order, 1 );
       }
     }
 
-    //Formatting value types
-    var finalOrders = []
-    for(order in data){
-      data[order][0] = parseFloat(data[order][0]);
-      data[order][1] = this.formatDate(data[order][1]);
-      data[order][2] = this.formatDate(data[order][2]);
-      data[order][10] = data[order][10].replace("Facility: ","").replace("Cost Center: ","")
-      data[order][14] = parseFloat(data[order][14].replace("$","").replace(",",""));
-      if(data[order][6] === "Yes"){
-        data[order][6] = true;
-        data[order][7] = this.formatDate(data[order][7])
+    // Formatting value types
+    var finalOrders = [];
+    for ( order in data ) {
+      data[ order ][ 0 ] = parseFloat( data[ order ][ 0 ] );
+      data[ order ][ 1 ] = this.formatDate( data[ order ][ 1 ] );
+      data[ order ][ 2 ] = this.formatDate( data[ order ][ 2 ] );
+      data[ order ][ 10 ] = data[ order ][ 10 ].replace("Facility: ", "" );
+      data[ order ][ 10 ] = data [ order ][ 10 ].replace("Cost Center: ", "");
+      data[ order ][ 14 ] = parseFloat( data[ order ][ 14 ].replace("$", "" ).replace(",", "" ) );
+      if ( data[ order ][ 6 ] === "Yes") {
+        data[ order ][ 6 ] = true;
+        data[ order ][ 7 ] = this.formatDate( data[ order ][ 7 ] );
+      } else {
+        data[ order ][ 6 ] = false;
       }
-      else{
-        data[order][6] = false;
+      if ( data[ order ][ 7 ] === "") {
+        data[ order ][ 7 ] = null;
       }
-      if(data[order][7] === ""){
-        data[order][7] = null
-      }
-      if(data[order][13].match(/\d -/g).length > 1){
-        var items = (data[order][13].split(/\d -/)).filter(Boolean);
-        for(var item in items){
-          var newOrder = [...data[order]];
-          newOrder[13] = items[item];
-          finalOrders.push(newOrder);
+      if ( data[ order ][ 13 ].match( /\d -/g ).length > 1 ) {
+        var items = (data[ order ][ 13 ].split( /\d -/ ) ).filter( Boolean );
+        for ( var item in items ) {
+          var newOrder = [ ...data[ order ] ];
+          newOrder[ 13 ] = items[ item ];
+          finalOrders.push( newOrder );
         }
       }
 
     }
-    this.setState({newOrders: finalOrders});
+    this.setState({ newOrders: finalOrders });
     }
-    catch(error){
-      alert("Invalid CSV Format: \n" + error);
+    catch ( error ) {
+      alert("Invalid CSV Format: \n" + error );
     }
+  };
+
+  formatDate( originalDate ) {
+    return (new Date( originalDate ).toISOString().split("T")[ 0 ]).toString();
   }
 
-  formatDate(originalDate){
-    return (new Date(originalDate).toISOString().split("T")[0]).toString();
-  }
+  removeFromState = (orderId) => {
+    var updatedOrders = [ ...this.state.newOrders ];
+    updatedOrders.splice( orderId, 1 );
+    this.setState({ newOrders: updatedOrders });
+  };
 
-  removeFromState = (orderId) =>{
-    var updatedOrders = [...this.state.newOrders];
-    updatedOrders.splice(orderId, 1)
-    this.setState({newOrders: updatedOrders})
-  }
-
-  render(){
+  render() {
 
     const itamOwner = {
       connect: {
         name: "Unassigned"
       }
-    }
+    };
 
     const techOwner = {
       connect: {
         name: "Unassigned"
       }
-    }
+    };
 
     const createITAM = {
       create: {
         status: "Not Started",
         itamowner: itamOwner
       }
-    }
+    };
 
     const createTech = {
       create: {
         status: "Not Started",
         techowner: techOwner
       }
-    }
+    };
     return (
       <Styles>
-        <div class="container-fluid">
+        <div class="container-fluid orders">
           <div class="row">
             <div class="col-sm-12">
-              <CSVReader onFileLoaded={data => this.setDataToState(data)} />
+              <CSVReader onFileLoaded={data => this.setDataToState( data )} />
             </div>
 
             <div class ="col-sm-12">
-              <p style={{display: `${this.state.newOrders[0] ? "inline":"none"}`}}>Click <b>Submit</b> after verifying.</p>
+              <p style={{ display: `${this.state.newOrders[ 0 ] ? "inline" : "none" } ` }}>
+                Click <b>Submit</b> after verifying.
+              </p>
             </div>
           </div>
-            {this.state.newOrders.map((order, index) =>
+            {this.state.newOrders.map( ( order, index) =>
               <div class="row newOrdersDiv">
                 <div class="col-sm-3">
-                  <b>ID:</b><br /> {order[0]}
+                  <b>ID:</b><br /> {order[ 0 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Date Created:</b><br /> {order[1]}
+                  <b>Date Created:</b><br /> {order[ 1 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Date Approved:</b><br /> {order[2]}
+                  <b>Date Approved:</b><br /> {order[ 2 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Created by:</b><br /> {order[3]}
+                  <b>Created by:</b><br /> {order[ 3 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Created by Email:</b><br /> {order[4]}
+                  <b>Created by Email:</b><br /> {order[ 4 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Recipient:</b><br /> {order[5]}
+                  <b>Recipient:</b><br /> {order[ 5 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>New Hire:</b><br /> {order[6].toString()}
+                  <b>New Hire:</b><br /> {order[ 6 ].toString()}
                 </div>
                 <div class="col-sm-3">
-                  <b>Hire Start Date:</b><br /> {order[7]}
+                  <b>Hire Start Date:</b><br /> {order[ 7 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Hire Name:</b><br /> {order[8]}
+                  <b>Hire Name:</b><br /> {order[ 8 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Approval Manager:</b><br /> {order[9]}
+                  <b>Approval Manager:</b><br /> {order[ 9 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Business Unit:</b><br /> {order[10]}
+                  <b>Business Unit:</b><br /> {order[ 10 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Attention:</b><br /> {order[11]}
+                  <b>Attention:</b><br /> {order[ 11 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Shipping Address:</b><br /> {order[12]}
+                  <b>Shipping Address:</b><br /> {order[ 12 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Order Items:</b><br /> {order[13]}
+                  <b>Order Items:</b><br /> {order[ 13 ]}
                 </div>
                 <div class="col-sm-3">
-                  <b>Order Total:</b><br /> {order[14].toFixed(2)}
+                  <b>Order Total:</b><br /> {order[ 14 ].toFixed( 2 )}
                 </div>
                 <div class="col-sm-3">
-                  <b>Comments:</b><br /> {order[15]}
+                  <b>Comments:</b><br /> {order[ 15 ]}
                 </div>
                 <div class="col-sm-12 buttonDiv">
                   <Mutation mutation={CREATE_ORDER} variables={{
-                        orderid: order[0],
-                        datecreated: order[1],
-                        dateapproved: order[2],
-                        createdby: order[3],
-                        createdbyemail: order[4],
-                        recipient: order[5],
-                        newhire: order[6],
-                        hirestartdate: order[7],
-                        hirename: order[8],
-                        approvalmanager: order[9],
-                        businessunit: order[10],
-                        attention: order[11],
-                        shippingaddress: order[12],
-                        items: order[13],
-                        total: order[14],
+                        orderid: order[ 0 ],
+                        datecreated: order[ 1 ],
+                        dateapproved: order[ 2 ],
+                        createdby: order[ 3 ],
+                        createdbyemail: order[ 4 ],
+                        recipient: order[ 5 ],
+                        newhire: order[ 6 ],
+                        hirestartdate: order[ 7 ],
+                        hirename: order[ 8 ],
+                        approvalmanager: order[ 9 ],
+                        businessunit: order[ 10 ],
+                        attention: order[ 11 ],
+                        shippingaddress: order[ 12 ],
+                        items: order[ 13 ],
+                        total: order[ 14 ],
                         ordercategory: "New Order",
-                        comments: order[15],
+                        comments: order[ 15 ],
                         itam: createITAM,
                         tech: createTech
                   }}>
-                    {createOrder => <button type="button" class="btn btn-success" onClick={() =>{createOrder(); this.removeFromState(index)}}>Submit</button>}
+                    {createOrder =>
+                      <button type="button" class="btn btn-success"
+                        onClick={() => {createOrder(); this.removeFromState( index );}}>
+                        Submit
+                      </button>}
                   </Mutation>
                 </div>
               </div>

@@ -7,31 +7,32 @@ type Query{
   orders: [Order!]!
   filteredOrders(ordercategory: String!): [Order!]!
   users: [User!]!
+  filteredUsers(name: String!): [User!]!
   order(id: ID!): Order
 }
 
 type Mutation{
   createOrder(
-  orderid: Float!,
-  datecreated: DateTime!,
-  dateapproved: DateTime!,
-  createdby: String!,
-  createdbyemail: String!,
-  recipient: String!,
-  newhire: Boolean!,
-  hirename: String,
-  hirestartdate: DateTime,
-  approvalmanager: String!,
-  businessunit: String!,
-  attention: String!,
-  shippingaddress: String!,
-  items: String!,
-  total: Float!,
-  comments: String!,
-  ordercategory: String!,
-  sla: Int,
-  itam: ITAMProgressCreateOneWithoutOrderInput,
-  tech: TechnicianProgressCreateOneWithoutOrderInput
+    orderid: Float!,
+    datecreated: DateTime!,
+    dateapproved: DateTime!,
+    createdby: String!,
+    createdbyemail: String!,
+    recipient: String!,
+    newhire: Boolean!,
+    hirename: String,
+    hirestartdate: DateTime,
+    approvalmanager: String!,
+    businessunit: String!,
+    attention: String!,
+    shippingaddress: String!,
+    items: String!,
+    total: Float!,
+    comments: String!,
+    ordercategory: String!,
+    sla: Int,
+    itam: ITAMProgressCreateOneWithoutOrderInput,
+    tech: TechnicianProgressCreateOneWithoutOrderInput
   ): Order
 
   createUser(name: String!): User
@@ -41,4 +42,51 @@ type Mutation{
   deleteUser(id: ID!): User
 
   updateUser(id: ID!, name: String!): User
+
+  updateEntireOrder(
+    approvalManager: String!,
+    attention: String!,
+    businessUnit: String!,
+    comments: String!,
+    createdBy: String!,
+    createdByEmail: String!,
+    dateApproved: DateTime!,
+    dateCreated: DateTime!,
+    hireName: String,
+    hireStartDate: DateTime,
+    id: ID!,
+    item: String!,
+    newHire: Boolean,
+    orderCategory: String!,
+    orderID: Float!,
+    recipient: String!,
+    shippingAddress: String!,
+    sla: Int,
+    total: Float!,
+    ITAMConfirmedNewhire: DateTime,
+    ITAMConnectorType: String,
+    ITAMDellEmailNotif: DateTime,
+    ITAMDellOrder: Float,
+    ITAMid: ID!,
+    ITAMMonitorModel: String,
+    ITAMMonitorNum: Float,
+    ITAMOldAssetTag: String,
+    ITAMOldModel: String,
+    ITAMOrderPendEmail: DateTime,
+    ITAMPOOrder: Float,
+    ITAMProductSource: String,
+    ITAMStatus: String,
+    ITAMVerificationEmailSent: DateTime,
+    ITAMName: String,
+    TechConfirmedUser: String,
+    TechCostCenter: String,
+    TechDateSetupCompleted: DateTime,
+    TechDateFollowupTemp: DateTime,
+    TechFollowupEmail: DateTime,
+    Techid: ID!,
+    TechEmailPCSent: DateTime,
+    TechServiceTag: String,
+    TechStatus: String,
+    TechName: String
+  ): String
 }

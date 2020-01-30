@@ -18,8 +18,8 @@ type Order{
   comments: String!
   ordercategory: String!
   sla: Int
-  itam: ITAMProgress @relation(name: "ITAMOrderProgress" onDelete: CASCADE)
-  tech: TechnicianProgress @relation(name: "TechOrderProgress" onDelete: CASCADE)
+  itam: ITAMProgress! @relation(name: "ITAMOrderProgress" onDelete: CASCADE)
+  tech: TechnicianProgress! @relation(name: "TechOrderProgress" onDelete: CASCADE)
 }
 
 type ITAMProgress{
@@ -43,7 +43,7 @@ type ITAMProgress{
 
 type TechnicianProgress{
   id: ID! @unique
-  order: Order! @relation(name: "TechOrderProgress")
+  order: Order @relation(name: "TechOrderProgress")
   techowner: User
   status: String
   confirmeduser: String

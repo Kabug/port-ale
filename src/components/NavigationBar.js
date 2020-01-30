@@ -30,14 +30,14 @@ const Styles = styled.div`
       color: white;
     }
   }
-`
+`;
 
 function NavigationBar() {
   return (
     <Styles>
       <Navbar expand="lg">
         <Navbar.Brand href="/"><h1>Finning</h1></Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
             <Nav.Item><Link to="/" class="styledLink">Orders</Link></Nav.Item>

@@ -1,10 +1,10 @@
 import React from "react";
-import Orders from "./Orders"
-import CreateOrder from "./CreateOrder"
+import Orders from "./Orders";
+import CreateOrder from "./CreateOrder";
 import styled from "styled-components";
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
-import OImage from "../assets/OTest.png"
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+import OImage from "../assets/OTest.png";
 
 const Styles = styled.div`
 
@@ -62,9 +62,14 @@ const Styles = styled.div`
   .btn-group{
     display: block !important;
   }
+
+  .ordersStyles{
+    max-height: 75vh;
+    overflow-y: auto;
+  }
 `;
 
-const ORDERS_QUERY = gql`
+const QUERY_ORDERS = gql`
   query filteredOrdersQuery($ordercategory: String!){
     filteredOrders(ordercategory: $ordercategory){
       id
@@ -116,6 +121,7 @@ const ORDERS_QUERY = gql`
         servicetag
         initialemailsent
         followupemailsent
+        datefollowuptemp
         datecompleted
       }
     }
@@ -124,7 +130,7 @@ const ORDERS_QUERY = gql`
 
 class PortalOrders extends React.Component {
   constructor(props) {
-    super(props);
+    super( props );
     this.state = {
       isITAM: false,
       isTech: false,
@@ -133,39 +139,36 @@ class PortalOrders extends React.Component {
     };
   }
 
-  ITAMToggle = () =>{
-    this.setState((state, props) => {
-      return {isITAM: !this.state.isITAM};
+  ITAMToggle = () => {
+    this.setState( ( state, props) => {
+      return { isITAM: !this.state.isITAM };
     });
-  }
+  };
 
-  techToggle = () =>{
-    this.setState((state, props) => {
-      return {isTech: !this.state.isTech};
+  techToggle = () => {
+    this.setState( ( state, props) => {
+      return { isTech: !this.state.isTech };
     });
-  }
+  };
 
-  allToggle = () =>{
-    this.setState({isAll: !this.state.isAll})
+  allToggle = () => {
+    this.setState({ isAll: !this.state.isAll });
 
-    if(this.state.isAll){
-      this.setState({isITAM: true})
-      this.setState({isTech: true})
+    if ( this.state.isAll ) {
+      this.setState({ isITAM: true, isTech: true });
+    } else {
+      this.setState({ isITAM: false, isTech: false });
     }
-    else{
-      this.setState({isITAM: false})
-      this.setState({isTech: false})
-    }
-  }
+  };
 
-  render(){
+  render() {
 
     const {
       ITAMToggle,
       techToggle,
       allToggle,
       orderCategory
-    } = this.state
+    } = this.state;
 
     return (
       <Styles>
@@ -174,7 +177,11 @@ class PortalOrders extends React.Component {
             <div class="col-sm-6 blackBackground">
               <h5>Order Filter</h5>
               <div class="input-group">
-                <select class="custom-select" id="orderFilter" onChange={e=>this.setState({orderCategory: e.target.value})}>
+                <select
+                  class="custom-select"
+                  id="orderFilter"
+                  onChange={e=>this.setState({ orderCategory: e.target.value })}
+                >
                   <option value="New Order">New Order</option>
                   <option value="Accessory">Accessory</option>
                   <option value="New Hire">New Hire</option>
@@ -198,32 +205,43 @@ class PortalOrders extends React.Component {
             </div>
             <div class="col-sm-12 blackBackground">
               <div class="btn-group btn-group-justified">
-                <button type="button" class="btn btn-primary" onClick={this.ITAMToggle}>ITAM</button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onClick={this.ITAMToggle}
+                >
+                ITAM
+                </button>
                 <button type="button" class="btn btn-info" onClick={this.techToggle}>Tech</button>
                 <button type="button" class="btn btn-dark" onClick={this.allToggle}>All</button>
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row ordersStyles">
             <div class="col-sm-12">
               <h1>Portal <img src={OImage} alt="O"/>rders</h1>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-sm ordersStyles">
+            <div class="col-sm-12">
             <CreateOrder/>
-            <Query query={ORDERS_QUERY} variables={{
+            <Query query={QUERY_ORDERS} variables={{
               ordercategory: orderCategory
             }}>
               {({ loading, error, data }) => {
-                if (loading) return <div>Fetching</div>
-                if (error) return <div>Error</div>
-                const ordersToRender = data.filteredOrders
-                return(
+                if ( loading ) { return <div>Fetching</div>;}
+                if ( error ) { return <div>Error</div>;}
+                const ordersToRender = data.filteredOrders;
+                return (
                   <div>
-                    {ordersToRender.slice(0).reverse().map(orders => <Orders key={orders.id} orders={orders} isITAM={this.state.isITAM} isTech={this.state.isTech}/>)}
+                    {ordersToRender.slice( 0 ).reverse().map( orders =>
+                      <Orders
+                        key={orders.id}
+                        orders={orders}
+                        isITAM={this.state.isITAM}
+                        isTech={this.state.isTech}
+                      />
+                    )}
                   </div>
-                )
+                );
               }}
             </Query>
             </div>

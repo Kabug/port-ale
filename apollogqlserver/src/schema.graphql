@@ -3,6 +3,60 @@
 # import TechnicianProgress from "./generated/prisma.graphql"
 # import User from "./generated/prisma.graphql"
 
+input updateEntireOrderInput {
+  approvalManager: String!,
+  attention: String!,
+  businessUnit: String!,
+  comments: String!,
+  createdBy: String!,
+  createdByEmail: String!,
+  dateApproved: DateTime!,
+  dateCreated: DateTime!,
+  hireName: String,
+  hireStartDate: DateTime,
+  id: ID!,
+  item: String!,
+  newHire: Boolean,
+  orderCategory: String!,
+  orderID: Float!,
+  recipient: String!,
+  shippingAddress: String!,
+  sla: Int,
+  total: Float!,
+  ITAMConfirmedNewhire: DateTime,
+  ITAMConnectorType: String,
+  ITAMDellEmailNotif: DateTime,
+  ITAMDellOrder: Float,
+  ITAMid: ID!,
+  ITAMMonitorModel: String,
+  ITAMMonitorNum: Float,
+  ITAMOldAssetTag: String,
+  ITAMOldModel: String,
+  ITAMOrderPendEmail: DateTime,
+  ITAMPOOrder: Float,
+  ITAMProductSource: String,
+  ITAMStatus: String,
+  ITAMVerificationEmailSent: DateTime,
+  ITAMName: String,
+  TechConfirmedUser: String,
+  TechCostCenter: String,
+  TechDateSetupCompleted: DateTime,
+  TechDateFollowupTemp: DateTime,
+  TechFollowupEmail: DateTime,
+  Techid: ID!,
+  TechEmailPCSent: DateTime,
+  TechServiceTag: String,
+  TechStatus: String,
+  TechName: String
+}
+
+type updateEntireOrderResponse{
+  order: Order!,
+  itam: ITAMProgress!,
+  tech: TechnicianProgress!,
+  user: User!
+}
+
 type Query{
   orders: [Order!]!
   filteredOrders(ordercategory: String!): [Order!]!
@@ -43,50 +97,5 @@ type Mutation{
 
   updateUser(id: ID!, name: String!): User
 
-  updateEntireOrder(
-    approvalManager: String!,
-    attention: String!,
-    businessUnit: String!,
-    comments: String!,
-    createdBy: String!,
-    createdByEmail: String!,
-    dateApproved: DateTime!,
-    dateCreated: DateTime!,
-    hireName: String,
-    hireStartDate: DateTime,
-    id: ID!,
-    item: String!,
-    newHire: Boolean,
-    orderCategory: String!,
-    orderID: Float!,
-    recipient: String!,
-    shippingAddress: String!,
-    sla: Int,
-    total: Float!,
-    ITAMConfirmedNewhire: DateTime,
-    ITAMConnectorType: String,
-    ITAMDellEmailNotif: DateTime,
-    ITAMDellOrder: Float,
-    ITAMid: ID!,
-    ITAMMonitorModel: String,
-    ITAMMonitorNum: Float,
-    ITAMOldAssetTag: String,
-    ITAMOldModel: String,
-    ITAMOrderPendEmail: DateTime,
-    ITAMPOOrder: Float,
-    ITAMProductSource: String,
-    ITAMStatus: String,
-    ITAMVerificationEmailSent: DateTime,
-    ITAMName: String,
-    TechConfirmedUser: String,
-    TechCostCenter: String,
-    TechDateSetupCompleted: DateTime,
-    TechDateFollowupTemp: DateTime,
-    TechFollowupEmail: DateTime,
-    Techid: ID!,
-    TechEmailPCSent: DateTime,
-    TechServiceTag: String,
-    TechStatus: String,
-    TechName: String
-  ): String
+  updateEntireOrder(input: updateEntireOrderInput!): updateEntireOrderResponse
 }

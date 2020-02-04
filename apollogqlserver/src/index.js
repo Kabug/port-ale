@@ -131,9 +131,8 @@ const resolvers = {
 		TechName
 		}, ctx, info) {
 			// use props for where and state for update data
-			console.log( Order );
 			ctx.db.mutation.updateOrder({ data: {
-				approvalmanager,
+				approvalManager,
 				attention,
 				businessUnit,
 				comments,
@@ -152,10 +151,10 @@ const resolvers = {
 				sla,
 				total
 			}, where: { id }, info });
-			ctx.db.mutation.updateItamProgress({ data: {
+			ctx.db.mutation.updateITAMProgress({ data: {
 				itamowner: { disconnect: true }
 			}, where: { ITAMid }, info });
-			ctx.db.mutation.updateItamProgress({ data: {
+			ctx.db.mutation.updateITAMProgress({ data: {
 				ITAMConfirmedNewhire,
 				ITAMConnectorType,
 				ITAMDellEmailNotif,
@@ -168,13 +167,12 @@ const resolvers = {
 				ITAMPOOrder,
 				ITAMProductSource,
 				ITAMStatus,
-				ITAMVerificationEmailSent,
-				ITAMName
+				ITAMVerificationEmailSent
 			}, where: { ITAMid }, info });
-			ctx.db.mutation.updateItamProgress({ data: {
+			ctx.db.mutation.updateTechnicianProgress({ data: {
 				techowner: { disconnect: true }
 			}, where: { Techid }, info });
-			ctx.db.mutation.updateItamProgress({ data: {
+			ctx.db.mutation.updateTechnicianProgress({ data: {
 				TechConfirmedUser,
 				TechCostCenter,
 				TechDateSetupCompleted,
@@ -182,10 +180,9 @@ const resolvers = {
 				TechFollowupEmail,
 				TechEmailPCSent,
 				TechServiceTag,
-				TechStatus,
-				TechName
+				TechStatus
 			}, where: { Techid }, info });
-			return true;
+			return TechName;
 		}
 	}
 };

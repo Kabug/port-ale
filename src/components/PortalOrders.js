@@ -70,59 +70,59 @@ const Styles = styled.div`
 `;
 
 const QUERY_ORDERS = gql`
-  query filteredOrdersQuery($ordercategory: String!){
-    filteredOrders(ordercategory: $ordercategory){
+  query filteredOrdersQuery($orderCategory: String!){
+    filteredOrders(orderCategory: $orderCategory){
       id
-      orderid
-      datecreated
-      dateapproved
-      createdby
-      createdbyemail
-      recipient
-      newhire
-      hirestartdate
-      hirename
-      approvalmanager
-      businessunit
-      attention
-      shippingaddress
-      items
-      total
-      comments
-      ordercategory
-      sla
-      itam{
+      orderSimplexId
+      orderDateCreated
+      orderDateApproved
+      orderCreatedBy
+      orderCreatedByEmail
+      orderNewHire
+      orderRecipient
+      orderHireStartDate
+      orderHireName
+      orderApprovalManager
+      orderBusinessUnit
+      orderAttention
+      orderShippingAddress
+      orderItem
+      orderTotal
+      orderComments
+      orderCategory
+      orderSla
+      orderItam{
         id
-        itamowner{
-          name
+        itamOwner{
+          userName
         }
-        status
-        verificationemailsent
-        productsource
-        oldassettag
-        oldmodel
-        modelofmonitor
-        numofmonitor
-        connectortypes
-        orderpendingemailsent
-        confirmednewhire
-        poordernum
-        dellordernum
-        dellemailnotif
+        itamStatus
+        itamVerificationEmailSent
+        itamProductSource
+        itamOldAssetTag
+        itamOldModel
+        itamMonitorModel
+        itamMonitorNum
+        itamConnectorTypes
+        itamOrderPendingEmail
+        itamConfirmedNewHire
+        itamPoOrderId
+        itamDellOrderId
+        itamDellEmailNotif
       }
-      tech{
+      orderTech{
         id
-        techowner{
-          name
+        techOwner{
+          userName
         }
-        status
-        confirmeduser
-        costcenter
-        servicetag
-        initialemailsent
-        followupemailsent
-        datefollowuptemp
-        datecompleted
+        techStatus
+        techConfirmedUser
+        techCostCenter
+        techServiceTag
+        techInitialEmail
+        techDateFollowupTemp
+        techFollowupEmailSent
+        techDateCompleted
       }
     }
   }

@@ -56,7 +56,7 @@ const QUERY_USERS = gql`
   {
     users{
       id
-      name
+      userName
     }
   }
 `;
@@ -65,53 +65,52 @@ class Orders extends React.Component {
   constructor(props) {
     super( props );
     this.state = {
-      isNotNewHire: !this.props.orders.newhire,
       isDeleted: false,
       orderHidden: false,
-      approvalManager: this.props.orders.approvalmanager,
-      attention: this.props.orders.attention,
-      businessUnit: this.props.orders.businessunit,
-      comments: this.props.orders.comments,
-      createdBy: this.props.orders.createdby,
-      createdByEmail: this.props.orders.createdbyemail,
-      dateApproved: this.props.orders.dateapproved,
-      dateCreated: this.props.orders.datecreated,
-      hireName: this.props.orders.hirename,
-      hireStartDate: this.props.orders.hirestartdate,
       id: this.props.orders.id,
-      item: this.props.orders.items,
-      newHire: this.props.orders.newhire,
-      orderCategory: this.props.orders.ordercategory,
-      orderID: this.props.orders.orderid,
-      recipient: this.props.orders.recipient,
-      shippingAddress: this.props.orders.shippingaddress,
-      sla: this.props.orders.sla,
-      total: this.props.orders.total,
-      ITAMConfirmedNewhire: this.props.orders.itam.confirmednewhire,
-      ITAMConnectorType: this.props.orders.itam.connectortypes,
-      ITAMDellEmailNotif: this.props.orders.itam.dellemailnotif,
-      ITAMDellOrder: this.props.orders.itam.dellordernum,
-      ITAMid: this.props.orders.itam.id,
-      ITAMMonitorModel: this.props.orders.itam.modelofmonitor,
-      ITAMMonitorNum: this.props.orders.itam.numofmonitor,
-      ITAMOldAssetTag: this.props.orders.itam.oldassettag,
-      ITAMOldModel: this.props.orders.itam.oldmodel,
-      ITAMOrderPendEmail: this.props.orders.itam.orderpendingemailsent,
-      ITAMPOOrder: this.props.orders.itam.poordernum,
-      ITAMProductSource: this.props.orders.itam.productsource,
-      ITAMStatus: this.props.orders.itam.status,
-      ITAMVerificationEmailSent: this.props.orders.itam.verificationemailsent,
-      ITAMName: this.props.orders.itam.itamowner.name,
-      TechConfirmedUser: this.props.orders.tech.confirmeduser,
-      TechCostCenter: this.props.orders.tech.costcenter,
-      TechDateSetupCompleted: this.props.orders.tech.datecompleted,
-      TechDateFollowupTemp: this.props.orders.tech.datefollowuptemp,
-      TechFollowupEmail: this.props.orders.tech.followupemailsent,
+      orderID: this.props.orders.orderSimplexId,
+      dateCreated: this.props.orders.orderDateCreated,
+      dateApproved: this.props.orders.orderDateApproved,
+      createdBy: this.props.orders.orderCreatedBy,
+      createdByEmail: this.props.orders.orderCreatedByEmail,
+      newHire: this.props.orders.orderNewHire,
+      recipient: this.props.orders.orderRecipient,
+      hireStartDate: this.props.orders.orderHireStartDate,
+      hireName: this.props.orders.orderHireName,
+      approvalManager: this.props.orders.orderApprovalManager,
+      businessUnit: this.props.orders.orderBusinessUnit,
+      attention: this.props.orders.orderAttention,
+      shippingAddress: this.props.orders.orderShippingAddress,
+      item: this.props.orders.orderItem,
+      total: this.props.orders.orderTotal,
+      comments: this.props.orders.orderComments,
+      orderCategory: this.props.orders.orderCategory,
+      sla: this.props.orders.orderSla,
+      ITAMid: this.props.orders.orderItam.id,
+      ITAMName: this.props.orders.orderItam.itamOwner.userName,
+      ITAMStatus: this.props.orders.orderItam.itamStatus,
+      ITAMVerificationEmailSent: this.props.orders.orderItam.itamVerificationEmailSent,
+      ITAMProductSource: this.props.orders.orderItam.itamProductSource,
+      ITAMOldAssetTag: this.props.orders.orderItam.itamOldAssetTag,
+      ITAMOldModel: this.props.orders.orderItam.itamOldModel,
+      ITAMMonitorModel: this.props.orders.orderItam.itamMonitorModel,
+      ITAMMonitorNum: this.props.orders.orderItam.itamMonitorNum,
+      ITAMConnectorType: this.props.orders.orderItam.itamConnectorTypes,
+      ITAMOrderPendEmail: this.props.orders.orderItam.itamOrderPendingEmail,
+      ITAMConfirmedNewhire: this.props.orders.orderItam.itamConfirmedNewHire,
+      ITAMPOOrder: this.props.orders.orderItam.itamPoOrderId,
+      ITAMDellOrder: this.props.orders.orderItam.itamDellOrderId,
+      ITAMDellEmailNotif: this.props.orders.orderItam.itamDellEmailNotif,
       Techid: this.props.orders.tech.id,
-      TechEmailPCSent: this.props.orders.tech.initialemailsent,
-      TechServiceTag: this.props.orders.tech.servicetag,
-      TechStatus: this.props.orders.tech.status,
-      TechName: this.props.orders.tech.techowner.name,
+      TechName: this.props.orders.orderTech.techOwner.userName,
+      TechStatus: this.props.orders.orderTech.techStatus,
+      TechConfirmedUser: this.props.orders.orderTech.techConfirmedUser,
+      TechCostCenter: this.props.orders.orderTech.techCostCenter,
+      TechServiceTag: this.props.orders.orderTech.techServiceTag,
+      TechEmailPCSent: this.props.orders.orderTech.techInitialEmail,
+      TechDateFollowupTemp: this.props.orders.orderTech.techDateFollowupTemp,
+      TechFollowupEmail: this.props.orders.orderTech.techFollowupEmailSent,
+      TechDateSetupCompleted: this.props.orders.orderTech.techDateCompleted,
       isValidID: true,
       isValidCreated: true,
       isValidApproved: true,
@@ -130,7 +129,7 @@ class Orders extends React.Component {
   }
 
   newHireToggle = () => {
-    this.setState({ newHire: !this.state.newHire, isNotNewHire: !this.state.isNotNewHire });
+    this.setState({ newHire: !this.state.newHire });
   };
 
   formatDate = (date) => {
@@ -451,9 +450,9 @@ class Orders extends React.Component {
             </div>
             <div
               class="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -465,7 +464,7 @@ class Orders extends React.Component {
                       placeholder="Firstname  Lastname"
                       aria-label="Firstname  Lastname"
                       aria-describedby="hireName"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={hireName}
                       onChange={e=>this.setState({ hireName: e.target.value })}
                     />
@@ -475,9 +474,9 @@ class Orders extends React.Component {
             </div>
             <div
               class="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -488,7 +487,7 @@ class Orders extends React.Component {
                       placeholder="YYYY-MM-DD"
                       aria-label="YYYY-MM-DD"
                       aria-describedby="hireStartDate"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={this.formatDate( hireStartDate )}
                       onChange={e=>this.toValidDate( e.target.value, "hireStartDate" )}
                       className={
@@ -501,9 +500,9 @@ class Orders extends React.Component {
             </div>
             <div
               class="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -515,7 +514,7 @@ class Orders extends React.Component {
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="sla"
-                      disabled={this.state.isNotNewHire}
+                      disabled={this.state.newHire}
                       value={sla}
                       onChange={e=>this.toValidFloat( e.target.value, "sla" )}
                     />
@@ -868,10 +867,10 @@ class Orders extends React.Component {
             </div>
             <div
               class="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
-                <Fade in={!this.state.isNotNewHire}>
+                <Fade in={this.state.newHire}>
                   <div>
                     <div class="input-group mb-3">
                       <div class="input-group-prepend">
@@ -887,7 +886,7 @@ class Orders extends React.Component {
                         placeholder="YYYY-MM-DD"
                         aria-label="YYYY-MM-DD"
                         aria-describedby="confirmedNewHire"
-                        disabled={this.state.isNotNewHire}
+                        disabled={!this.state.newHire}
                         value={this.formatDate( ITAMConfirmedNewhire )}
                         onChange={e=>this.toValidDate( e.target.value, "confirmedNewHire" )}
                         className={

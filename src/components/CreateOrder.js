@@ -30,48 +30,48 @@ const Styles = styled.div`
 
 const CREATE_ORDER = gql`
   mutation createOrder(
-    $orderid: Float!,
-    $datecreated: DateTime!,
-    $dateapproved: DateTime!,
-    $createdby: String!,
-    $createdbyemail: String!,
-    $recipient: String!,
-    $newhire: Boolean!,
-    $hirename: String,
-    $hirestartdate: DateTime,
-    $approvalmanager: String!,
-    $businessunit: String!,
-    $attention: String!,
-    $shippingaddress: String!,
-    $items: String!,
-    $total: Float!,
-    $sla: Int,
-    $ordercategory: String!,
-    $comments: String!,
-    $itam: ITAMProgressCreateOneWithoutOrderInput,
-    $tech: TechnicianProgressCreateOneWithoutOrderInput
+    $orderSimplexId: Float!,
+    $orderDateCreated: Date!,
+    $orderDateApproved: Date!,
+    $orderCreatedBy: String!,
+    $orderCreatedByEmail: String!,
+    $orderNewHire: Boolean,
+    $orderRecipient: String!,
+    $orderHireStartDate: Date,
+    $orderHireName: String,
+    $orderApprovalManager: String!,
+    $orderBusinessUnit: String!,
+    $orderAttention: String!,
+    $orderShippingAddress: String!,
+    $orderItem: String!,
+    $orderTotal: Float!,
+    $orderComments: String!,
+    $orderCategory: String!,
+    $orderSla: Int,
+    $orderItam: ItamProgressCreateOneWithoutItamOrderInput,
+    $orderTech: TechProgressCreateOneWithoutTechOrderInput
   ) {
     createOrder(
-      orderid: $orderid,
-      datecreated: $datecreated,
-      dateapproved: $dateapproved,
-      createdby: $createdby,
-      createdbyemail: $createdbyemail,
-      recipient: $recipient,
-      newhire: $newhire,
-      hirename: $hirename,
-      hirestartdate: $hirestartdate,
-      approvalmanager: $approvalmanager,
-      businessunit: $businessunit,
-      attention: $attention,
-      shippingaddress: $shippingaddress,
-      items: $items,
-      total: $total,
-      sla: $sla,
-      ordercategory: $ordercategory,
-      comments: $comments,
-      itam: $itam,
-      tech: $tech
+      orderSimplexId: $orderSimplexId,
+      orderDateCreated: $orderDateCreated,
+      orderDateApproved: $orderDateApproved,
+      orderCreatedBy: $orderCreatedBy,
+      orderCreatedByEmail: $orderCreatedByEmail,
+      orderNewHire: $orderNewHire,
+      orderRecipient: $orderRecipient,
+      orderHireStartDate: $orderHireStartDate,
+      orderHireName: $orderHireName,
+      orderApprovalManager: $orderApprovalManager,
+      orderBusinessUnit: $orderBusinessUnit,
+      orderAttention: $orderAttention,
+      orderShippingAddress: $orderShippingAddress,
+      orderItem: $orderItem,
+      orderTotal: $orderTotal,
+      orderComments: $orderComments,
+      orderCategory: $orderCategory,
+      orderSla: $orderSla,
+      orderItam: $orderItam,
+      orderTech: $orderTech
     ) {
         id
     }
@@ -82,7 +82,7 @@ const QUERY_USERS = gql`
   {
     users{
       id
-      name
+      userName
     }
   }
 `;
@@ -91,7 +91,6 @@ class CreateOrder extends React.Component {
   constructor(props) {
     super( props );
     this.state = {
-      isNotNewHire: true,
       orderid: 0,
       dateCreated: new Date().toISOString().split("T")[ 0 ],
       dateApproved: new Date().toISOString().split("T")[ 0 ],
@@ -152,7 +151,7 @@ class CreateOrder extends React.Component {
   }
 
   newHireToggle = () => {
-    this.setState({ newHire: !this.state.newHire, isNotNewHire: !this.state.isNotNewHire });
+    this.setState({ newHire: !this.state.newHire });
   };
 
   toCashMoney = (usrInput) => {
@@ -250,7 +249,6 @@ class CreateOrder extends React.Component {
   render() {
 
     const {
-      isNotNewHire,
       orderid,
       dateCreated,
       dateApproved,
@@ -297,46 +295,46 @@ class CreateOrder extends React.Component {
 
     const itamOwner = {
       connect: {
-        name: itamName
+        userName: itamName
       }
     };
 
     const techOwner = {
       connect: {
-        name: techName
+        userName: techName
       }
     };
 
     const createITAM = {
       create: {
-        status: itamStatus,
-        verificationemailsent: itamVerifEmail,
-        productsource: itamProductSource,
-        oldassettag: itamOldAssetTag,
-        oldmodel: itamOldModel,
-        modelofmonitor: itamMonitorModel,
-        numofmonitor: itamMonitorNum,
-        connectortypes: itamConnectorType,
-        orderpendingemailsent: itamOrderPendEmail,
-        confirmednewhire: itamConfirmedNewhire,
-        poordernum: itamPOOrder,
-        dellordernum: itamDellOrder,
-        dellemailnotif: itamDellEmailNotif,
-        itamowner: itamOwner
+        itamStatus: itamStatus,
+        itamVerificationEmailSent: itamVerifEmail,
+        itamProductSource: itamProductSource,
+        itamOldAssetTag: itamOldAssetTag,
+        itamOldModel: itamOldModel,
+        itamMonitorModel: itamMonitorModel,
+        itamMonitorNum: itamMonitorNum,
+        itamConnectorTypes: itamConnectorType,
+        itamOrderPendingEmail: itamOrderPendEmail,
+        itamConfirmedNewHire: itamConfirmedNewhire,
+        itamPoOrderId: itamPOOrder,
+        itamDellOrderId: itamDellOrder,
+        itamDellEmailNotif: itamDellEmailNotif,
+        itamOwner: itamOwner
       }
     };
 
     const createTech = {
       create: {
-        status: techStatus,
-        confirmeduser: techConfirmedUser,
-        costcenter: techCostCenter,
-        servicetag: techServiceTag,
-        initialemailsent: techEmailPCSent,
-        followupemailsent: techFollowupEmail,
-        datefollowuptemp: techDateFollowupTemp,
-        datecompleted: techDateSetupCompleted,
-        techowner: techOwner
+        techStatus: techStatus,
+        techConfirmedUser: techConfirmedUser,
+        techCostCenter: techCostCenter,
+        techServiceTag: techServiceTag,
+        techInitialEmail: techEmailPCSent,
+        techDateFollowupTemp: techDateFollowupTemp,
+        techFollowupEmailSent: techFollowupEmail,
+        techDateCompleted: techDateSetupCompleted,
+        techOwner: techOwner
       }
     };
 
@@ -502,9 +500,9 @@ class CreateOrder extends React.Component {
             </div>
             <div
               className="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -516,7 +514,7 @@ class CreateOrder extends React.Component {
                       placeholder="Firstname  Lastname"
                       aria-label="Firstname  Lastname"
                       aria-describedby="hireName"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={hireName}
                       onChange={e=>this.setState({ hireName: e.target.value })}
                     />
@@ -526,9 +524,9 @@ class CreateOrder extends React.Component {
             </div>
             <div
               className="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -539,7 +537,7 @@ class CreateOrder extends React.Component {
                       placeholder="YYYY-MM-DD"
                       aria-label="YYYY-MM-DD"
                       aria-describedby="hireStartDate"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={hireStartDate}
                       onChange={e=>this.toValidDate( e.target.value, "hireStartDate" )}
                       className={
@@ -553,10 +551,10 @@ class CreateOrder extends React.Component {
             <div
               className="col-sm-4"
               style={{
-                display: `${!this.state.isNotNewHire ? "inline" : "none"}`
+                display: `${this.state.newHire ? "inline" : "none"}`
               }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -568,7 +566,7 @@ class CreateOrder extends React.Component {
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="sla"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={sla}
                       onChange={e=>this.toValidFloat( e.target.value, "sla" )}
                     />
@@ -847,9 +845,9 @@ class CreateOrder extends React.Component {
             </div>
             <div
               className="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none" }` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none" }` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -865,7 +863,7 @@ class CreateOrder extends React.Component {
                       placeholder="YYYY-MM-DD"
                       aria-label="YYYY-MM-DD"
                       aria-describedby="confirmedNewHire"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={itamConfirmedNewhire}
                       onChange={e=>this.toValidDate( e.target.value, "confirmedNewHire")}
                       className={
@@ -1139,26 +1137,26 @@ class CreateOrder extends React.Component {
               <Mutation
                 mutation={CREATE_ORDER}
                 variables={{
-                  orderid: orderid,
-                  datecreated: dateCreated,
-                  dateapproved: dateApproved,
-                  createdby: createdBy,
-                  createdbyemail: createdByEmail,
-                  recipient: recipient,
-                  newhire: newHire,
-                  hirename: hireName,
-                  hirestartdate: hireStartDate,
-                  approvalmanager: approvalManager,
-                  businessunit: businessUnit,
-                  attention: attention,
-                  shippingaddress: shippingAddress,
-                  items: item,
-                  total: total,
-                  sla: sla,
-                  ordercategory: orderCategory,
-                  comments: comments,
-                  itam: createITAM,
-                  tech: createTech
+                  orderSimplexId: orderid,
+                  orderDateCreated: dateCreated,
+                  orderDateApproved: dateApproved,
+                  orderCreatedBy: createdBy,
+                  orderCreatedByEmail: createdByEmail,
+                  orderNewHire: newHire,
+                  orderRecipient: recipient,
+                  orderHireStartDate: hireStartDate,
+                  orderHireName: hireName,
+                  orderApprovalManager: approvalManager,
+                  orderBusinessUnit: businessUnit,
+                  orderAttention: attention,
+                  orderShippingAddress: shippingAddress,
+                  orderItem: item,
+                  orderTotal: total,
+                  orderComments: comments,
+                  orderCategory: orderCategory,
+                  orderSla: sla,
+                  orderItam: createITAM,
+                  orderTech: createTech
                 }}
               >
                 {createOrder =>

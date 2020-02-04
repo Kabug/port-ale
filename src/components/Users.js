@@ -92,14 +92,14 @@ const QUERY_USERS = gql`
   {
     users{
       id
-      name
+      userName
     }
   }
 `;
 
 const CREATE_USER = gql`
-  mutation createUser($name: String!) {
-    createUser(name: $name){
+  mutation createUser($userName: String!) {
+    createUser(userName: $userName){
       id
     }
   }
@@ -114,36 +114,36 @@ const DELETE_USER = gql`
 `;
 
 const UPDATE_USER = gql`
-  mutation updateUser($id:ID!, $name: String!){
-    updateUser(id: $id, name: $name){
+  mutation updateUser($input: updateUserInput!){
+    updateUser(input: $input){
       id
-      name
+      userName
     }
   }
 `;
 
 const QUERY_USERS_ORDERS = gql`
-  query filteredUsersQueryTest($name:String!, $newhire:String!, $prioritydeployment:String!, $cancelled:String!){
+  query filteredUsersQueryTest($userName:String!, $newhire:String!, $prioritydeployment:String!, $cancelled:String!){
     filteredUsers(name: $name){
-      name
+      userName
       id
-      itamorders{
-        status
-        order{
-          orderid
-          ordercategory
-          recipient
-          items
+      userItamOrders{
+        itamStatus
+        itamOrder{
+          orderSimplexId
+          orderCategory
+          orderRecipient
+          orderItem
         }
       }
       techorders{
         status
-        order(where: {ordercategory_in: [$newhire, $prioritydeployment, $cancelled]})
+        userTechOrders(where: {orderCategory_in: [$newhire, $prioritydeployment, $cancelled]})
         {
-          orderid
-          ordercategory
-          recipient
-          items
+          orderSimplexId
+          orderCategory
+          orderRecipient
+          orderItem
         }
       }
     }
@@ -224,8 +224,16 @@ class Users extends React.Component{
                     return (
                       <div className="row usersList">
                       {usersToRender.slice( 0 ).map( users =>
-                        <div className="col-sm-12 name" key={users.id} users={users} onClick={() =>
-                          this.setUser( users.name, users.id )}><h4>{users.name}</h4></div> )}
+                        <div
+                          className="col-sm-12 name"
+                          key={users.id}
+                          users={users}
+                          onClick={() =>
+                            this.setUser( users.userName, users.id
+                          )}>
+                          <h4>{users.userName}</h4>
+                        </div>
+                      )}
                         </div>
                     );
                   }}
@@ -264,7 +272,7 @@ class Users extends React.Component{
                     }
                   }
                   >
-                  <Mutation mutation={CREATE_USER} variables={ { name: this.state.userName }}>
+                  <Mutation mutation={CREATE_USER} variables={ { userName: this.state.userName }}>
                     {createUser =>
                       <button
                         type="button"

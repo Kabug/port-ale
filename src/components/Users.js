@@ -114,8 +114,8 @@ const DELETE_USER = gql`
 `;
 
 const UPDATE_USER = gql`
-  mutation updateUser($input: updateUserInput!){
-    updateUser(input: $input){
+  mutation updateUser($id: ID!, $userName: String!){
+    updateUser(id: $id, userName: $userName){
       id
       userName
     }
@@ -123,23 +123,29 @@ const UPDATE_USER = gql`
 `;
 
 const QUERY_USERS_ORDERS = gql`
-  query filteredUsersQueryTest($userName:String!, $newhire:String!, $prioritydeployment:String!, $cancelled:String!){
-    filteredUsers(name: $name){
+  query filteredUsersQueryTest(
+    $userName: String!
+    $newhire: String!
+    $prioritydeployment: String!
+    $cancelled: String!
+  ) {
+    filteredUsers(userName: $userName) {
       userName
       id
-      userItamOrders{
+      userItamOrders {
         itamStatus
-        itamOrder{
+        itamOrder {
           orderSimplexId
           orderCategory
           orderRecipient
           orderItem
         }
       }
-      techorders{
-        status
-        userTechOrders(where: {orderCategory_in: [$newhire, $prioritydeployment, $cancelled]})
-        {
+      userTechOrders {
+        techStatus
+        techOrder(
+          where: { orderCategory_in: [$newhire, $prioritydeployment, $cancelled] }
+        ) {
           orderSimplexId
           orderCategory
           orderRecipient
@@ -295,7 +301,7 @@ class Users extends React.Component{
                 >
                   <Mutation
                     mutation={UPDATE_USER}
-                    variables={ { id: this.state.userID, name: this.state.userName }}
+                    variables={ { id: this.state.userID, userName: this.state.userName }}
                   >
                     {updateUser =>
                       <button
@@ -347,7 +353,7 @@ class Users extends React.Component{
                 query={QUERY_USERS_ORDERS}
                 errorPolicy="all"
                 variables={{
-                  name: originalName,
+                  userName: originalName,
                   newhire: "New Hire",
                   prioritydeployment: "Priority Deployment",
                   cancelled: "Cancelled"
@@ -359,12 +365,12 @@ class Users extends React.Component{
                   var ordersToRender = [];
                   ordersToRender = data.filteredUsers;
                   var hasTechOrder = false;
-                  if ( ordersToRender[ 0 ].techorders ) {
-                    for ( var index in ordersToRender[ 0 ].techorders ) {
+                  if ( ordersToRender[ 0 ].userTechOrders ) {
+                    for ( var index in ordersToRender[ 0 ].userTechOrders ) {
                       if (
-                        ordersToRender[ 0 ].techorders[ index ].order === null ||
-                        ordersToRender[ 0 ].techorders[ index ].order === undefined ) {
-                        delete ordersToRender[ 0 ].techorders[ index ];
+                        ordersToRender[ 0 ].userTechOrders[ index ].techOrder === null ||
+                        ordersToRender[ 0 ].userTechOrders[ index ].techOrder === undefined ) {
+                        delete ordersToRender[ 0 ].userTechOrders[ index ];
                       } else {
                         hasTechOrder = true;
                       }
@@ -378,12 +384,12 @@ class Users extends React.Component{
                         </div>
                         <div className="col-sm-12">
                           <div className="row ordersList">
-                            {ordersToRender[ 0 ].itamorders.slice( 0 ).reverse().map( orders =>
+                            {ordersToRender[ 0 ].userItamOrders.slice( 0 ).reverse().map( orders =>
                               <div className="col-sm-12">
-                                {orders.order.orderid} |
-                                {orders.order.ordercategory} |
-                                {orders.order.items} |
-                                {orders.order.recipient}
+                                {orders.itamOrder.orderSimplexId} |
+                                {orders.itamOrder.orderCategory} |
+                                {orders.itamOrder.orderItem} |
+                                {orders.itamOrder.orderRecipient}
                               </div>
                             )}
                           </div>
@@ -401,12 +407,12 @@ class Users extends React.Component{
                       </div>
                       <div className="col-sm-12">
                         <div className="row ordersList">
-                          {ordersToRender[ 0 ].itamorders.slice( 0 ).reverse().map( orders =>
+                          {ordersToRender[ 0 ].userItamOrders.slice( 0 ).reverse().map( orders =>
                             <div className="col-sm-12">
-                              {orders.order.orderid} |
-                              {orders.order.ordercategory} |
-                              {orders.order.items} |
-                              {orders.order.recipient}
+                              {orders.itamOrder.orderSimplexId} |
+                              {orders.itamOrder.orderCategory} |
+                              {orders.itamOrder.orderItem} |
+                              {orders.itamOrder.orderRecipient}
                             </div>
                           )}
                         </div>
@@ -416,12 +422,12 @@ class Users extends React.Component{
                       </div>
                       <div className="col-sm-12">
                         <div className="row ordersList">
-                          {ordersToRender[ 0 ].techorders.slice( 0 ).reverse().map( orders =>
+                          {ordersToRender[ 0 ].userTechOrders.slice( 0 ).reverse().map( orders =>
                             <div className="col-sm-12">
-                              {orders.order.orderid} |
-                              {orders.order.ordercategory} |
-                              {orders.order.items} |
-                              {orders.order.recipient}
+                              {orders.techOrder.orderSimplexId} |
+                              {orders.techOrder.orderCategory} |
+                              {orders.techOrder.orderItem} |
+                              {orders.techOrder.orderRecipient}
                             </div>
                           )}
                         </div>

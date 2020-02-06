@@ -53,49 +53,9 @@ const Styles = styled.div`
 `;
 
 const CREATE_ORDER = gql`
-  mutation createOrder(
-    $orderid: Float!,
-    $datecreated: DateTime!,
-    $dateapproved: DateTime!,
-    $createdby: String!,
-    $createdbyemail: String!,
-    $recipient: String!,
-    $newhire: Boolean!,
-    $hirestartdate: DateTime,
-    $hirename: String,
-    $approvalmanager: String!,
-    $businessunit: String!,
-    $attention: String!,
-    $shippingaddress: String!,
-    $items: String!,
-    $total: Float!,
-    $ordercategory: String!,
-    $comments: String!,
-    $itam: ITAMProgressCreateOneWithoutOrderInput!,
-    $tech: TechnicianProgressCreateOneWithoutOrderInput!,
-  ) {
-    createOrder(
-      orderid: $orderid,
-      datecreated: $datecreated,
-      dateapproved: $dateapproved,
-      createdby: $createdby,
-      createdbyemail: $createdbyemail,
-      recipient: $recipient,
-      newhire: $newhire,
-      hirestartdate: $hirestartdate,
-      hirename: $hirename,
-      approvalmanager: $approvalmanager,
-      businessunit: $businessunit,
-      attention: $attention,
-      shippingaddress: $shippingaddress,
-      items: $items,
-      total: $total,
-      ordercategory: $ordercategory,
-      comments: $comments,
-      itam: $itam,
-      tech: $tech
-    ) {
-        id
+  mutation createOrder($input: createOrderInput!) {
+    createOrder(input: $input) {
+      id
     }
   }
 `;
@@ -172,27 +132,27 @@ class Upload extends React.Component{
 
     const itamOwner = {
       connect: {
-        name: "Unassigned"
+        userName: "Unassigned"
       }
     };
 
     const techOwner = {
       connect: {
-        name: "Unassigned"
+        userName: "Unassigned"
       }
     };
 
     const createITAM = {
       create: {
-        status: "Not Started",
-        itamowner: itamOwner
+        itamStatus: "Not Started",
+        itamOwner: itamOwner
       }
     };
 
     const createTech = {
       create: {
-        status: "Not Started",
-        techowner: techOwner
+        techStatus: "Not Started",
+        techOwner: techOwner
       }
     };
     return (
@@ -261,25 +221,27 @@ class Upload extends React.Component{
                 </div>
                 <div class="col-sm-12 buttonDiv">
                   <Mutation mutation={CREATE_ORDER} variables={{
-                        orderid: order[ 0 ],
-                        datecreated: order[ 1 ],
-                        dateapproved: order[ 2 ],
-                        createdby: order[ 3 ],
-                        createdbyemail: order[ 4 ],
-                        recipient: order[ 5 ],
-                        newhire: order[ 6 ],
-                        hirestartdate: order[ 7 ],
-                        hirename: order[ 8 ],
-                        approvalmanager: order[ 9 ],
-                        businessunit: order[ 10 ],
-                        attention: order[ 11 ],
-                        shippingaddress: order[ 12 ],
-                        items: order[ 13 ],
-                        total: order[ 14 ],
-                        ordercategory: "New Order",
-                        comments: order[ 15 ],
-                        itam: createITAM,
-                        tech: createTech
+                    input: {
+                      orderSimplexId: order[ 0 ],
+                      orderDateCreated: order[ 1 ],
+                      orderDateApproved: order[ 2 ],
+                      orderCreatedBy: order[ 3 ],
+                      orderCreatedByEmail: order[ 4 ],
+                      orderRecipient: order[ 5 ],
+                      orderNewHire: order[ 6 ],
+                      orderHireStartDate: order[ 7 ],
+                      orderHireName: order[ 8 ],
+                      orderApprovalManager: order[ 9 ],
+                      orderBusinessUnit: order[ 10 ],
+                      orderAttention: order[ 11 ],
+                      orderShippingAddress: order[ 12 ],
+                      orderItem: order[ 13 ],
+                      orderTotal: order[ 14 ],
+                      orderCategory: "New Order",
+                      orderComments: order[ 15 ],
+                      orderItam: createITAM,
+                      orderTech: createTech
+                    }
                   }}>
                     {createOrder =>
                       <button type="button" class="btn btn-success"

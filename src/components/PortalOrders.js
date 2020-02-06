@@ -224,7 +224,7 @@ class PortalOrders extends React.Component {
             <div class="col-sm-12">
             <CreateOrder/>
             <Query query={QUERY_ORDERS} variables={{
-              ordercategory: orderCategory
+              orderCategory: orderCategory
             }}>
               {({ loading, error, data }) => {
                 if ( loading ) { return <div>Fetching</div>;}

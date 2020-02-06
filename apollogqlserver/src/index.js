@@ -9,21 +9,22 @@ const resolvers = {
 		orders(parent, args, ctx, info) {
 			return ctx.db.query.orders({}, info );
 		},
-		filteredOrders(parent, args, ctx, info) {
-			return ctx.db.query.orders({ where: { orderCategory: args.orderCategory } }, info );
+		filteredOrders(parent, { orderCategory }, ctx, info) {
+			return ctx.db.query.orders({ where: { orderCategory } }, info );
 		},
 		users(parent, args, ctx, info) {
 			return ctx.db.query.users({}, info );
 		},
-		filteredUsers(parent, args, ctx, info) {
-			return ctx.db.query.users({ where: { userName: args.userName } }, info );
+		filteredUsers(parent, { userName }, ctx, info) {
+			return ctx.db.query.users({ where: { userName } }, info );
 		},
-		order(parent, args, ctx, info) {
-			return ctx.db.query.order({ where: { orderId: args.orderId } }, info );
+		order(parent, { id }, ctx, info) {
+			return ctx.db.query.order({ where: { id } }, info );
 		}
 	},
 	Mutation: {
 		createOrder(parent, args, ctx, info) {
+			console.log(args);
 			return ctx.db.mutation.createOrder({
 					data: {
 						orderSimplexId: args.input.orderSimplexId,
@@ -54,45 +55,21 @@ const resolvers = {
 		createUser(parent, { userName }, ctx, info) {
 			return ctx.db.mutation.createUser({ data: {	userName } }, info );
 		},
-		deleteOrder(parent, { orderId }, ctx, info) {
-			return ctx.db.mutation.deleteOrder({ where: { orderId } }, info );
+		deleteOrder(parent, { id }, ctx, info) {
+			return ctx.db.mutation.deleteOrder({ where: { id } }, info );
 		},
-		deleteUser(parent, { userId }, ctx, info) {
-			return ctx.db.mutation.deleteUser({ where: { userId } }, info );
+		deleteUser(parent, { id }, ctx, info) {
+			return ctx.db.mutation.deleteUser({ where: { id } }, info );
 		},
-		updateUser(parent, args, ctx, info) {
+		updateUser(parent, { id, userName }, ctx, info) {
 			return ctx.db.mutation.updateUser({
-				data: { userName: args.input.userName },
-				where: { id: args.input.userId },
+				data: { userName },
+				where: { id },
 				info
 			});
 		},
 		updateEntireOrder(parent, args, ctx, info) {
 			// use props for where and state for update data
-			ctx.db.mutation.updateOrder({
-				data: {
-					orderSimplexId: args.input.orderSimplexId,
-					orderDateCreated: args.input.orderDateCreated,
-					orderDateApproved: args.input.orderDateApproved,
-					orderCreatedBy: args.input.orderCreatedBy,
-					orderCreatedByEmail: args.input.orderCreatedByEmail,
-					orderNewHire: args.input.orderNewHire,
-					orderRecipient: args.input.orderRecipient,
-					orderHireStartDate: args.input.orderHireStartDate,
-					orderHireName: args.input.orderHireName,
-					orderApprovalManager: args.input.orderApprovalManager,
-					orderBusinessUnit: args.input.orderBusinessUnit,
-					orderAttention: args.input.orderAttention,
-					orderShippingAddress: args.input.orderShippingAddress,
-					orderItem: args.input.orderItem,
-					orderTotal: args.input.orderTotal,
-					orderComments: args.input.orderComments,
-					orderCategory: args.input.orderCategory,
-					orderSla: args.input.orderSla
-				},
-				where: { id: args.input.orderId },
-				info
-			});
 			ctx.db.mutation.updateItamProgress({
 				data: { itamOwner: { disconnect: true } },
 				where: { id: args.input.itamId },
@@ -138,7 +115,30 @@ const resolvers = {
 				where: { id: args.input.techId },
 				info
 			});
-			return args.input.orderId;
+			return ctx.db.mutation.updateOrder({
+				data: {
+					orderSimplexId: args.input.orderSimplexId,
+					orderDateCreated: args.input.orderDateCreated,
+					orderDateApproved: args.input.orderDateApproved,
+					orderCreatedBy: args.input.orderCreatedBy,
+					orderCreatedByEmail: args.input.orderCreatedByEmail,
+					orderNewHire: args.input.orderNewHire,
+					orderRecipient: args.input.orderRecipient,
+					orderHireStartDate: args.input.orderHireStartDate,
+					orderHireName: args.input.orderHireName,
+					orderApprovalManager: args.input.orderApprovalManager,
+					orderBusinessUnit: args.input.orderBusinessUnit,
+					orderAttention: args.input.orderAttention,
+					orderShippingAddress: args.input.orderShippingAddress,
+					orderItem: args.input.orderItem,
+					orderTotal: args.input.orderTotal,
+					orderComments: args.input.orderComments,
+					orderCategory: args.input.orderCategory,
+					orderSla: args.input.orderSla
+				},
+				where: { id: args.input.orderId },
+				info
+			});
 		}
 	}
 };

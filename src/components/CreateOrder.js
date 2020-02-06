@@ -29,51 +29,9 @@ const Styles = styled.div`
 `;
 
 const CREATE_ORDER = gql`
-  mutation createOrder(
-    $orderSimplexId: Float!,
-    $orderDateCreated: Date!,
-    $orderDateApproved: Date!,
-    $orderCreatedBy: String!,
-    $orderCreatedByEmail: String!,
-    $orderNewHire: Boolean,
-    $orderRecipient: String!,
-    $orderHireStartDate: Date,
-    $orderHireName: String,
-    $orderApprovalManager: String!,
-    $orderBusinessUnit: String!,
-    $orderAttention: String!,
-    $orderShippingAddress: String!,
-    $orderItem: String!,
-    $orderTotal: Float!,
-    $orderComments: String!,
-    $orderCategory: String!,
-    $orderSla: Int,
-    $orderItam: ItamProgressCreateOneWithoutItamOrderInput,
-    $orderTech: TechProgressCreateOneWithoutTechOrderInput
-  ) {
-    createOrder(
-      orderSimplexId: $orderSimplexId,
-      orderDateCreated: $orderDateCreated,
-      orderDateApproved: $orderDateApproved,
-      orderCreatedBy: $orderCreatedBy,
-      orderCreatedByEmail: $orderCreatedByEmail,
-      orderNewHire: $orderNewHire,
-      orderRecipient: $orderRecipient,
-      orderHireStartDate: $orderHireStartDate,
-      orderHireName: $orderHireName,
-      orderApprovalManager: $orderApprovalManager,
-      orderBusinessUnit: $orderBusinessUnit,
-      orderAttention: $orderAttention,
-      orderShippingAddress: $orderShippingAddress,
-      orderItem: $orderItem,
-      orderTotal: $orderTotal,
-      orderComments: $orderComments,
-      orderCategory: $orderCategory,
-      orderSla: $orderSla,
-      orderItam: $orderItam,
-      orderTech: $orderTech
-    ) {
-        id
+  mutation createOrder($input: createOrderInput!) {
+    createOrder(input: $input) {
+      id
     }
   }
 `;
@@ -695,7 +653,7 @@ class CreateOrder extends React.Component {
                         onChange={e=>this.setState({ itamName: e.target.value })}
                       >
                         {usersToRender.slice( 0 ).map( user =>
-                          <option value={user.name}>{user.name}</option>
+                          <option value={user.userName}>{user.userName}</option>
                         )}
                       </select>
                     );
@@ -956,7 +914,7 @@ class CreateOrder extends React.Component {
                         onChange={e=>this.setState({ techName:e.target.value })}
                       >
                         {usersToRender.slice( 0 ).map( user =>
-                          <option value={user.name}>{user.name}</option>
+                          <option value={user.userName}>{user.userName}</option>
                         )}
                       </select>
                     );
@@ -1137,26 +1095,28 @@ class CreateOrder extends React.Component {
               <Mutation
                 mutation={CREATE_ORDER}
                 variables={{
-                  orderSimplexId: orderid,
-                  orderDateCreated: dateCreated,
-                  orderDateApproved: dateApproved,
-                  orderCreatedBy: createdBy,
-                  orderCreatedByEmail: createdByEmail,
-                  orderNewHire: newHire,
-                  orderRecipient: recipient,
-                  orderHireStartDate: hireStartDate,
-                  orderHireName: hireName,
-                  orderApprovalManager: approvalManager,
-                  orderBusinessUnit: businessUnit,
-                  orderAttention: attention,
-                  orderShippingAddress: shippingAddress,
-                  orderItem: item,
-                  orderTotal: total,
-                  orderComments: comments,
-                  orderCategory: orderCategory,
-                  orderSla: sla,
-                  orderItam: createITAM,
-                  orderTech: createTech
+                  input: {
+                    orderSimplexId: orderid,
+                    orderDateCreated: dateCreated,
+                    orderDateApproved: dateApproved,
+                    orderCreatedBy: createdBy,
+                    orderCreatedByEmail: createdByEmail,
+                    orderNewHire: newHire,
+                    orderRecipient: recipient,
+                    orderHireStartDate: hireStartDate,
+                    orderHireName: hireName,
+                    orderApprovalManager: approvalManager,
+                    orderBusinessUnit: businessUnit,
+                    orderAttention: attention,
+                    orderShippingAddress: shippingAddress,
+                    orderItem: item,
+                    orderTotal: total,
+                    orderComments: comments,
+                    orderCategory: orderCategory,
+                    orderSla: sla,
+                    orderItam: createITAM,
+                    orderTech: createTech
+                  }
                 }}
               >
                 {createOrder =>

@@ -73,11 +73,6 @@ input createOrderInput{
   orderTech: TechProgressCreateOneWithoutTechOrderInput
 }
 
-input updateUserInput{
-  userId: ID!,
-  userName: String!
-}
-
 type updateEntireOrderResponse{
   order: Order!,
   itam: ItamProgress!,
@@ -90,19 +85,14 @@ type Query{
   filteredOrders(orderCategory: String!): [Order!]!
   users: [User!]!
   filteredUsers(userName: String!): [User!]!
-  order(orderId: ID!): Order
+  order(id: ID!): Order
 }
 
 type Mutation{
   createOrder( input: createOrderInput! ): Order
-
   createUser( userName: String! ): User
-
-  deleteOrder( orderId: ID! ): Order
-
-  deleteUser( userId: ID! ): User
-
-  updateUser( input: updateUserInput! ): User
-
-  updateEntireOrder( input: updateEntireOrderInput! ): updateEntireOrderResponse
+  deleteOrder( id: ID! ): Order
+  deleteUser( id: ID! ): User
+  updateUser( id: ID!, userName: String! ): User
+  updateEntireOrder( input: updateEntireOrderInput! ): Order
 }

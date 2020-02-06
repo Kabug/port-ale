@@ -101,7 +101,7 @@ class Orders extends React.Component {
       ITAMPOOrder: this.props.orders.orderItam.itamPoOrderId,
       ITAMDellOrder: this.props.orders.orderItam.itamDellOrderId,
       ITAMDellEmailNotif: this.props.orders.orderItam.itamDellEmailNotif,
-      Techid: this.props.orders.tech.id,
+      Techid: this.props.orders.orderTech.id,
       TechName: this.props.orders.orderTech.techOwner.userName,
       TechStatus: this.props.orders.orderTech.techStatus,
       TechConfirmedUser: this.props.orders.orderTech.techConfirmedUser,
@@ -154,7 +154,6 @@ class Orders extends React.Component {
     } else {
       num = 0;
     }
-
     if ( selectedFloat === "ID" ) {
       this.setState({ isValidID: true });
       this.setState({ orderID: parseFloat( num ) });
@@ -656,7 +655,7 @@ class Orders extends React.Component {
                             value={ITAMName}
                           >
                             {usersToRender.slice( 0 ).map( user =>
-                              <option value={user.name}>{user.name}</option>
+                              <option value={user.userName}>{user.userName}</option>
                             )}
                           </select>
                         );
@@ -1005,9 +1004,10 @@ class Orders extends React.Component {
                             class="custom-select techInput"
                             id="techName"
                             onChange={e=>this.setState({ TechName:e.target.value })}
+                            value={TechName}
                           >
                             {usersToRender.slice( 0 ).map( user =>
-                              <option value={user.name}>{user.name}</option>
+                              <option value={user.userName}>{user.userName}</option>
                             )}
                           </select>
                         );

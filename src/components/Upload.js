@@ -11,9 +11,14 @@ const Styles = styled.div`
     border-radius: 20px;
     padding: 1%;
     background-color: #FFCC00;
-    margin-top: 5em;
+    margin-top: 2.5em;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin-bottom: 3em;
+  }
+
+  .csv-input:hover{
+    cursor: pointer;
+    color: white;
   }
 
   .newOrdersDiv{
@@ -50,6 +55,10 @@ const Styles = styled.div`
     max-height: 91.7vh;
     overflow-y: auto;
   }
+
+  .title{
+    margin-top: 2.5em;
+  }
 `;
 
 const CREATE_ORDER = gql`
@@ -70,11 +79,11 @@ class Upload extends React.Component{
   }
 
   setDataToState = (data) => {
-    var tempData = data;
+    const tempData = data;
 
     try {
     // Remove uneeded columns
-    var order;
+    let order;
     for ( order in tempData ) {
       if ( !(data[ order ]) || data[ order ][ 0 ] === "") {
         data.splice( order, 1 );
@@ -84,7 +93,7 @@ class Upload extends React.Component{
     }
 
     // Formatting value types
-    var finalOrders = [];
+    let finalOrders = [];
     for ( order in data ) {
       data[ order ][ 0 ] = parseFloat( data[ order ][ 0 ] );
       data[ order ][ 1 ] = this.formatDate( data[ order ][ 1 ] );
@@ -102,9 +111,9 @@ class Upload extends React.Component{
         data[ order ][ 7 ] = null;
       }
       if ( data[ order ][ 13 ].match( /\d -/g ).length > 1 ) {
-        var items = (data[ order ][ 13 ].split( /\d -/ ) ).filter( Boolean );
-        for ( var item in items ) {
-          var newOrder = [ ...data[ order ] ];
+        let items = (data[ order ][ 13 ].split( /\d -/ ) ).filter( Boolean );
+        for ( let item in items ) {
+          let newOrder = [ ...data[ order ] ];
           newOrder[ 13 ] = items[ item ];
           finalOrders.push( newOrder );
         }
@@ -123,7 +132,7 @@ class Upload extends React.Component{
   }
 
   removeFromState = (orderId) => {
-    var updatedOrders = [ ...this.state.newOrders ];
+    let updatedOrders = [ ...this.state.newOrders ];
     updatedOrders.splice( orderId, 1 );
     this.setState({ newOrders: updatedOrders });
   };
@@ -159,6 +168,9 @@ class Upload extends React.Component{
       <Styles>
         <div class="container-fluid orders">
           <div class="row">
+            <div class="col-sm-12 title">
+              <h1>Upload from CSV</h1>
+            </div>
             <div class="col-sm-12">
               <CSVReader onFileLoaded={data => this.setDataToState( data )} />
             </div>

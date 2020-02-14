@@ -61,6 +61,15 @@ const QUERY_USERS = gql`
   }
 `;
 
+const UPDATE_ENTIRE_ORDER = gql`
+  mutation updateEntireOrder($input: updateEntireOrderInput!) {
+    updateEntireOrder(input: $input) {
+      id
+      orderSimplexId
+    }
+  }
+`;
+
 class Orders extends React.Component {
   constructor(props) {
     super( props );
@@ -148,7 +157,7 @@ class Orders extends React.Component {
   };
 
   toValidFloat = (usrInput, selectedFloat) => {
-    var num;
+    let num;
     if ( usrInput && parseFloat( usrInput ) < 10000000000000000 ) {
       num = usrInput;
     } else {
@@ -171,7 +180,7 @@ class Orders extends React.Component {
   };
 
   toValidDate = (usrInputDate, selectedDate) => {
-    var valid = false;
+    let valid = false;
     if ( usrInputDate.match( /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/g ) ) {
       valid = true;
     }
@@ -325,7 +334,7 @@ class Orders extends React.Component {
             <div class="col-sm-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" for="orderCategory">Order Category</label>
+                  <label class="input-group-text" htmlFor="orderCategory">Order Category</label>
                 </div>
                 <select
                   class="custom-select"
@@ -513,7 +522,7 @@ class Orders extends React.Component {
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="sla"
-                      disabled={this.state.newHire}
+                      disabled={!this.state.newHire}
                       value={sla}
                       onChange={e=>this.toValidFloat( e.target.value, "sla" )}
                     />
@@ -613,7 +622,7 @@ class Orders extends React.Component {
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" for="ITAMStatus">ITAM Status</label>
+                      <label class="input-group-text" htmlFor="ITAMStatus">ITAM Status</label>
                     </div>
                     <select
                       class="custom-select ITAMInput"
@@ -636,7 +645,7 @@ class Orders extends React.Component {
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" for="ITAMName">ITAM Name</label>
+                      <label class="input-group-text" htmlFor="ITAMName">ITAM Name</label>
                     </div>
                     <Query query={QUERY_USERS}>
                       {({ loading, error, data }) => {
@@ -700,7 +709,7 @@ class Orders extends React.Component {
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" for="productSource">Product Source</label>
+                      <label class="input-group-text" htmlFor="productSource">Product Source</label>
                     </div>
                     <select
                       class="custom-select ITAMInput"
@@ -988,7 +997,7 @@ class Orders extends React.Component {
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" for="techName">Tech Name</label>
+                      <label class="input-group-text" htmlFor="techName">Tech Name</label>
                     </div>
                     <Query query={QUERY_USERS}>
                       {({ loading, error, data }) => {
@@ -1025,14 +1034,14 @@ class Orders extends React.Component {
                 <div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" for="techStatus">Tech Status</label>
+                      <label class="input-group-text" htmlFor="techStatus">Tech Status</label>
                     </div>
                     <select
                       class="custom-select techInput"
                       id="techStatus"
                       onChange={e=>this.setState({ TechStatus:e.target.value })}
                     >
-                      <option value ="Not Started" selected>Not Started</option>
+                      <option value ="Not Started" defaultValue>Not Started</option>
                       <option value="In Progress">In Progress</option>
                       <option value="Shipped to User">Shipped to User</option>
                       <option value="Done">Done</option>
@@ -1247,31 +1256,86 @@ class Orders extends React.Component {
           </div>
           <div class="row buttons">
             <div class="col-sm">
-              <button
-                type="button"
-                class="btn btn-success"
-                onClick={() => {
-                  this.setState({ buttonClicked: true });
-                  window.location.reload();
+              <Mutation
+                mutation={UPDATE_ENTIRE_ORDER}
+                variables={{
+                  input:{
+                    orderId: this.props.orders.id,
+                    orderSimplexId: orderID,
+                    orderDateCreated: dateCreated,
+                    orderDateApproved: dateApproved,
+                    orderCreatedBy: createdBy,
+                    orderCreatedByEmail: createdByEmail,
+                    orderNewHire: newHire,
+                    orderRecipient: recipient,
+                    orderHireStartDate: hireStartDate,
+                    orderHireName: hireName,
+                    orderApprovalManager: approvalManager,
+                    orderBusinessUnit: businessUnit,
+                    orderAttention: attention,
+                    orderShippingAddress: shippingAddress,
+                    orderItem: item,
+                    orderTotal: total,
+                    orderComments: comments,
+                    orderCategory: orderCategory,
+                    orderSla: sla,
+                    itamId: this.props.orders.orderItam.id,
+                    itamStatus: ITAMStatus,
+                    itamVerificationEmailSent: ITAMVerificationEmailSent,
+                    itamProductSource: ITAMProductSource,
+                    itamOldAssetTag: ITAMOldAssetTag,
+                    itamOldModel: ITAMOldModel,
+                    itamMonitorModel: ITAMMonitorModel,
+                    itamMonitorNum: ITAMMonitorNum,
+                    itamConnectorTypes: ITAMConnectorType,
+                    itamOrderPendingEmail: ITAMOrderPendEmail,
+                    itamConfirmedNewHire: ITAMConfirmedNewhire,
+                    itamPoOrderId: ITAMPOOrder,
+                    itamDellOrderId: ITAMDellOrder,
+                    itamDellEmailNotif: ITAMDellEmailNotif,
+                    techId: this.props.orders.orderTech.id,
+                    techStatus: TechStatus,
+                    techConfirmedUser: TechConfirmedUser,
+                    techCostCenter: TechCostCenter,
+                    techServiceTag: TechServiceTag,
+                    techInitialEmail: TechEmailPCSent,
+                    techDateFollowupTemp: TechDateFollowupTemp,
+                    techFollowupEmailSent: TechFollowupEmail,
+                    techDateCompleted: TechDateSetupCompleted,
+                    itamUserName: ITAMName,
+                    techUserName: TechName
+                  }
                 }}
-                disabled={!(
-                  this.state.isValidID *
-                  this.state.isValidCreated *
-                  this.state.isValidApproved *
-                  this.state.isValidVerifEmail  *
-                  this.state.isValidEmail *
-                  this.state.isValidStartDate *
-                  this.state.isValidPendEmail *
-                  this.state.isValidConfirmedHireDate *
-                  this.state.isValidPCEmailDate *
-                  this.state.isValidFollowupEmail *
-                  this.state.isValidDateSetupCompleted *
-                  this.state.isValidEmailNotif *
-                  this.state.isValidDateFollowup *
-                  !this.state.buttonClicked)}
               >
-                Update
-              </button>
+                {updateEntireOrder =>
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    onClick={() => {
+                      this.setState({ buttonClicked: true });
+                      updateEntireOrder();
+                      window.location.reload();
+                    }}
+                    disabled={!(
+                      this.state.isValidID *
+                      this.state.isValidCreated *
+                      this.state.isValidApproved *
+                      this.state.isValidVerifEmail  *
+                      this.state.isValidEmail *
+                      this.state.isValidStartDate *
+                      this.state.isValidPendEmail *
+                      this.state.isValidConfirmedHireDate *
+                      this.state.isValidPCEmailDate *
+                      this.state.isValidFollowupEmail *
+                      this.state.isValidDateSetupCompleted *
+                      this.state.isValidEmailNotif *
+                      this.state.isValidDateFollowup *
+                      !this.state.buttonClicked)}
+                  >
+                    Update
+                  </button>
+                }
+              </Mutation>
             </div>
             <div class="col-sm">
               <button

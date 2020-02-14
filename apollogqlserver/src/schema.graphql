@@ -86,6 +86,8 @@ type Query{
   users: [User!]!
   filteredUsers(userName: String!): [User!]!
   order(id: ID!): Order
+  initialOrders(orderCategory: String!): [Order!]!
+  nextOrders(after: ID!): [Order!]!
 }
 
 type Mutation{

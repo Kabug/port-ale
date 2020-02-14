@@ -9,6 +9,7 @@ import Users from "./Users";
 import Email from "./Email";
 import PortalOrders from "./PortalOrders";
 import NotFound from "./NotFound";
+import Export from "./Export";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/users" component={Users}/>
           <Route path="/upload" component={Upload}/>
           <Route path="/email" component={Email}/>
+          <Route path="/export" component={Export}/>
           <Route component={NotFound}/>
         </Switch>
       </div>

@@ -118,7 +118,7 @@ class CreateOrder extends React.Component {
   };
 
   toValidFloat = (usrInput, selectedFloat) => {
-    var num;
+    let num;
     if ( usrInput && parseFloat( usrInput ) < 10000000000000000 ) {
       num = usrInput;
     } else {
@@ -142,7 +142,7 @@ class CreateOrder extends React.Component {
   };
 
   toValidDate = (usrInputDate, selectedDate) => {
-    var valid = false;
+    let valid = false;
     if ( usrInputDate.match( /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/g ) ) {
       valid = true;
     }
@@ -336,14 +336,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="orderCategory">Order Category</label>
+                  <label className="input-group-text" htmlFor="orderCategory">Order Category</label>
                 </div>
                 <select
                   className="custom-select"
                   id="orderCategory"
                   onChange={e=>this.setState({ orderCategory:e.target.value })}
+                  defaultValue="New Order"
                 >
-                  <option value="New Order" selected>New Order</option>
+                  <option value="New Order">New Order</option>
                   <option value="Accessory">Accessory</option>
                   <option value="New Hire">New Hire</option>
                   <option value="Priority Deployment">Priority Deployment</option>
@@ -620,14 +621,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="ITAMStatus">ITAM Status</label>
+                  <label className="input-group-text" htmlFor="ITAMStatus">ITAM Status</label>
                 </div>
                 <select
                   className="custom-select"
                   id="ITAMStatus"
                   onChange={e=>this.setState({ itamStatus:e.target.value })}
+                  defaultValue="New"
                 >
-                  <option value="New" selected>New</option>
+                  <option value="New">New</option>
                   <option value="Emailed">Emailed</option>
                 </select>
               </div>
@@ -635,7 +637,7 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="ITAMName">ITAM Name</label>
+                  <label className="input-group-text" htmlFor="ITAMName">ITAM Name</label>
                 </div>
                 <Query query={QUERY_USERS}>
                   {({ loading, error, data }) => {
@@ -682,14 +684,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="productSource">Product Source</label>
+                  <label className="input-group-text" htmlFor="productSource">Product Source</label>
                 </div>
                 <select
                   className="custom-select"
                   id="productSource"
                   onChange={e=>this.setState({ itamProductSource:e.target.value })}
+                  defaultValue=""
                 >
-                  <option value="" Selected>Select...</option>
+                  <option value="">Select...</option>
                   <option value="Inhouse">Inhouse</option>
                   <option value="Emerge">Emerge</option>
                   <option value="Dell">Dell</option>
@@ -896,7 +899,7 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="techName">Tech Name</label>
+                  <label className="input-group-text" htmlFor="techName">Tech Name</label>
                 </div>
                 <Query query={QUERY_USERS}>
                   {({ loading, error, data }) => {
@@ -925,14 +928,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="techStatus">Tech Status</label>
+                  <label className="input-group-text" htmlFor="techStatus">Tech Status</label>
                 </div>
                 <select
                   className="custom-select"
                   id="techStatus"
                   onChange={e=>this.setState({ techStatus:e.target.value })}
+                  defaultValue="Not Started"
                 >
-                  <option value ="Not Started" selected>Not Started</option>
+                  <option value ="Not Started">Not Started</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Shipped to User">Shipped to User</option>
                   <option value="Done">Done</option>

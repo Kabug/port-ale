@@ -20,11 +20,27 @@ const resolvers = {
 		},
 		order(parent, { id }, ctx, info) {
 			return ctx.db.query.order({ where: { id } }, info );
+		},
+		initialOrders(parent, args, ctx, info) {
+			return ctx.db.query.orders({
+					where: { orderCategory: args.orderCategory },
+					last: 5
+				},
+				info
+			);
+		},
+		nextOrders(parent, args, ctx, info) {
+			return ctx.db.query.orders({
+					where: { orderCategory: args.orderCategory },
+					last:5,
+					after: args.after
+				},
+				info
+			);
 		}
 	},
 	Mutation: {
 		createOrder(parent, args, ctx, info) {
-			console.log(args);
 			return ctx.db.mutation.createOrder({
 					data: {
 						orderSimplexId: args.input.orderSimplexId,
@@ -71,11 +87,6 @@ const resolvers = {
 		updateEntireOrder(parent, args, ctx, info) {
 			// use props for where and state for update data
 			ctx.db.mutation.updateItamProgress({
-				data: { itamOwner: { disconnect: true } },
-				where: { id: args.input.itamId },
-				info
-			});
-			ctx.db.mutation.updateItamProgress({
 				data: {
 					itamOwner: { connect: { userName:  args.input.itamUserName } },
 				  itamStatus: args.input.itamStatus,
@@ -93,11 +104,6 @@ const resolvers = {
 				  itamDellEmailNotif: args.input.itamDellEmailNotif
 				},
 				where: { id: args.input.itamId },
-				info
-			});
-			ctx.db.mutation.updateTechProgress({
-				data: { techOwner: { disconnect: true } },
-				where: { id: args.input.techId },
 				info
 			});
 			ctx.db.mutation.updateTechProgress({

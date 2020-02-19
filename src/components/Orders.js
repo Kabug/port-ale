@@ -137,6 +137,10 @@ class Orders extends React.Component {
     };
   }
 
+  removeOrderFromList = () => {
+    this.props.removeOrderFromList( this.props.index );
+  };
+
   newHireToggle = () => {
     this.setState({ newHire: !this.state.newHire });
   };
@@ -1314,7 +1318,6 @@ class Orders extends React.Component {
                     onClick={() => {
                       this.setState({ buttonClicked: true });
                       updateEntireOrder();
-                      window.location.reload();
                     }}
                     disabled={!(
                       this.state.isValidID *
@@ -1352,7 +1355,7 @@ class Orders extends React.Component {
                     <button
                       type="button"
                       class="btn btn-danger"
-                      onClick={() => {deleteOrder(); this.hideOrder();}}
+                      onClick={() => {deleteOrder(); this.hideOrder(); this.removeOrderFromList();}}
                     >
                       Permanently Delete
                     </button>

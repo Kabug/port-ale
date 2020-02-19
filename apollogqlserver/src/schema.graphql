@@ -73,6 +73,11 @@ input createOrderInput{
   orderTech: TechProgressCreateOneWithoutTechOrderInput
 }
 
+input nextOrdersInput{
+  orderCategory: String!,
+  before: ID
+}
+
 type updateEntireOrderResponse{
   order: Order!,
   itam: ItamProgress!,
@@ -86,8 +91,7 @@ type Query{
   users: [User!]!
   filteredUsers(userName: String!): [User!]!
   order(id: ID!): Order
-  initialOrders(orderCategory: String!): [Order!]!
-  nextOrders(after: ID!): [Order!]!
+  nextOrders(input: nextOrdersInput!): [Order!]!
 }
 
 type Mutation{

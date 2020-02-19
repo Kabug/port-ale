@@ -21,19 +21,22 @@ const resolvers = {
 		order(parent, { id }, ctx, info) {
 			return ctx.db.query.order({ where: { id } }, info );
 		},
-		initialOrders(parent, args, ctx, info) {
-			return ctx.db.query.orders({
-					where: { orderCategory: args.orderCategory },
-					last: 5
-				},
-				info
-			);
-		},
 		nextOrders(parent, args, ctx, info) {
+			console.log( args );
+			if ( args.input.before === "" ) {
+				return ctx.db.query.orders({
+						where: { orderCategory: args.input.orderCategory },
+						last: 5,
+						orderBy: "id_ASC"
+					},
+					info
+				);
+			}
 			return ctx.db.query.orders({
-					where: { orderCategory: args.orderCategory },
+					where: { orderCategory: args.input.orderCategory },
 					last:5,
-					after: args.after
+					before: args.input.before,
+					orderBy: "id_ASC"
 				},
 				info
 			);

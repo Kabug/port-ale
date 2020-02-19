@@ -4,7 +4,7 @@ import CreateOrder from "./CreateOrder";
 import styled from "styled-components";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { ApolloConsumer } from "react-apollo";
 import OImage from "../assets/OTest.png";
 
 const Styles = styled.div`
@@ -70,70 +70,9 @@ const Styles = styled.div`
   }
 `;
 
-const QUERY_INITIAL_ORDERS = gql`
-  query initialOrders($orderCategory: String!){
-    initialOrders(orderCategory: $orderCategory){
-      id
-      orderSimplexId
-      orderDateCreated
-      orderDateApproved
-      orderCreatedBy
-      orderCreatedByEmail
-      orderNewHire
-      orderRecipient
-      orderHireStartDate
-      orderHireName
-      orderApprovalManager
-      orderBusinessUnit
-      orderAttention
-      orderShippingAddress
-      orderItem
-      orderTotal
-      orderComments
-      orderCategory
-      orderSla
-      orderItam{
-        id
-        itamOwner{
-          id
-          userName
-        }
-        itamStatus
-        itamVerificationEmailSent
-        itamProductSource
-        itamOldAssetTag
-        itamOldModel
-        itamMonitorModel
-        itamMonitorNum
-        itamConnectorTypes
-        itamOrderPendingEmail
-        itamConfirmedNewHire
-        itamPoOrderId
-        itamDellOrderId
-        itamDellEmailNotif
-      }
-      orderTech{
-        id
-        techOwner{
-          id
-          userName
-        }
-        techStatus
-        techConfirmedUser
-        techCostCenter
-        techServiceTag
-        techInitialEmail
-        techDateFollowupTemp
-        techFollowupEmailSent
-        techDateCompleted
-      }
-    }
-  }
-`;
-
 const QUERY_NEXT_ORDERS = gql`
-  query nextOrders($orderCategory: String!, $after: ID!){
-    nextOrders(orderCategory: $orderCategory, after: $after){
+  query nextOrders($input: nextOrdersInput!){
+    nextOrders(input: $input){
       id
       orderSimplexId
       orderDateCreated
@@ -200,7 +139,8 @@ class PortalOrders extends React.Component {
       isTech: false,
       isAll: true,
       orderCategory: "New Order",
-      lastID: null
+      lastID: "",
+      listOfOrders: []
     };
   }
 
@@ -230,27 +170,25 @@ class PortalOrders extends React.Component {
     this.setState({ lastID: newId });
   };
 
-  loadMoreOrders = ( orderCategory, after) => {
-    const { loading, error, data } = useQuery( QUERY_NEXT_ORDERS, {
-      variables:{
-        orderCategory: orderCategory,
-        after: after
-      }
-    });
-
-    if ( loading ) { return <div>Fetching</div>;}
-    if ( error ) { return <div>Error</div>;}
-
-    return (
-      <div>HI</div>
-    );
+  removeOrderFromList = (index) => {
+    const newList = [
+      ...this.state.listOfOrders.slice( 0, index ),
+      ...this.state.listOfOrders.slice( index + 1 )
+    ];
+    this.setState({ listOfOrders: newList });
+    if ( newList.length ) {
+      this.setState({ lastID: newList[ newList.length - 1 ].id });
+    } else {
+      this.setState({ lastID: "" });
+    }
   };
 
   render() {
 
     const {
       orderCategory,
-      lastID
+      lastID,
+      listOfOrders
     } = this.state;
 
     return (
@@ -312,34 +250,47 @@ class PortalOrders extends React.Component {
             </div>
             <div className="col-sm-12">
             <CreateOrder/>
-            <Query query={QUERY_INITIAL_ORDERS} variables={{
-              orderCategory: orderCategory
-            }}>
-              {({ loading, error, data }) => {
-                if ( loading ) { return <div>Fetching</div>;}
-                if ( error ) { return <div>Error</div>;}
-                const ordersToRender = data.initialOrders;
-                return (
-                  <div>
-                    {ordersToRender.slice( 0 ).reverse().map( order =>
-                      <Orders
-                        key={order.id}
-                        orders={order}
-                        isITAM={this.state.isITAM}
-                        isTech={this.state.isTech}
-                      />
-                    )}
-                    <button
-                      type="button"
-                      className="btn btn-dark"
-                      onClick={() => this.loadMoreOrders( orderCategory, ordersToRender[ 0 ].id )}
-                    >
-                      Next
-                    </button>
-                  </div>
-                );
-              }}
-            </Query>
+              {listOfOrders.slice( 0 ).map( (order, index) =>
+                <Orders
+                  key={order.id}
+                  index = {index}
+                  orders={order}
+                  isITAM={this.state.isITAM}
+                  isTech={this.state.isTech}
+                  removeOrderFromList={this.removeOrderFromList}
+                />
+              )}
+              <ApolloConsumer>
+                { client => (
+                  <button
+                    type="button"
+                    className="btn btn-dark"
+                    onClick={async () => {
+                      const { loading, error, data } = await client.query({
+                        query: QUERY_NEXT_ORDERS,
+                        variables: {
+                          input: {
+                            orderCategory: orderCategory,
+                            before: lastID
+                          }
+                        }
+                      });
+                      if ( loading ) { return <div>Fetching</div>;}
+                      if ( error ) { return <div>Error</div>;}
+                      let newOrders = data.nextOrders;
+                      if ( newOrders.length ) {
+                        newOrders.reverse();
+                        this.setState({
+                          listOfOrders: this.state.listOfOrders.concat( newOrders ),
+                          lastID: newOrders[ newOrders.length - 1 ].id
+                        });
+                      }
+                    }}
+                  >
+                    Next
+                  </button>
+                )}
+              </ApolloConsumer>
             </div>
           </div>
         </div>

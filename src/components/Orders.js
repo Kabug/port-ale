@@ -93,6 +93,7 @@ class Orders extends React.Component {
       item: this.props.orders.orderItem,
       total: this.props.orders.orderTotal,
       comments: this.props.orders.orderComments,
+      originalOrderCategory: this.props.orders.orderCategory,
       orderCategory: this.props.orders.orderCategory,
       sla: this.props.orders.orderSla,
       ITAMid: this.props.orders.orderItam.id,
@@ -133,6 +134,7 @@ class Orders extends React.Component {
       isValidDateFollowup: true,
       isValidDateSetupCompleted: true,
       isValidFollowupEmail: true,
+      isUndoable: false,
       buttonClicked: false
     };
   }
@@ -157,7 +159,7 @@ class Orders extends React.Component {
   };
 
   hideOrder = () => {
-    this.setState({ orderHidden: true });
+    this.setState({ isUndoable: !this.state.isUndoable });
   };
 
   toValidFloat = (usrInput, selectedFloat) => {
@@ -299,18 +301,18 @@ class Orders extends React.Component {
     return (
       <Styles>
         <div
-          class="container-fluid"
-          style={{ display: `${this.state.orderHidden ? "none" : "inline-block" }` }}
+          className="container-fluid"
+          style={{ display: `${this.state.orderHidden ? "none" : "inline-block"}` }}
         >
-          <div class="row orders">
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="orderNum">Order #</span>
+          <div className="row orders" style={{ display: `${this.state.isUndoable ? "none" : ""}` }}>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="orderNum">Order #</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Natural Number"
                   aria-label="Order Number"
                   aria-describedby="orderNum"
@@ -319,14 +321,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="orderItem">Order Item</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="orderItem">Order Item</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Order Item"
                   aria-label="Order Item"
                   aria-describedby="orderItem"
@@ -335,13 +337,13 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <label class="input-group-text" htmlFor="orderCategory">Order Category</label>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <label className="input-group-text" htmlFor="orderCategory">Order Category</label>
                 </div>
                 <select
-                  class="custom-select"
+                  className="custom-select"
                   id="orderCategory"
                   onChange={e=>this.setState({ orderCategory:e.target.value })}
                   value={orderCategory}
@@ -351,13 +353,14 @@ class Orders extends React.Component {
                   <option value="New Hire">New Hire</option>
                   <option value="Priority Deployment">Priority Deployment</option>
                   <option value="Cancelled">Cancelled</option>
+                  <option value="Done">Done</option>
                 </select>
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="dateCreated">Date Created</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="dateCreated">Date Created</span>
                 </div>
                 <input
                   type="text"
@@ -372,10 +375,10 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="dateApproved">Date Approved</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="dateApproved">Date Approved</span>
                 </div>
                 <input
                   type="text"
@@ -390,14 +393,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="createdBy">Created By</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="createdBy">Created By</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Firstname  Lastname"
                   aria-label="Firstname  Lastname"
                   aria-describedby="createdBy"
@@ -406,10 +409,10 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="createdByEmail">Created By Email</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="createdByEmail">Created By Email</span>
                 </div>
                 <input
                   type="text"
@@ -422,14 +425,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="recipient">Recipient</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="recipient">Recipient</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Firstname  Lastname"
                   aria-label="Firstname  Lastname"
                   aria-describedby="recipient"
@@ -438,10 +441,10 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <div className="input-group-text">
                     <input
                       type="checkbox"
                       id="newHire"
@@ -453,7 +456,7 @@ class Orders extends React.Component {
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder ="New Hire"
                   aria-label="New Hire"
                   disabled
@@ -461,18 +464,18 @@ class Orders extends React.Component {
               </div>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
               <Fade in={this.state.newHire}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="hireName">Hire Name</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="hireName">Hire Name</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Firstname  Lastname"
                       aria-label="Firstname  Lastname"
                       aria-describedby="hireName"
@@ -485,14 +488,14 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
               <Fade in={this.state.newHire}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="hireStartDate">Hire Start Date</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="hireStartDate">Hire Start Date</span>
                     </div>
                     <input
                       type="text"
@@ -511,18 +514,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
               <Fade in={this.state.newHire}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="sla">SLA</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="sla">SLA</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="sla"
@@ -534,14 +537,14 @@ class Orders extends React.Component {
                 </div>
               </Fade>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="appManager">Approval Manager</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="appManager">Approval Manager</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Firstname  Lastname"
                   aria-label="Firstname  Lastname"
                   aria-describedby="appManager"
@@ -550,14 +553,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="bussUnit">Business Unit</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="bussUnit">Business Unit</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Business Unit"
                   aria-label="Business Unit"
                   aria-describedby="bussUnit"
@@ -566,14 +569,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="attention">Attention</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="attention">Attention</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control techInput"
+                  className="form-control techInput"
                   placeholder="Firstname  Lastname"
                   aria-label="Firstname  Lastname"
                   aria-describedby="attention"
@@ -582,14 +585,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="shipAddress">Shipping Address</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="shipAddress">Shipping Address</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Street, City, Province,  Postal"
                   aria-label="Street, City, Province,  Postal"
                   aria-describedby="shipAddress"
@@ -598,14 +601,14 @@ class Orders extends React.Component {
                 />
               </div>
             </div>
-            <div class="col-sm-4">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="orderTotal">Order Total $</span>
+            <div className="col-sm-4">
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="orderTotal">Order Total $</span>
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Order Total"
                   aria-label="Order Total"
                   aria-describedby="orderTotal"
@@ -619,17 +622,17 @@ class Orders extends React.Component {
                 ======================================ITAM=======================================
                 =================================================================================*/}
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" htmlFor="ITAMStatus">ITAM Status</label>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <label className="input-group-text" htmlFor="ITAMStatus">ITAM Status</label>
                     </div>
                     <select
-                      class="custom-select ITAMInput"
+                      className="custom-select ITAMInput"
                       id="ITAMStatus"
                       onChange={e=>this.setState({ ITAMStatus:e.target.value })}
                       value={ITAMStatus}
@@ -642,27 +645,27 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" htmlFor="ITAMName">ITAM Name</label>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <label className="input-group-text" htmlFor="ITAMName">ITAM Name</label>
                     </div>
                     <Query query={QUERY_USERS}>
                       {({ loading, error, data }) => {
                         if ( loading ) {
-                          return <select class="custom-select" id="ITAMName">Fetching</select>;
+                          return <select className="custom-select" id="ITAMName">Fetching</select>;
                         }
                         if ( error ) {
-                          return <select class="custom-select" id="ITAMName">Error</select>;
+                          return <select className="custom-select" id="ITAMName">Error</select>;
                         }
                         const usersToRender = data.users;
                         return (
                           <select
-                            class="custom-select ITAMInput"
+                            className="custom-select ITAMInput"
                             id="ITAMName"
                             onChange={e=>this.setState({ ITAMName:e.target.value })}
                             value={ITAMName}
@@ -679,14 +682,14 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="verifEmail">Verification Email</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="verifEmail">Verification Email</span>
                     </div>
                     <input
                       type="text"
@@ -706,17 +709,19 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" htmlFor="productSource">Product Source</label>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <label className="input-group-text" htmlFor="productSource">
+                        Product Source
+                      </label>
                     </div>
                     <select
-                      class="custom-select ITAMInput"
+                      className="custom-select ITAMInput"
                       id="productSource"
                       onChange={e=>this.setState({ ITAMProductSource: e.target.value })}
                       value={ITAMProductSource}
@@ -731,18 +736,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="oldAssetTag">Old Asset Tag</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="oldAssetTag">Old Asset Tag</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="FIN##### etc."
                       aria-label="FIN##### etc."
                       aria-describedby="oldAssetTag"
@@ -754,18 +759,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="oldModel">Old Model</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="oldModel">Old Model</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="T440, Lat5490 etc."
                       aria-label="T440, Lat5490 etc."
                       aria-describedby="oldModel"
@@ -777,18 +782,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="monitorModel">Monitor Model</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="monitorModel">Monitor Model</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="Viewsonic etc."
                       aria-label="Viewsonic etc."
                       aria-describedby="monitorModel"
@@ -800,18 +805,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="monitorNum"># of Monitors</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="monitorNum"># of Monitors</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="monitorNum"
@@ -823,18 +828,20 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="connectorTypes">Type of Connectors</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="connectorTypes">
+                        Type of Connectors
+                      </span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="VGA, DVI etc."
                       aria-label="VGA, DVI etc."
                       aria-describedby="connectorTypes"
@@ -846,15 +853,15 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
                       <span
-                        class="input-group-text"
+                        className="input-group-text"
                         id="orderPendEmail"
                       >
                         Order Pending Followup
@@ -878,16 +885,16 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <Fade in={this.state.newHire}>
                   <div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
+                    <div className="input-group mb-3">
+                      <div className="input-group-prepend">
                         <span
-                          class="input-group-text"
+                          className="input-group-text"
                           id="confirmedNewHire"
                         >
                           Confirmed as Newhire
@@ -913,18 +920,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="PONumber">PO/Order #</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="PONumber">PO/Order #</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="PONumber"
@@ -936,18 +943,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="dellOrderNum">Dell Order #</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="dellOrderNum">Dell Order #</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control ITAMInput"
+                      className="form-control ITAMInput"
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="dellOrderNum"
@@ -959,15 +966,15 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isITAM ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isITAM}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
                       <span
-                        class="input-group-text"
+                        className="input-group-text"
                         id="dellEmailNotif"
                       >
                         Dell Email Notification
@@ -994,27 +1001,27 @@ class Orders extends React.Component {
                 ======================================TECH=======================================
                 =================================================================================*/}
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" htmlFor="techName">Tech Name</label>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <label className="input-group-text" htmlFor="techName">Tech Name</label>
                     </div>
                     <Query query={QUERY_USERS}>
                       {({ loading, error, data }) => {
                         if ( loading ) {
-                          return <select class="custom-select" id="techName">Fetching</select>;
+                          return <select className="custom-select" id="techName">Fetching</select>;
                         }
                         if ( error ) {
-                          return <select class="custom-select" id="techName">Error</select>;
+                          return <select className="custom-select" id="techName">Error</select>;
                         }
                         const usersToRender = data.users;
                         return (
                           <select
-                            class="custom-select techInput"
+                            className="custom-select techInput"
                             id="techName"
                             onChange={e=>this.setState({ TechName:e.target.value })}
                             value={TechName}
@@ -1031,17 +1038,17 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" htmlFor="techStatus">Tech Status</label>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <label className="input-group-text" htmlFor="techStatus">Tech Status</label>
                     </div>
                     <select
-                      class="custom-select techInput"
+                      className="custom-select techInput"
                       id="techStatus"
                       onChange={e=>this.setState({ TechStatus:e.target.value })}
                     >
@@ -1055,18 +1062,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="confirmedUser">Confirmed User</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="confirmedUser">Confirmed User</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control techInput"
+                      className="form-control techInput"
                       placeholder="Firstname Lastname"
                       aria-label="Firstname Lastname"
                       aria-describedby="confirmedUser"
@@ -1078,18 +1085,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="costCenter">Cost Center</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="costCenter">Cost Center</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control techInput"
+                      className="form-control techInput"
                       placeholder="Location"
                       aria-label="Location"
                       aria-describedby="costCenter"
@@ -1101,18 +1108,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="serviceTag">Service Tag</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="serviceTag">Service Tag</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control techInput"
+                      className="form-control techInput"
                       placeholder="CAL-*******"
                       aria-label="CAL-*******"
                       aria-describedby="serviceTag"
@@ -1124,18 +1131,18 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="techEmailSent">Email/PC Sent</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="techEmailSent">Email/PC Sent</span>
                     </div>
                     <input
                       type="text"
-                      class="form-control techInput"
+                      className="form-control techInput"
                       placeholder="YYYY-MM-DD"
                       aria-label="YYYY-MM-DD"
                       aria-describedby="techEmailSent"
@@ -1152,15 +1159,15 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
                       <span
-                        class="input-group-text"
+                        className="input-group-text"
                         id="dateFollowupTemp2"
                       >
                         Date Followup Template #2
@@ -1184,14 +1191,16 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none"}` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="setupComplete">Date Setup Completed</span>
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="setupComplete">
+                        Date Setup Completed
+                      </span>
                     </div>
                     <input
                       type="text"
@@ -1211,15 +1220,15 @@ class Orders extends React.Component {
               </Fade>
             </div>
             <div
-              class="col-sm-4"
+              className="col-sm-4"
               style={{ display: `${this.props.isTech ? "inline" : "none" }` }}
             >
               <Fade in={this.props.isTech}>
                 <div>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
                       <span
-                        class="input-group-text"
+                        className="input-group-text"
                         id="techFollowupEmail"
                       >
                         Tech Followup Template #3
@@ -1242,13 +1251,13 @@ class Orders extends React.Component {
                 </div>
               </Fade>
             </div>
-            <div class="col-sm-12">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="comments">Comments</span>
+            <div className="col-sm-12">
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="comments">Comments</span>
                 </div>
                 <textarea
-                  class="form-control"
+                  className="form-control"
                   aria-label="With textarea"
                   aria-describedby="comments"
                   value={comments}
@@ -1258,8 +1267,11 @@ class Orders extends React.Component {
               </div>
             </div>
           </div>
-          <div class="row buttons">
-            <div class="col-sm">
+          <div className="row buttons">
+            <div
+              className="col-sm"
+              style={{ display: `${!this.state.isUndoable ? "inline" : "none"}` }}
+            >
               <Mutation
                 mutation={UPDATE_ENTIRE_ORDER}
                 variables={{
@@ -1314,10 +1326,12 @@ class Orders extends React.Component {
                 {updateEntireOrder =>
                   <button
                     type="button"
-                    class="btn btn-success"
+                    className="btn btn-success"
                     onClick={() => {
                       this.setState({ buttonClicked: true });
                       updateEntireOrder();
+                      alert("Updated");
+                      this.setState({ buttonClicked: false });
                     }}
                     disabled={!(
                       this.state.isValidID *
@@ -1340,28 +1354,58 @@ class Orders extends React.Component {
                 }
               </Mutation>
             </div>
-            <div class="col-sm">
+            <div
+              className="col-sm"
+              style={{ display: `${!this.state.isUndoable ? "inline" : "none"}` }}
+            >
               <button
                 type="button"
-                class="btn btn-danger"
+                className="btn btn-danger"
                 onClick={this.verifyDelete}
                 style={{ display: `${!this.state.isDeleted ? "inline" : "none"}` }}
               >
                 Delete
               </button>
-              <div style={{ display: `${this.state.isDeleted ? "inline" : "none"}` }}>
-                <Mutation mutation={DELETE_ORDER} variables={{ id: this.props.orders.id }}>
+              <div
+                style={{
+                  display: `${this.state.isDeleted ? "inline" : "none"}`
+                }}
+              >
+                <Mutation
+                  mutation={DELETE_ORDER}
+                  variables={{ id: this.props.orders.id }}
+                  onCompleted={this.hideOrder}
+                >
                   {deleteOrder =>
                     <button
                       type="button"
-                      class="btn btn-danger"
-                      onClick={() => {deleteOrder(); this.hideOrder(); this.removeOrderFromList();}}
+                      className="btn btn-danger"
+                      onClick={() => {
+                        this.setState({ buttonClicked: true });
+                        deleteOrder();
+                      }}
+                      disabled={this.state.buttonClicked}
                     >
                       Permanently Delete
                     </button>
                   }
                 </Mutation>
               </div>
+            </div>
+            <div
+              className="col-sm"
+              style={{ display: `${this.state.isUndoable ? "inline" : "none"}` }}
+            >
+              <button
+                type="button"
+                className="btn btn-info"
+                onClick={() => {
+                  this.hideOrder();
+                  this.setState({ buttonClicked: false, isDeleted: false });
+                }}
+              >
+                Undo
+              </button>
             </div>
           </div>
         </div>

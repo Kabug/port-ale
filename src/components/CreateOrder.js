@@ -64,7 +64,6 @@ class CreateOrder extends React.Component {
       attention: "",
       shippingAddress: "",
       item: "",
-      itemType: "Choose...",
       total: 0.00,
       comments: "",
       orderCategory: "New Order",
@@ -221,7 +220,6 @@ class CreateOrder extends React.Component {
       attention,
       shippingAddress,
       item,
-      itemType,
       total,
       sla,
       orderCategory,
@@ -349,6 +347,7 @@ class CreateOrder extends React.Component {
                   <option value="New Hire">New Hire</option>
                   <option value="Priority Deployment">Priority Deployment</option>
                   <option value="Cancelled">Cancelled</option>
+                  <option value="Done">Done</option>
                 </select>
               </div>
             </div>

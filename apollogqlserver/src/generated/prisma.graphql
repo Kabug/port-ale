@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Tue Feb 04 2020 14:10:31 GMT-0800 (Pacific Standard Time)
+# timestamp: Fri Feb 21 2020 16:40:11 GMT-0800 (Pacific Standard Time)
 
 type AggregateItamProgress {
   count: Int!
@@ -27,7 +27,7 @@ scalar DateTime
 type ItamProgress implements Node {
   id: ID!
   itamOrder(where: OrderWhereInput): Order!
-  itamOwner(where: UserWhereInput): User
+  itamOwner(where: UserWhereInput): User!
   itamStatus: String
   itamVerificationEmailSent: DateTime
   itamProductSource: String
@@ -68,7 +68,7 @@ input ItamProgressCreateInput {
   itamDellOrderId: Float
   itamDellEmailNotif: DateTime
   itamOrder: OrderCreateOneWithoutOrderItamInput!
-  itamOwner: UserCreateOneWithoutUserItamOrdersInput
+  itamOwner: UserCreateOneWithoutUserItamOrdersInput!
 }
 
 input ItamProgressCreateManyWithoutItamOwnerInput {
@@ -95,7 +95,7 @@ input ItamProgressCreateWithoutItamOrderInput {
   itamPoOrderId: Float
   itamDellOrderId: Float
   itamDellEmailNotif: DateTime
-  itamOwner: UserCreateOneWithoutUserItamOrdersInput
+  itamOwner: UserCreateOneWithoutUserItamOrdersInput!
 }
 
 input ItamProgressCreateWithoutItamOwnerInput {
@@ -1791,7 +1791,7 @@ type Subscription {
 type TechProgress implements Node {
   id: ID!
   techOrder(where: OrderWhereInput): Order
-  techOwner(where: UserWhereInput): User
+  techOwner(where: UserWhereInput): User!
   techStatus: String
   techConfirmedUser: String
   techCostCenter: String
@@ -1822,7 +1822,7 @@ input TechProgressCreateInput {
   techFollowupEmailSent: DateTime
   techDateCompleted: DateTime
   techOrder: OrderCreateOneWithoutOrderTechInput
-  techOwner: UserCreateOneWithoutUserTechOrdersInput
+  techOwner: UserCreateOneWithoutUserTechOrdersInput!
 }
 
 input TechProgressCreateManyWithoutTechOwnerInput {
@@ -1844,7 +1844,7 @@ input TechProgressCreateWithoutTechOrderInput {
   techDateFollowupTemp: DateTime
   techFollowupEmailSent: DateTime
   techDateCompleted: DateTime
-  techOwner: UserCreateOneWithoutUserTechOrdersInput
+  techOwner: UserCreateOneWithoutUserTechOrdersInput!
 }
 
 input TechProgressCreateWithoutTechOwnerInput {
@@ -2431,7 +2431,6 @@ input UserUpdateInput {
 input UserUpdateOneWithoutUserItamOrdersInput {
   create: UserCreateWithoutUserItamOrdersInput
   connect: UserWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
   update: UserUpdateWithoutUserItamOrdersDataInput
   upsert: UserUpsertWithoutUserItamOrdersInput
@@ -2440,7 +2439,6 @@ input UserUpdateOneWithoutUserItamOrdersInput {
 input UserUpdateOneWithoutUserTechOrdersInput {
   create: UserCreateWithoutUserTechOrdersInput
   connect: UserWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
   update: UserUpdateWithoutUserTechOrdersDataInput
   upsert: UserUpsertWithoutUserTechOrdersInput

@@ -25,7 +25,7 @@ type Order{
 type ItamProgress{
   id: ID! @unique
   itamOrder: Order! @relation(name: "ItamOrderProgress")
-  itamOwner: User
+  itamOwner: User!
   itamStatus: String
   itamVerificationEmailSent: DateTime
   itamProductSource: String
@@ -44,7 +44,7 @@ type ItamProgress{
 type TechProgress{
   id: ID! @unique
   techOrder: Order @relation(name: "TechOrderProgress")
-  techOwner: User
+  techOwner: User!
   techStatus: String
   techConfirmedUser: String
   techCostCenter: String

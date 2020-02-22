@@ -51,6 +51,7 @@ input updateEntireOrderInput {
 }
 
 input createOrderInput{
+  id: ID,
   orderSimplexId: Float!,
   orderDateCreated: DateTime!,
   orderDateApproved: DateTime!,

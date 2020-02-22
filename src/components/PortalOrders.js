@@ -68,6 +68,14 @@ const Styles = styled.div`
     max-height: 75vh;
     overflow-y: auto;
   }
+
+  .loadMoreBut{
+    display: none
+  }
+
+  .spinner-border{
+    margin-bottom: 20px;
+  }
 `;
 
 const QUERY_NEXT_ORDERS = gql`
@@ -140,8 +148,13 @@ class PortalOrders extends React.Component {
       isAll: true,
       orderCategory: "New Order",
       lastID: "",
-      listOfOrders: []
+      listOfOrders: [],
+      loadedAllOrders: false
     };
+  }
+
+  componentDidMount() {
+    this.loadMore.click();
   }
 
   ITAMToggle = () => {
@@ -170,17 +183,18 @@ class PortalOrders extends React.Component {
     this.setState({ lastID: newId });
   };
 
-  removeOrderFromList = (index) => {
-    const newList = [
-      ...this.state.listOfOrders.slice( 0, index ),
-      ...this.state.listOfOrders.slice( index + 1 )
-    ];
-    this.setState({ listOfOrders: newList });
-    if ( newList.length ) {
-      this.setState({ lastID: newList[ newList.length - 1 ].id });
-    } else {
-      this.setState({ lastID: "" });
+  handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if ( bottom * !this.state.loadedAllOrders ) {
+      this.loadMore.click();
     }
+  };
+
+  // Loads more after state is updated
+  updateCategory = (e) => {
+    this.setState({ orderCategory: e.target.value, listOfOrders: [], lastID: "" }, ()=> {
+      this.allOrders.scrollTo( 0, 0 ); this.loadMore.click();
+    });
   };
 
   render() {
@@ -193,7 +207,7 @@ class PortalOrders extends React.Component {
 
     return (
       <Styles>
-        <div class ="container-fluid">
+        <div className="container-fluid">
           <div className="row optionsBackground">
             <div className="col-sm-6 blackBackground">
               <h5>Order Filter</h5>
@@ -201,13 +215,14 @@ class PortalOrders extends React.Component {
                 <select
                   className="custom-select"
                   id="orderFilter"
-                  onChange={e=>this.setState({ orderCategory: e.target.value })}
+                  onChange={e=> this.updateCategory( e )}
                 >
                   <option value="New Order">New Order</option>
                   <option value="Accessory">Accessory</option>
                   <option value="New Hire">New Hire</option>
                   <option value="Priority Deployment">Priority Deployment</option>
                   <option value="Cancelled">Cancelled</option>
+                  <option value="Done">Done</option>
                 </select>
               </div>
             </div>
@@ -244,7 +259,11 @@ class PortalOrders extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row ordersStyles">
+          <div
+            className="row ordersStyles"
+            onScroll={this.handleScroll}
+            ref={ allOrders => this.allOrders = allOrders }
+          >
             <div className="col-sm-12">
               <h1>Portal <img src={OImage} alt="O"/>rders</h1>
             </div>
@@ -264,7 +283,8 @@ class PortalOrders extends React.Component {
                 { client => (
                   <button
                     type="button"
-                    className="btn btn-dark"
+                    className="btn btn-dark loadMoreBut"
+                    ref={ loadMore => this.loadMore = loadMore }
                     onClick={async () => {
                       const { loading, error, data } = await client.query({
                         query: QUERY_NEXT_ORDERS,
@@ -282,8 +302,11 @@ class PortalOrders extends React.Component {
                         newOrders.reverse();
                         this.setState({
                           listOfOrders: this.state.listOfOrders.concat( newOrders ),
-                          lastID: newOrders[ newOrders.length - 1 ].id
+                          lastID: newOrders[ newOrders.length - 1 ].id,
+                          loadedAllOrders: false
                         });
+                      } else {
+                        this.setState({ loadedAllOrders: true });
                       }
                     }}
                   >
@@ -291,6 +314,14 @@ class PortalOrders extends React.Component {
                   </button>
                 )}
               </ApolloConsumer>
+            </div>
+            <div
+              className="col-sm-12"
+              style={{ display: `${!this.state.loadedAllOrders ? "inline" : "none"}` }}
+            >
+              <div className="spinner-border text-warning" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
             </div>
           </div>
         </div>

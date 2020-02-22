@@ -22,11 +22,10 @@ const resolvers = {
 			return ctx.db.query.order({ where: { id } }, info );
 		},
 		nextOrders(parent, args, ctx, info) {
-			console.log( args );
 			if ( args.input.before === "" ) {
 				return ctx.db.query.orders({
 						where: { orderCategory: args.input.orderCategory },
-						last: 5,
+						last: 20,
 						orderBy: "id_ASC"
 					},
 					info
@@ -34,7 +33,7 @@ const resolvers = {
 			}
 			return ctx.db.query.orders({
 					where: { orderCategory: args.input.orderCategory },
-					last:5,
+					last: 20,
 					before: args.input.before,
 					orderBy: "id_ASC"
 				},
@@ -44,6 +43,35 @@ const resolvers = {
 	},
 	Mutation: {
 		createOrder(parent, args, ctx, info) {
+			if ( args.input.id ) {
+				return ctx.db.mutation.createOrder({
+						data: {
+							id: args.input.id,
+							orderSimplexId: args.input.orderSimplexId,
+							orderDateCreated: args.input.orderDateCreated,
+							orderDateApproved: args.input.orderDateApproved,
+							orderCreatedBy: args.input.orderCreatedBy,
+							orderCreatedByEmail: args.input.orderCreatedByEmail,
+							orderNewHire: args.input.orderNewHire,
+							orderRecipient: args.input.orderRecipient,
+							orderHireStartDate: args.input.orderHireStartDate,
+							orderHireName: args.input.orderHireName,
+							orderApprovalManager: args.input.orderApprovalManager,
+							orderBusinessUnit: args.input.orderBusinessUnit,
+							orderAttention: args.input.orderAttention,
+							orderShippingAddress: args.input.orderShippingAddress,
+							orderItem: args.input.orderItem,
+							orderTotal: args.input.orderTotal,
+							orderComments: args.input.orderComments,
+							orderCategory: args.input.orderCategory,
+							orderSla: args.input.orderSla,
+							orderItam: args.input.orderItam,
+							orderTech: args.input.orderTech
+						}
+					},
+					info,
+				);
+			}
 			return ctx.db.mutation.createOrder({
 					data: {
 						orderSimplexId: args.input.orderSimplexId,

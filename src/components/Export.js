@@ -28,6 +28,10 @@ const Styles = styled.div`
     margin-top: 2em;
   }
 
+  .title{
+    margin-top: 2.5em;
+  }
+
 `;
 
 const QUERY_ORDERS = gql`
@@ -97,7 +101,7 @@ class Export extends React.Component{
       <Styles>
         <div class="container-fluid">
           <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 title">
               <h1>Export to CSV</h1>
             </div>
             <div class="col-sm-12">

@@ -101,5 +101,6 @@ type Mutation{
   deleteOrder( id: ID! ): Order
   deleteUser( id: ID! ): User
   updateUser( id: ID!, userName: String! ): User
+  updateCategory( id: ID!, orderCategory: String! ): Order
   updateEntireOrder( input: updateEntireOrderInput! ): Order
 }

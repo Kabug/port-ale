@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Fade from "react-bootstrap/Fade";
-import { Mutation, Query } from "react-apollo";
+import { Mutation, Query, ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
 
 const Styles = styled.div`
@@ -42,6 +42,10 @@ const Styles = styled.div`
       box-shadow: 0px 0px 2px 3px rgba(0, 105, 217, 0.3)
     }
   }
+
+  .deleteOnExitBut{
+    display: none;
+  }
 `;
 
 const DELETE_ORDER = gql`
@@ -66,6 +70,15 @@ const UPDATE_ENTIRE_ORDER = gql`
     updateEntireOrder(input: $input) {
       id
       orderSimplexId
+    }
+  }
+`;
+
+const UPDATE_CATEGORY = gql`
+  mutation updateCategory($id: ID!, $orderCategory: String!){
+    updateCategory(id: $id, orderCategory: $orderCategory) {
+      id
+      orderCategory
     }
   }
 `;
@@ -135,13 +148,10 @@ class Orders extends React.Component {
       isValidDateSetupCompleted: true,
       isValidFollowupEmail: true,
       isUndoable: false,
-      buttonClicked: false
+      buttonClicked: false,
+      deleteOrder: false
     };
   }
-
-  removeOrderFromList = () => {
-    this.props.removeOrderFromList( this.props.index );
-  };
 
   newHireToggle = () => {
     this.setState({ newHire: !this.state.newHire });
@@ -159,7 +169,7 @@ class Orders extends React.Component {
   };
 
   hideOrder = () => {
-    this.setState({ isUndoable: !this.state.isUndoable });
+    this.setState({ isUndoable: !this.state.isUndoable, deleteOrder: !this.state.deleteOrder });
   };
 
   toValidFloat = (usrInput, selectedFloat) => {
@@ -302,7 +312,7 @@ class Orders extends React.Component {
       <Styles>
         <div
           className="container-fluid"
-          style={{ display: `${this.state.orderHidden ? "none" : "inline-block"}` }}
+          style={{ display: `${this.state.orderHidden ? "none" : ""}` }}
         >
           <div className="row orders" style={{ display: `${this.state.isUndoable ? "none" : ""}` }}>
             <div className="col-sm-4">
@@ -1170,7 +1180,7 @@ class Orders extends React.Component {
                         className="input-group-text"
                         id="dateFollowupTemp2"
                       >
-                        Date Followup Template #2
+                        Followup Temp. #2
                       </span>
                     </div>
                     <input
@@ -1231,7 +1241,7 @@ class Orders extends React.Component {
                         className="input-group-text"
                         id="techFollowupEmail"
                       >
-                        Tech Followup Template #3
+                        Followup Temp. #3
                       </span>
                     </div>
                     <input
@@ -1356,7 +1366,35 @@ class Orders extends React.Component {
             </div>
             <div
               className="col-sm"
-              style={{ display: `${!this.state.isUndoable ? "inline" : "none"}` }}
+              style={{
+                display: `${this.props.archive ? "inline" : "none"}`
+              }}
+            >
+            <Mutation
+              mutation={DELETE_ORDER}
+              variables={{
+                id: this.props.orders.id
+              }}
+            >
+              {deleteOrder =>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => {
+                    deleteOrder();
+                    this.setState({ orderHidden: true });
+                  }}
+                >
+                  Permanently Delete
+                </button>
+              }
+            </Mutation>
+            </div>
+            <div
+              className="col-sm"
+              style={{ display: `${
+                !this.state.isUndoable * !this.props.archive ? "inline" : "none"}
+              ` }}
             >
               <button
                 type="button"
@@ -1371,41 +1409,57 @@ class Orders extends React.Component {
                   display: `${this.state.isDeleted ? "inline" : "none"}`
                 }}
               >
-                <Mutation
-                  mutation={DELETE_ORDER}
-                  variables={{ id: this.props.orders.id }}
-                  onCompleted={this.hideOrder}
-                >
-                  {deleteOrder =>
-                    <button
-                      type="button"
-                      className="btn btn-danger"
-                      onClick={() => {
-                        this.setState({ buttonClicked: true });
-                        deleteOrder();
-                      }}
-                      disabled={this.state.buttonClicked}
-                    >
-                      Permanently Delete
-                    </button>
-                  }
-                </Mutation>
+              <Mutation
+                mutation={UPDATE_CATEGORY}
+                variables={{
+                  id: this.props.orders.id,
+                  orderCategory: "Archived"
+                }}
+              >
+                {updateCategory =>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => {
+                      this.setState({ buttonClicked: true }, () => {
+                        updateCategory();
+                        this.hideOrder();
+                      });
+                    }}
+                    disabled={this.state.buttonClicked}
+                  >
+                    Archive
+                  </button>
+                }
+              </Mutation>
               </div>
             </div>
             <div
               className="col-sm"
               style={{ display: `${this.state.isUndoable ? "inline" : "none"}` }}
             >
-              <button
-                type="button"
-                className="btn btn-info"
-                onClick={() => {
-                  this.hideOrder();
-                  this.setState({ buttonClicked: false, isDeleted: false });
+              <Mutation
+                mutation={UPDATE_CATEGORY}
+                variables={{
+                  id: this.props.orders.id,
+                  orderCategory: this.props.orders.orderCategory
                 }}
               >
-                Undo
-              </button>
+                {updateCategory =>
+                  <button
+                    type="button"
+                    className="btn btn-info"
+                    onClick={() => {
+                      updateCategory();
+                      this.setState({ buttonClicked: false, isDeleted: false });
+                      this.hideOrder();
+
+                    }}
+                  >
+                    Undo
+                  </button>
+                }
+              </Mutation>
             </div>
           </div>
         </div>

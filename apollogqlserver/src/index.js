@@ -115,6 +115,13 @@ const resolvers = {
 				info
 			});
 		},
+		updateCategory(parent, { id, orderCategory }, ctx, info) {
+			return ctx.db.mutation.updateOrder({
+				data: { orderCategory },
+				where: { id },
+				info
+			});
+		},
 		updateEntireOrder(parent, args, ctx, info) {
 			// use props for where and state for update data
 			ctx.db.mutation.updateItamProgress({

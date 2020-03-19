@@ -2,10 +2,12 @@ import React from "react";
 import Orders from "./Orders";
 import CreateOrder from "./CreateOrder";
 import styled from "styled-components";
-import { Query } from "react-apollo";
+import { Query, ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
-import { ApolloConsumer } from "react-apollo";
 import OImage from "../assets/OTest.png";
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import InfiniteLoader from "react-window-infinite-loader";
 
 const Styles = styled.div`
 
@@ -70,11 +72,15 @@ const Styles = styled.div`
   }
 
   .loadMoreBut{
-    display: none
+    display: none;
   }
 
   .spinner-border{
     margin-bottom: 20px;
+  }
+
+  .List {
+    overflow: auto !important;
   }
 `;
 
@@ -149,12 +155,29 @@ class PortalOrders extends React.Component {
       orderCategory: "New Order",
       lastID: "",
       listOfOrders: [],
-      loadedAllOrders: false
+      loadedAllOrders: false,
+      ordersToBeDeleted: []
     };
   }
 
   componentDidMount() {
+    this.setState({ lastID: "", listOfOrders: [] }, () => {
+      this.loadMore.click();
+    });
+  }
+
+  loadMoreRows () {
+    console.log("Test");
     this.loadMore.click();
+    setTimeout( () => { this.loadMore.click();}, 500 );
+    return new Promise( ( resolve, reject) => {
+      this.promise.Resolve = resolve;
+    });
+  };
+
+
+  isRowLoaded ({ index }) {
+    return !!this.state.listOfOrders[ index ];
   }
 
   ITAMToggle = () => {
@@ -204,6 +227,22 @@ class PortalOrders extends React.Component {
       lastID,
       listOfOrders
     } = this.state;
+
+    const Row = ({ index, style }) => (
+      <div className="row" style={style}>
+        {listOfOrders.length && listOfOrders [ index ] ?
+            <div className="col-sm-12">
+              <Orders
+                orders={listOfOrders[ index ]}
+                isITAM={this.state.isITAM}
+                isTech={this.state.isTech}
+              />
+            </div>
+            :
+            "Loading"
+        }
+      </div>
+    );
 
     return (
       <Styles>
@@ -261,59 +300,91 @@ class PortalOrders extends React.Component {
           </div>
           <div
             className="row ordersStyles"
-            onScroll={this.handleScroll}
             ref={ allOrders => this.allOrders = allOrders }
+            // onScroll={this.handleScroll}
           >
             <div className="col-sm-12">
               <h1>Portal <img src={OImage} alt="O"/>rders</h1>
             </div>
             <div className="col-sm-12">
-            <CreateOrder/>
-              {listOfOrders.slice( 0 ).map( (order, index) =>
-                <Orders
-                  key={order.id}
-                  index = {index}
-                  orders={order}
-                  isITAM={this.state.isITAM}
-                  isTech={this.state.isTech}
-                  removeOrderFromList={this.removeOrderFromList}
-                />
-              )}
-              <ApolloConsumer>
-                { client => (
-                  <button
-                    type="button"
-                    className="btn btn-dark loadMoreBut"
-                    ref={ loadMore => this.loadMore = loadMore }
-                    onClick={async () => {
-                      const { loading, error, data } = await client.query({
-                        query: QUERY_NEXT_ORDERS,
-                        variables: {
-                          input: {
-                            orderCategory: orderCategory,
-                            before: lastID
-                          }
-                        }
-                      });
-                      if ( loading ) { return <div>Fetching</div>;}
-                      if ( error ) { return <div>Error</div>;}
-                      let newOrders = data.nextOrders;
-                      if ( newOrders.length ) {
-                        newOrders.reverse();
-                        this.setState({
-                          listOfOrders: this.state.listOfOrders.concat( newOrders ),
-                          lastID: newOrders[ newOrders.length - 1 ].id,
-                          loadedAllOrders: false
-                        });
-                      } else {
-                        this.setState({ loadedAllOrders: true });
-                      }
-                    }}
-                  >
-                    Next
-                  </button>
+              <div className="row">
+                <div className="col-sm-12">
+                  <CreateOrder/>
+                </div>
+              </div>
+              <InfiniteLoader
+                isRowLoaded={this.isRowLoaded}
+                loadMoreRows={this.loadMoreRows}
+                rowCount={listOfOrders.length}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                <AutoSizer>
+                  {({ height, width }) => (
+                    <List
+                      className="List"
+                      height={height * 2 / 3}
+                      itemCount={listOfOrders.length}
+                      itemSize={1000}
+                      width={width * 6 / 7}
+                    >
+                      {Row}
+                    </List>
+                  )}
+                </AutoSizer>
                 )}
-              </ApolloConsumer>
+              </InfiniteLoader>
+{/*
+              <div className="row">
+                {listOfOrders.slice( 0 ).map( (order) =>
+                  <div className="col-sm-12">
+                  <Orders
+                    key={order.id}
+                    orders={order}
+                    isITAM={this.state.isITAM}
+                    isTech={this.state.isTech}
+                  />
+                  </div>
+                )}
+              </div>
+*/}
+              <div className="row">
+                <div className="col-sm-12">
+                  <ApolloConsumer>
+                    { client => (
+                      <button
+                        type="button"
+                        className="btn btn-dark"
+                        ref={ loadMore => this.loadMore = loadMore }
+                        onClick={async () => {
+                          const { loading, error, data } = await client.query({
+                            query: QUERY_NEXT_ORDERS,
+                            variables: {
+                              input: {
+                                orderCategory: orderCategory,
+                                before: lastID
+                              }
+                            }
+                          });
+                          if ( loading ) { return <div>Fetching</div>;}
+                          if ( error ) { return <div>Error</div>;}
+                          let newOrders = [ ...data.nextOrders ];
+                          if ( newOrders.length ) {
+                            this.setState({
+                              listOfOrders: this.state.listOfOrders.concat( newOrders.reverse() ),
+                              lastID: newOrders[ newOrders.length - 1 ].id,
+                              loadedAllOrders: false
+                            });
+                          } else {
+                            this.setState({ loadedAllOrders: true });
+                          }
+                        }}
+                      >
+                        Next
+                      </button>
+                    )}
+                  </ApolloConsumer>
+                </div>
+              </div>
             </div>
             <div
               className="col-sm-12"

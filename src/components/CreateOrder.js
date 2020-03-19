@@ -1017,7 +1017,7 @@ class CreateOrder extends React.Component {
                     className="input-group-text"
                     id="dateFollowupTemp2"
                   >
-                    Date Followup Template #2
+                    Followup Temp. #2
                   </span>
                 </div>
                 <input
@@ -1060,7 +1060,7 @@ class CreateOrder extends React.Component {
                     className="input-group-text"
                     id="techFollowupEmail"
                   >
-                    Tech Followup Template #3
+                    Followup Temp #3
                   </span>
                 </div>
                 <input

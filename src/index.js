@@ -22,16 +22,16 @@ const client = new ApolloClient({
   }
 });
 
-// client.defaultOptions = {
-//   watchQuery: {
-//     fetchPolicy: "network-only",
-//     errorPolicy: "ignore"
-//   },
-//   query: {
-//     fetchPolicy: "network-only",
-//     errorPolicy: "all"
-//   }
-// };
+client.defaultOptions = {
+  watchQuery: {
+    fetchPolicy: "network-only",
+    errorPolicy: "ignore"
+  },
+  query: {
+    fetchPolicy: "network-only",
+    errorPolicy: "all"
+  }
+};
 
 
 ReactDOM.render(

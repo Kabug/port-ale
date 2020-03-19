@@ -10,6 +10,7 @@ import Email from "./Email";
 import PortalOrders from "./PortalOrders";
 import NotFound from "./NotFound";
 import Export from "./Export";
+import DeleteArchives from "./DeleteArchives";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/upload" component={Upload}/>
           <Route path="/email" component={Email}/>
           <Route path="/export" component={Export}/>
+          <Route path="/deletearchiveddata" component={DeleteArchives}/>
           <Route component={NotFound}/>
         </Switch>
       </div>

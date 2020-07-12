@@ -7,7 +7,6 @@ import gql from "graphql-tag";
 import OImage from "../assets/OTest.png";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import InfiniteLoader from "react-window-infinite-loader";
 
 const Styles = styled.div`
 
@@ -166,20 +165,6 @@ class PortalOrders extends React.Component {
     });
   }
 
-  loadMoreRows () {
-    console.log("Test");
-    this.loadMore.click();
-    setTimeout( () => { this.loadMore.click();}, 500 );
-    return new Promise( ( resolve, reject) => {
-      this.promise.Resolve = resolve;
-    });
-  };
-
-
-  isRowLoaded ({ index }) {
-    return !!this.state.listOfOrders[ index ];
-  }
-
   ITAMToggle = () => {
     this.setState( ( state, props) => {
       return { isITAM: !this.state.isITAM };
@@ -207,13 +192,16 @@ class PortalOrders extends React.Component {
   };
 
   handleScroll = (e) => {
-    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if ( bottom * !this.state.loadedAllOrders ) {
-      this.loadMore.click();
+    try {
+      const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      if ( bottom * !this.state.loadedAllOrders ) {
+        this.loadMore.click();
+      }
+    }
+    catch(e){
     }
   };
 
-  // Loads more after state is updated
   updateCategory = (e) => {
     this.setState({ orderCategory: e.target.value, listOfOrders: [], lastID: "" }, ()=> {
       this.allOrders.scrollTo( 0, 0 ); this.loadMore.click();
@@ -301,7 +289,7 @@ class PortalOrders extends React.Component {
           <div
             className="row ordersStyles"
             ref={ allOrders => this.allOrders = allOrders }
-            // onScroll={this.handleScroll}
+            onScroll={this.handleScroll}
           >
             <div className="col-sm-12">
               <h1>Portal <img src={OImage} alt="O"/>rders</h1>
@@ -312,41 +300,21 @@ class PortalOrders extends React.Component {
                   <CreateOrder/>
                 </div>
               </div>
-              <InfiniteLoader
-                isRowLoaded={this.isRowLoaded}
-                loadMoreRows={this.loadMoreRows}
-                rowCount={listOfOrders.length}
-              >
-                {({ onRowsRendered, registerChild }) => (
                 <AutoSizer>
                   {({ height, width }) => (
                     <List
                       className="List"
-                      height={height * 2 / 3}
+                      height={height * 4/5}
                       itemCount={listOfOrders.length}
                       itemSize={1000}
-                      width={width * 6 / 7}
+                      width={width}
+                      onScroll={this.handleScroll}
                     >
                       {Row}
                     </List>
                   )}
                 </AutoSizer>
-                )}
-              </InfiniteLoader>
-{/*
-              <div className="row">
-                {listOfOrders.slice( 0 ).map( (order) =>
-                  <div className="col-sm-12">
-                  <Orders
-                    key={order.id}
-                    orders={order}
-                    isITAM={this.state.isITAM}
-                    isTech={this.state.isTech}
-                  />
-                  </div>
-                )}
-              </div>
-*/}
+
               <div className="row">
                 <div className="col-sm-12">
                   <ApolloConsumer>
@@ -354,6 +322,7 @@ class PortalOrders extends React.Component {
                       <button
                         type="button"
                         className="btn btn-dark"
+                        style={{display:"none"}}
                         ref={ loadMore => this.loadMore = loadMore }
                         onClick={async () => {
                           const { loading, error, data } = await client.query({
@@ -390,9 +359,6 @@ class PortalOrders extends React.Component {
               className="col-sm-12"
               style={{ display: `${!this.state.loadedAllOrders ? "inline" : "none"}` }}
             >
-              <div className="spinner-border text-warning" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
             </div>
           </div>
         </div>

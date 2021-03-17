@@ -9,71 +9,98 @@ const resolvers = {
 		orders(parent, args, ctx, info) {
 			return ctx.db.query.orders({}, info );
 		},
-		filteredOrders(parent, args, ctx, info) {
-			return ctx.db.query.orders({ where: { ordercategory: args.ordercategory } }, info );
+		filteredOrders(parent, { orderCategory }, ctx, info) {
+			return ctx.db.query.orders({ where: { orderCategory } }, info );
 		},
 		users(parent, args, ctx, info) {
 			return ctx.db.query.users({}, info );
 		},
-		filteredUsers(parent, args, ctx, info) {
-			return ctx.db.query.users({ where: { name: args.name } }, info );
+		filteredUsers(parent, { userName }, ctx, info) {
+			return ctx.db.query.users({ where: { userName } }, info );
 		},
-		order(parent, args, ctx, info) {
-			return ctx.db.query.order({ where: { id: args.id } }, info );
+		order(parent, { id }, ctx, info) {
+			return ctx.db.query.order({ where: { id } }, info );
+		},
+		nextOrders(parent, args, ctx, info) {
+			if ( args.input.before === "" ) {
+				return ctx.db.query.orders({
+						where: { orderCategory: args.input.orderCategory },
+						last: 20,
+						orderBy: "id_ASC"
+					},
+					info
+				);
+			}
+			return ctx.db.query.orders({
+					where: { orderCategory: args.input.orderCategory },
+					last: 20,
+					before: args.input.before,
+					orderBy: "id_ASC"
+				},
+				info
+			);
 		}
 	},
 	Mutation: {
-		createOrder(parent, {
-			orderid,
-			datecreated,
-			dateapproved,
-			createdby,
-			createdbyemail,
-			recipient,
-			newhire,
-			hirename,
-			hirestartdate,
-			approvalmanager,
-			businessunit,
-			attention,
-			shippingaddress,
-			items,
-			total,
-			comments,
-			ordercategory,
-			sla,
-			itam,
-			tech
-		}, ctx, info) {
+		createOrder(parent, args, ctx, info) {
+			if ( args.input.id ) {
+				return ctx.db.mutation.createOrder({
+						data: {
+							id: args.input.id,
+							orderSimplexId: args.input.orderSimplexId,
+							orderDateCreated: args.input.orderDateCreated,
+							orderDateApproved: args.input.orderDateApproved,
+							orderCreatedBy: args.input.orderCreatedBy,
+							orderCreatedByEmail: args.input.orderCreatedByEmail,
+							orderNewHire: args.input.orderNewHire,
+							orderRecipient: args.input.orderRecipient,
+							orderHireStartDate: args.input.orderHireStartDate,
+							orderHireName: args.input.orderHireName,
+							orderApprovalManager: args.input.orderApprovalManager,
+							orderBusinessUnit: args.input.orderBusinessUnit,
+							orderAttention: args.input.orderAttention,
+							orderShippingAddress: args.input.orderShippingAddress,
+							orderItem: args.input.orderItem,
+							orderTotal: args.input.orderTotal,
+							orderComments: args.input.orderComments,
+							orderCategory: args.input.orderCategory,
+							orderSla: args.input.orderSla,
+							orderItam: args.input.orderItam,
+							orderTech: args.input.orderTech
+						}
+					},
+					info,
+				);
+			}
 			return ctx.db.mutation.createOrder({
 					data: {
-						orderid,
-						datecreated,
-						dateapproved,
-						createdby,
-						createdbyemail,
-						recipient,
-						newhire,
-						hirename,
-						hirestartdate,
-						approvalmanager,
-						businessunit,
-						attention,
-						shippingaddress,
-						items,
-						total,
-						comments,
-						ordercategory,
-						sla,
-						itam,
-						tech
+						orderSimplexId: args.input.orderSimplexId,
+						orderDateCreated: args.input.orderDateCreated,
+						orderDateApproved: args.input.orderDateApproved,
+						orderCreatedBy: args.input.orderCreatedBy,
+						orderCreatedByEmail: args.input.orderCreatedByEmail,
+						orderNewHire: args.input.orderNewHire,
+						orderRecipient: args.input.orderRecipient,
+						orderHireStartDate: args.input.orderHireStartDate,
+						orderHireName: args.input.orderHireName,
+						orderApprovalManager: args.input.orderApprovalManager,
+						orderBusinessUnit: args.input.orderBusinessUnit,
+						orderAttention: args.input.orderAttention,
+						orderShippingAddress: args.input.orderShippingAddress,
+						orderItem: args.input.orderItem,
+						orderTotal: args.input.orderTotal,
+						orderComments: args.input.orderComments,
+						orderCategory: args.input.orderCategory,
+						orderSla: args.input.orderSla,
+						orderItam: args.input.orderItam,
+						orderTech: args.input.orderTech
 					}
 				},
 				info,
 			);
 		},
-		createUser(parent, { name }, ctx, info) {
-			return ctx.db.mutation.createUser({ data: {	name } }, info );
+		createUser(parent, { userName }, ctx, info) {
+			return ctx.db.mutation.createUser({ data: {	userName } }, info );
 		},
 		deleteOrder(parent, { id }, ctx, info) {
 			return ctx.db.mutation.deleteOrder({ where: { id } }, info );
@@ -81,108 +108,81 @@ const resolvers = {
 		deleteUser(parent, { id }, ctx, info) {
 			return ctx.db.mutation.deleteUser({ where: { id } }, info );
 		},
-		updateUser(parent, { id, name }, ctx, info) {
-			return ctx.db.mutation.updateUser({ data: { name }, where: { id }, info });
+		updateUser(parent, { id, userName }, ctx, info) {
+			return ctx.db.mutation.updateUser({
+				data: { userName },
+				where: { id },
+				info
+			});
 		},
-		updateEntireOrder(parent, {
-		approvalManager,
-		attention,
-		businessUnit,
-		comments,
-		createdBy,
-		createdByEmail,
-		dateApproved,
-		dateCreated,
-		hireName,
-		hireStartDate,
-		id,
-		item,
-		newHire,
-		orderCategory,
-		orderID,
-		recipient,
-		shippingAddress,
-		sla,
-		total,
-		ITAMConfirmedNewhire,
-		ITAMConnectorType,
-		ITAMDellEmailNotif,
-		ITAMDellOrder,
-		ITAMid,
-		ITAMMonitorModel,
-		ITAMMonitorNum,
-		ITAMOldAssetTag,
-		ITAMOldModel,
-		ITAMOrderPendEmail,
-		ITAMPOOrder,
-		ITAMProductSource,
-		ITAMStatus,
-		ITAMVerificationEmailSent,
-		ITAMName,
-		TechConfirmedUser,
-		TechCostCenter,
-		TechDateSetupCompleted,
-		TechDateFollowupTemp,
-		TechFollowupEmail,
-		Techid,
-		TechEmailPCSent,
-		TechServiceTag,
-		TechStatus,
-		TechName
-		}, ctx, info) {
+		updateCategory(parent, { id, orderCategory }, ctx, info) {
+			return ctx.db.mutation.updateOrder({
+				data: { orderCategory },
+				where: { id },
+				info
+			});
+		},
+		updateEntireOrder(parent, args, ctx, info) {
 			// use props for where and state for update data
-			ctx.db.mutation.updateOrder({ data: {
-				approvalManager,
-				attention,
-				businessUnit,
-				comments,
-				createdBy,
-				createdByEmail,
-				dateApproved,
-				dateCreated,
-				hireName,
-				hireStartDate,
-				item,
-				newHire,
-				orderCategory,
-				orderID,
-				recipient,
-				shippingAddress,
-				sla,
-				total
-			}, where: { id }, info });
-			ctx.db.mutation.updateITAMProgress({ data: {
-				itamowner: { disconnect: true }
-			}, where: { ITAMid }, info });
-			ctx.db.mutation.updateITAMProgress({ data: {
-				ITAMConfirmedNewhire,
-				ITAMConnectorType,
-				ITAMDellEmailNotif,
-				ITAMDellOrder,
-				ITAMMonitorModel,
-				ITAMMonitorNum,
-				ITAMOldAssetTag,
-				ITAMOldModel,
-				ITAMOrderPendEmail,
-				ITAMPOOrder,
-				ITAMProductSource,
-				ITAMStatus,
-				ITAMVerificationEmailSent
-			}, where: { ITAMid }, info });
-			ctx.db.mutation.updateTechnicianProgress({ data: {
-				techowner: { disconnect: true }
-			}, where: { Techid }, info });
-			ctx.db.mutation.updateTechnicianProgress({ data: {
-				TechConfirmedUser,
-				TechCostCenter,
-				TechDateSetupCompleted,
-				TechDateFollowupTemp,
-				TechFollowupEmail,
-				TechEmailPCSent,
-				TechServiceTag,
-				TechStatus
-			}, where: { Techid }, info });
-			return TechName;
+			ctx.db.mutation.updateItamProgress({
+				data: {
+					itamOwner: { connect: { userName:  args.input.itamUserName } },
+				  itamStatus: args.input.itamStatus,
+				  itamVerificationEmailSent: args.input.itamVerificationEmailSent,
+				  itamProductSource: args.input.itamProductSource,
+				  itamOldAssetTag: args.input.itamOldAssetTag,
+				  itamOldModel: args.input.itamOldModel,
+				  itamMonitorModel: args.input.itamMonitorModel,
+				  itamMonitorNum: args.input.itamMonitorNum,
+				  itamConnectorTypes: args.input.itamConnectorTypes,
+				  itamOrderPendingEmail: args.input.itamOrderPendingEmail,
+				  itamConfirmedNewHire: args.input.itamConfirmedNewHire,
+				  itamPoOrderId: args.input.itamPoOrderId,
+				  itamDellOrderId: args.input.itamDellOrderId,
+				  itamDellEmailNotif: args.input.itamDellEmailNotif
+				},
+				where: { id: args.input.itamId },
+				info
+			});
+			ctx.db.mutation.updateTechProgress({
+				data: {
+					techOwner: { connect: { userName: args.input.techUserName } },
+				  techStatus: args.input.techStatus,
+				  techConfirmedUser: args.input.techConfirmedUser,
+				  techCostCenter: args.input.techCostCenter,
+				  techServiceTag: args.input.techServiceTag,
+				  techInitialEmail: args.input.techInitialEmail,
+				  techDateFollowupTemp: args.input.techDateFollowupTemp,
+				  techFollowupEmailSent: args.input.techFollowupEmailSent,
+				  techDateCompleted: args.input.techDateCompleted
+				},
+				where: { id: args.input.techId },
+				info
+			});
+			return ctx.db.mutation.updateOrder({
+				data: {
+					orderSimplexId: args.input.orderSimplexId,
+					orderDateCreated: args.input.orderDateCreated,
+					orderDateApproved: args.input.orderDateApproved,
+					orderCreatedBy: args.input.orderCreatedBy,
+					orderCreatedByEmail: args.input.orderCreatedByEmail,
+					orderNewHire: args.input.orderNewHire,
+					orderRecipient: args.input.orderRecipient,
+					orderHireStartDate: args.input.orderHireStartDate,
+					orderHireName: args.input.orderHireName,
+					orderApprovalManager: args.input.orderApprovalManager,
+					orderBusinessUnit: args.input.orderBusinessUnit,
+					orderAttention: args.input.orderAttention,
+					orderShippingAddress: args.input.orderShippingAddress,
+					orderItem: args.input.orderItem,
+					orderTotal: args.input.orderTotal,
+					orderComments: args.input.orderComments,
+					orderCategory: args.input.orderCategory,
+					orderSla: args.input.orderSla
+				},
+				where: { id: args.input.orderId },
+				info
+			});
 		}
 	}
 };

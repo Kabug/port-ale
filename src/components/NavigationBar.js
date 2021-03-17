@@ -40,10 +40,11 @@ function NavigationBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Item><Link to="/" class="styledLink">Orders</Link></Nav.Item>
-            <Nav.Item><Link to="/Users" class="styledLink">Users</Link></Nav.Item>
-            <Nav.Item><Link to="/Email" class="styledLink">Emails</Link></Nav.Item>
-            <Nav.Item><Link to="/Upload" class="styledLink">Upload</Link></Nav.Item>
+            <Nav.Item><Link to="/" className="styledLink">Orders</Link></Nav.Item>
+            <Nav.Item><Link to="/Users" className="styledLink">Users</Link></Nav.Item>
+            <Nav.Item><Link to="/Email" className="styledLink">Emails</Link></Nav.Item>
+            <Nav.Item><Link to="/Export" className="styledLink">Export</Link></Nav.Item>
+            <Nav.Item><Link to="/Upload" className="styledLink">Upload</Link></Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

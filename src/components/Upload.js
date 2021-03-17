@@ -11,9 +11,14 @@ const Styles = styled.div`
     border-radius: 20px;
     padding: 1%;
     background-color: #FFCC00;
-    margin-top: 5em;
+    margin-top: 2.5em;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin-bottom: 3em;
+  }
+
+  .csv-input:hover{
+    cursor: pointer;
+    color: white;
   }
 
   .newOrdersDiv{
@@ -50,52 +55,16 @@ const Styles = styled.div`
     max-height: 91.7vh;
     overflow-y: auto;
   }
+
+  .title{
+    margin-top: 2.5em;
+  }
 `;
 
 const CREATE_ORDER = gql`
-  mutation createOrder(
-    $orderid: Float!,
-    $datecreated: DateTime!,
-    $dateapproved: DateTime!,
-    $createdby: String!,
-    $createdbyemail: String!,
-    $recipient: String!,
-    $newhire: Boolean!,
-    $hirestartdate: DateTime,
-    $hirename: String,
-    $approvalmanager: String!,
-    $businessunit: String!,
-    $attention: String!,
-    $shippingaddress: String!,
-    $items: String!,
-    $total: Float!,
-    $ordercategory: String!,
-    $comments: String!,
-    $itam: ITAMProgressCreateOneWithoutOrderInput!,
-    $tech: TechnicianProgressCreateOneWithoutOrderInput!,
-  ) {
-    createOrder(
-      orderid: $orderid,
-      datecreated: $datecreated,
-      dateapproved: $dateapproved,
-      createdby: $createdby,
-      createdbyemail: $createdbyemail,
-      recipient: $recipient,
-      newhire: $newhire,
-      hirestartdate: $hirestartdate,
-      hirename: $hirename,
-      approvalmanager: $approvalmanager,
-      businessunit: $businessunit,
-      attention: $attention,
-      shippingaddress: $shippingaddress,
-      items: $items,
-      total: $total,
-      ordercategory: $ordercategory,
-      comments: $comments,
-      itam: $itam,
-      tech: $tech
-    ) {
-        id
+  mutation createOrder($input: createOrderInput!) {
+    createOrder(input: $input) {
+      id
     }
   }
 `;
@@ -110,11 +79,11 @@ class Upload extends React.Component{
   }
 
   setDataToState = (data) => {
-    var tempData = data;
+    const tempData = data;
 
     try {
     // Remove uneeded columns
-    var order;
+    let order;
     for ( order in tempData ) {
       if ( !(data[ order ]) || data[ order ][ 0 ] === "") {
         data.splice( order, 1 );
@@ -124,7 +93,7 @@ class Upload extends React.Component{
     }
 
     // Formatting value types
-    var finalOrders = [];
+    let finalOrders = [];
     for ( order in data ) {
       data[ order ][ 0 ] = parseFloat( data[ order ][ 0 ] );
       data[ order ][ 1 ] = this.formatDate( data[ order ][ 1 ] );
@@ -142,9 +111,9 @@ class Upload extends React.Component{
         data[ order ][ 7 ] = null;
       }
       if ( data[ order ][ 13 ].match( /\d -/g ).length > 1 ) {
-        var items = (data[ order ][ 13 ].split( /\d -/ ) ).filter( Boolean );
-        for ( var item in items ) {
-          var newOrder = [ ...data[ order ] ];
+        let items = (data[ order ][ 13 ].split( /\d -/ ) ).filter( Boolean );
+        for ( let item in items ) {
+          let newOrder = [ ...data[ order ] ];
           newOrder[ 13 ] = items[ item ];
           finalOrders.push( newOrder );
         }
@@ -163,7 +132,7 @@ class Upload extends React.Component{
   }
 
   removeFromState = (orderId) => {
-    var updatedOrders = [ ...this.state.newOrders ];
+    let updatedOrders = [ ...this.state.newOrders ];
     updatedOrders.splice( orderId, 1 );
     this.setState({ newOrders: updatedOrders });
   };
@@ -172,33 +141,36 @@ class Upload extends React.Component{
 
     const itamOwner = {
       connect: {
-        name: "Unassigned"
+        userName: "Unassigned"
       }
     };
 
     const techOwner = {
       connect: {
-        name: "Unassigned"
+        userName: "Unassigned"
       }
     };
 
     const createITAM = {
       create: {
-        status: "Not Started",
-        itamowner: itamOwner
+        itamStatus: "Not Started",
+        itamOwner: itamOwner
       }
     };
 
     const createTech = {
       create: {
-        status: "Not Started",
-        techowner: techOwner
+        techStatus: "Not Started",
+        techOwner: techOwner
       }
     };
     return (
       <Styles>
         <div class="container-fluid orders">
           <div class="row">
+            <div class="col-sm-12 title">
+              <h1>Upload from CSV</h1>
+            </div>
             <div class="col-sm-12">
               <CSVReader onFileLoaded={data => this.setDataToState( data )} />
             </div>
@@ -261,25 +233,27 @@ class Upload extends React.Component{
                 </div>
                 <div class="col-sm-12 buttonDiv">
                   <Mutation mutation={CREATE_ORDER} variables={{
-                        orderid: order[ 0 ],
-                        datecreated: order[ 1 ],
-                        dateapproved: order[ 2 ],
-                        createdby: order[ 3 ],
-                        createdbyemail: order[ 4 ],
-                        recipient: order[ 5 ],
-                        newhire: order[ 6 ],
-                        hirestartdate: order[ 7 ],
-                        hirename: order[ 8 ],
-                        approvalmanager: order[ 9 ],
-                        businessunit: order[ 10 ],
-                        attention: order[ 11 ],
-                        shippingaddress: order[ 12 ],
-                        items: order[ 13 ],
-                        total: order[ 14 ],
-                        ordercategory: "New Order",
-                        comments: order[ 15 ],
-                        itam: createITAM,
-                        tech: createTech
+                    input: {
+                      orderSimplexId: order[ 0 ],
+                      orderDateCreated: order[ 1 ],
+                      orderDateApproved: order[ 2 ],
+                      orderCreatedBy: order[ 3 ],
+                      orderCreatedByEmail: order[ 4 ],
+                      orderRecipient: order[ 5 ],
+                      orderNewHire: order[ 6 ],
+                      orderHireStartDate: order[ 7 ],
+                      orderHireName: order[ 8 ],
+                      orderApprovalManager: order[ 9 ],
+                      orderBusinessUnit: order[ 10 ],
+                      orderAttention: order[ 11 ],
+                      orderShippingAddress: order[ 12 ],
+                      orderItem: order[ 13 ],
+                      orderTotal: order[ 14 ],
+                      orderCategory: "New Order",
+                      orderComments: order[ 15 ],
+                      orderItam: createITAM,
+                      orderTech: createTech
+                    }
                   }}>
                     {createOrder =>
                       <button type="button" class="btn btn-success"

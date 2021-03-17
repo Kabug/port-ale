@@ -1,103 +1,106 @@
 # import Order from "./generated/prisma.graphql"
-# import ITAMProgress from "./generated/prisma.graphql"
-# import TechnicianProgress from "./generated/prisma.graphql"
+# import ItamProgress from "./generated/prisma.graphql"
+# import TechProgress from "./generated/prisma.graphql"
 # import User from "./generated/prisma.graphql"
 
 input updateEntireOrderInput {
-  approvalManager: String!,
-  attention: String!,
-  businessUnit: String!,
-  comments: String!,
-  createdBy: String!,
-  createdByEmail: String!,
-  dateApproved: DateTime!,
-  dateCreated: DateTime!,
-  hireName: String,
-  hireStartDate: DateTime,
-  id: ID!,
-  item: String!,
-  newHire: Boolean,
+  orderId: ID!,
+  orderSimplexId: Float!,
+  orderDateCreated: DateTime!,
+  orderDateApproved: DateTime!,
+  orderCreatedBy: String!,
+  orderCreatedByEmail: String!,
+  orderNewHire: Boolean,
+  orderRecipient: String!,
+  orderHireStartDate: DateTime,
+  orderHireName: String,
+  orderApprovalManager: String!,
+  orderBusinessUnit: String!,
+  orderAttention: String!,
+  orderShippingAddress: String!,
+  orderItem: String!,
+  orderTotal: Float!,
+  orderComments: String!,
   orderCategory: String!,
-  orderID: Float!,
-  recipient: String!,
-  shippingAddress: String!,
-  sla: Int,
-  total: Float!,
-  ITAMConfirmedNewhire: DateTime,
-  ITAMConnectorType: String,
-  ITAMDellEmailNotif: DateTime,
-  ITAMDellOrder: Float,
-  ITAMid: ID!,
-  ITAMMonitorModel: String,
-  ITAMMonitorNum: Float,
-  ITAMOldAssetTag: String,
-  ITAMOldModel: String,
-  ITAMOrderPendEmail: DateTime,
-  ITAMPOOrder: Float,
-  ITAMProductSource: String,
-  ITAMStatus: String,
-  ITAMVerificationEmailSent: DateTime,
-  ITAMName: String,
-  TechConfirmedUser: String,
-  TechCostCenter: String,
-  TechDateSetupCompleted: DateTime,
-  TechDateFollowupTemp: DateTime,
-  TechFollowupEmail: DateTime,
-  Techid: ID!,
-  TechEmailPCSent: DateTime,
-  TechServiceTag: String,
-  TechStatus: String,
-  TechName: String
+  orderSla: Int,
+  itamId: ID!,
+  itamStatus: String,
+  itamVerificationEmailSent: DateTime,
+  itamProductSource: String,
+  itamOldAssetTag: String,
+  itamOldModel: String,
+  itamMonitorModel: String,
+  itamMonitorNum: Float,
+  itamConnectorTypes: String,
+  itamOrderPendingEmail: DateTime,
+  itamConfirmedNewHire: DateTime,
+  itamPoOrderId: Float,
+  itamDellOrderId: Float,
+  itamDellEmailNotif: DateTime,
+  techId: ID!,
+  techStatus: String,
+  techConfirmedUser: String,
+  techCostCenter: String,
+  techServiceTag: String,
+  techInitialEmail: DateTime,
+  techDateFollowupTemp: DateTime,
+  techFollowupEmailSent: DateTime,
+  techDateCompleted: DateTime,
+  itamUserName: String,
+  techUserName: String
+}
+
+input createOrderInput{
+  id: ID,
+  orderSimplexId: Float!,
+  orderDateCreated: DateTime!,
+  orderDateApproved: DateTime!,
+  orderCreatedBy: String!,
+  orderCreatedByEmail: String!,
+  orderNewHire: Boolean,
+  orderRecipient: String!,
+  orderHireStartDate: DateTime,
+  orderHireName: String,
+  orderApprovalManager: String!,
+  orderBusinessUnit: String!,
+  orderAttention: String!,
+  orderShippingAddress: String!,
+  orderItem: String!,
+  orderTotal: Float!,
+  orderComments: String!,
+  orderCategory: String!,
+  orderSla: Int,
+  orderItam: ItamProgressCreateOneWithoutItamOrderInput,
+  orderTech: TechProgressCreateOneWithoutTechOrderInput
+}
+
+input nextOrdersInput{
+  orderCategory: String!,
+  before: ID
 }
 
 type updateEntireOrderResponse{
   order: Order!,
-  itam: ITAMProgress!,
-  tech: TechnicianProgress!,
+  itam: ItamProgress!,
+  tech: TechProgress!,
   user: User!
 }
 
 type Query{
   orders: [Order!]!
-  filteredOrders(ordercategory: String!): [Order!]!
+  filteredOrders(orderCategory: String!): [Order!]!
   users: [User!]!
-  filteredUsers(name: String!): [User!]!
+  filteredUsers(userName: String!): [User!]!
   order(id: ID!): Order
+  nextOrders(input: nextOrdersInput!): [Order!]!
 }
 
 type Mutation{
-  createOrder(
-    orderid: Float!,
-    datecreated: DateTime!,
-    dateapproved: DateTime!,
-    createdby: String!,
-    createdbyemail: String!,
-    recipient: String!,
-    newhire: Boolean!,
-    hirename: String,
-    hirestartdate: DateTime,
-    approvalmanager: String!,
-    businessunit: String!,
-    attention: String!,
-    shippingaddress: String!,
-    items: String!,
-    total: Float!,
-    comments: String!,
-    ordercategory: String!,
-    sla: Int,
-    itam: ITAMProgressCreateOneWithoutOrderInput,
-    tech: TechnicianProgressCreateOneWithoutOrderInput
-  ): Order
-
-  createUser(name: String!): User
-
-  deleteOrder(id: ID!): Order
-
-  deleteUser(id: ID!): User
-
-  updateUser(id: ID!, name: String!): User
-
-
-
-  updateEntireOrder(input: updateEntireOrderInput!): updateEntireOrderResponse
+  createOrder( input: createOrderInput! ): Order
+  createUser( userName: String! ): User
+  deleteOrder( id: ID! ): Order
+  deleteUser( id: ID! ): User
+  updateUser( id: ID!, userName: String! ): User
+  updateCategory( id: ID!, orderCategory: String! ): Order
+  updateEntireOrder( input: updateEntireOrderInput! ): Order
 }

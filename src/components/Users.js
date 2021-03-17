@@ -83,8 +83,12 @@ const Styles = styled.div`
     overflow-y: auto;
   }
 
-  .ordersList :nth-child(even){
+  .ordersList :nth-of-type(even){
     background-color: rgba(255, 204, 0, 0.4);
+  }
+
+  .disableOrderList :nth-of-type(even){
+    background-color: transparent;
   }
 `;
 
@@ -92,14 +96,14 @@ const QUERY_USERS = gql`
   {
     users{
       id
-      name
+      userName
     }
   }
 `;
 
 const CREATE_USER = gql`
-  mutation createUser($name: String!) {
-    createUser(name: $name){
+  mutation createUser($userName: String!) {
+    createUser(userName: $userName){
       id
     }
   }
@@ -114,36 +118,44 @@ const DELETE_USER = gql`
 `;
 
 const UPDATE_USER = gql`
-  mutation updateUser($id:ID!, $name: String!){
-    updateUser(id: $id, name: $name){
+  mutation updateUser($id: ID!, $userName: String!){
+    updateUser(id: $id, userName: $userName){
       id
-      name
+      userName
     }
   }
 `;
 
 const QUERY_USERS_ORDERS = gql`
-  query filteredUsersQueryTest($name:String!, $newhire:String!, $prioritydeployment:String!, $cancelled:String!){
-    filteredUsers(name: $name){
-      name
+  query filteredUsersQueryTest(
+    $userName: String!
+    $newhire: String!
+    $prioritydeployment: String!
+    $cancelled: String!
+  ) {
+    filteredUsers(userName: $userName) {
+      userName
       id
-      itamorders{
-        status
-        order{
-          orderid
-          ordercategory
-          recipient
-          items
+      userItamOrders {
+        itamStatus
+        itamOrder {
+          orderSimplexId
+          orderCategory
+          orderRecipient
+          orderAttention
+          orderItem
         }
       }
-      techorders{
-        status
-        order(where: {ordercategory_in: [$newhire, $prioritydeployment, $cancelled]})
-        {
-          orderid
-          ordercategory
-          recipient
-          items
+      userTechOrders {
+        techStatus
+        techOrder(
+          where: { orderCategory_in: [$newhire, $prioritydeployment, $cancelled] }
+        ) {
+          orderSimplexId
+          orderCategory
+          orderRecipient
+          orderAttention
+          orderItem
         }
       }
     }
@@ -185,7 +197,7 @@ class Users extends React.Component{
         isUnassigned: false });
     }
 
-    if ( id == null ) {
+    if ( id === null ) {
       this.setState({ createUser: true });
     } else {
       this.setState({ createUser: false });
@@ -224,8 +236,16 @@ class Users extends React.Component{
                     return (
                       <div className="row usersList">
                       {usersToRender.slice( 0 ).map( users =>
-                        <div className="col-sm-12 name" key={users.id} users={users} onClick={() =>
-                          this.setUser( users.name, users.id )}><h4>{users.name}</h4></div> )}
+                        <div
+                          className="col-sm-12 name"
+                          key={users.id}
+                          users={users}
+                          onClick={() =>
+                            this.setUser( users.userName, users.id
+                          )}>
+                          <h4>{users.userName}</h4>
+                        </div>
+                      )}
                         </div>
                     );
                   }}
@@ -264,7 +284,7 @@ class Users extends React.Component{
                     }
                   }
                   >
-                  <Mutation mutation={CREATE_USER} variables={ { name: this.state.userName }}>
+                  <Mutation mutation={CREATE_USER} variables={ { userName: this.state.userName }}>
                     {createUser =>
                       <button
                         type="button"
@@ -287,7 +307,7 @@ class Users extends React.Component{
                 >
                   <Mutation
                     mutation={UPDATE_USER}
-                    variables={ { id: this.state.userID, name: this.state.userName }}
+                    variables={ { id: this.state.userID, userName: this.state.userName }}
                   >
                     {updateUser =>
                       <button
@@ -321,7 +341,7 @@ class Users extends React.Component{
                         <button
                           type="button"
                           className="btn btn-danger"
-                          onClick={() => {deleteUser(); window.location.reload();}}
+                          onClick={() => {deleteUser();}}
                         >
                         Permanently Delete
                         </button>
@@ -339,7 +359,7 @@ class Users extends React.Component{
                 query={QUERY_USERS_ORDERS}
                 errorPolicy="all"
                 variables={{
-                  name: originalName,
+                  userName: originalName,
                   newhire: "New Hire",
                   prioritydeployment: "Priority Deployment",
                   cancelled: "Cancelled"
@@ -348,21 +368,55 @@ class Users extends React.Component{
                 {({ loading, error, data }) => {
                   if ( loading ) { return <div>Fetching</div>;}
                   if ( error ) { return <div>Error</div>;}
-                  var ordersToRender = [];
+                  let ordersToRender = [];
                   ordersToRender = data.filteredUsers;
-                  var hasTechOrder = false;
-                  if ( ordersToRender[ 0 ].techorders ) {
-                    for ( var index in ordersToRender[ 0 ].techorders ) {
-                      if (
-                        ordersToRender[ 0 ].techorders[ index ].order === null ||
-                        ordersToRender[ 0 ].techorders[ index ].order === undefined ) {
-                        delete ordersToRender[ 0 ].techorders[ index ];
-                      } else {
-                        hasTechOrder = true;
+                  let hasTechOrder = false;
+                  let isEmpty;
+                  if ( !Array.isArray( ordersToRender ) || !ordersToRender.length ) {
+                    isEmpty = true;
+                  } else {
+                    isEmpty = false;
+                  }
+                  if ( !isEmpty ) {
+                    if ( ordersToRender[ 0 ].userTechOrders ) {
+                      for ( let index in ordersToRender[ 0 ].userTechOrders ) {
+                        if (
+                          ordersToRender[ 0 ].userTechOrders[ index ].techOrder === null ||
+                          ordersToRender[ 0 ].userTechOrders[ index ].techOrder === undefined ) {
+                          delete ordersToRender[ 0 ].userTechOrders[ index ];
+                        } else {
+                          hasTechOrder = true;
+                        }
                       }
                     }
-                  }
-                  if ( hasTechOrder == false ) {
+                    if ( hasTechOrder === false ) {
+                      return (
+                        <div className="row">
+                          <div className="col-sm-12 heading">
+                            <h5 className="titleText">ITAM Orders:</h5>
+                          </div>
+                          <div className="col-sm-12">
+                            <div className="row ordersList">
+                              {ordersToRender[ 0 ].userItamOrders.slice( 0 ).reverse().map(
+                                orders =>
+                                  <div className="col-sm-12 disableOrderList">
+                                    <b>ID:</b> {orders.itamOrder.orderSimplexId} &nbsp;
+                                    <b>Status:</b> {orders.itamOrder.orderCategory}
+                                    <br />
+                                    <b>Item:</b> {orders.itamOrder.orderItem}
+                                    <br />
+                                    <b>Recipient:</b> {orders.itamOrder.orderRecipient} &nbsp;
+                                    <b>Attention:</b> {orders.itamOrder.orderAttention}
+                                  </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="col-sm-12 heading">
+                            <h5 className="titleText">Tech Orders:</h5>
+                          </div>
+                        </div>
+                      );
+                    }
                     return (
                       <div className="row">
                         <div className="col-sm-12 heading">
@@ -370,12 +424,15 @@ class Users extends React.Component{
                         </div>
                         <div className="col-sm-12">
                           <div className="row ordersList">
-                            {ordersToRender[ 0 ].itamorders.slice( 0 ).reverse().map( orders =>
-                              <div className="col-sm-12">
-                                {orders.order.orderid} |
-                                {orders.order.ordercategory} |
-                                {orders.order.items} |
-                                {orders.order.recipient}
+                            {ordersToRender[ 0 ].userItamOrders.slice( 0 ).reverse().map( orders =>
+                              <div className="col-sm-12 disableOrderList">
+                                <b>ID:</b> {orders.itamOrder.orderSimplexId} &nbsp;
+                                <b>Status:</b> {orders.itamOrder.orderCategory}
+                                <br />
+                                <b>Item:</b> {orders.itamOrder.orderItem}
+                                <br />
+                                <b>Recipient:</b> {orders.itamOrder.orderRecipient} &nbsp;
+                                <b>Attention:</b> {orders.itamOrder.orderAttention}
                               </div>
                             )}
                           </div>
@@ -383,43 +440,25 @@ class Users extends React.Component{
                         <div className="col-sm-12 heading">
                           <h5 className="titleText">Tech Orders:</h5>
                         </div>
+                        <div className="col-sm-12">
+                          <div className="row ordersList">
+                            {ordersToRender[ 0 ].userTechOrders.slice( 0 ).reverse().map( orders =>
+                              <div className="col-sm-12 disableOrderList">
+                                <b>ID:</b> {orders.techOrder.orderSimplexId} &nbsp;
+                                <b>Status:</b> {orders.techOrder.orderCategory}
+                                <br />
+                                <b>Item:</b> {orders.techOrder.orderItem}
+                                <br />
+                                <b>Recipient:</b> {orders.techOrder.orderRecipient} &nbsp;
+                                <b>Attention:</b> {orders.techOrder.orderAttention}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     );
                   }
-                  return (
-                    <div className="row">
-                      <div className="col-sm-12 heading">
-                        <h5 className="titleText">ITAM Orders:</h5>
-                      </div>
-                      <div className="col-sm-12">
-                        <div className="row ordersList">
-                          {ordersToRender[ 0 ].itamorders.slice( 0 ).reverse().map( orders =>
-                            <div className="col-sm-12">
-                              {orders.order.orderid} |
-                              {orders.order.ordercategory} |
-                              {orders.order.items} |
-                              {orders.order.recipient}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-sm-12 heading">
-                        <h5 className="titleText">Tech Orders:</h5>
-                      </div>
-                      <div className="col-sm-12">
-                        <div className="row ordersList">
-                          {ordersToRender[ 0 ].techorders.slice( 0 ).reverse().map( orders =>
-                            <div className="col-sm-12">
-                              {orders.order.orderid} |
-                              {orders.order.ordercategory} |
-                              {orders.order.items} |
-                              {orders.order.recipient}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
+                  return ( <div className="row"></div> );
                 }}
               </Query>
             </div>

@@ -2,14 +2,16 @@ import React from "react";
 import Orders from "./Orders";
 import CreateOrder from "./CreateOrder";
 import styled from "styled-components";
-import { Query } from "react-apollo";
+import { Query, ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
 import OImage from "../assets/OTest.png";
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const Styles = styled.div`
 
   h1{
-    margin: 1em;
+    margin: 2em;
   }
 
   h5{
@@ -67,62 +69,76 @@ const Styles = styled.div`
     max-height: 75vh;
     overflow-y: auto;
   }
+
+  .loadMoreBut{
+    display: none;
+  }
+
+  .spinner-border{
+    margin-bottom: 20px;
+  }
+
+  .List {
+    overflow: auto !important;
+  }
 `;
 
-const QUERY_ORDERS = gql`
-  query filteredOrdersQuery($ordercategory: String!){
-    filteredOrders(ordercategory: $ordercategory){
+const QUERY_NEXT_ORDERS = gql`
+  query nextOrders($input: nextOrdersInput!){
+    nextOrders(input: $input){
       id
-      orderid
-      datecreated
-      dateapproved
-      createdby
-      createdbyemail
-      recipient
-      newhire
-      hirestartdate
-      hirename
-      approvalmanager
-      businessunit
-      attention
-      shippingaddress
-      items
-      total
-      comments
-      ordercategory
-      sla
-      itam{
+      orderSimplexId
+      orderDateCreated
+      orderDateApproved
+      orderCreatedBy
+      orderCreatedByEmail
+      orderNewHire
+      orderRecipient
+      orderHireStartDate
+      orderHireName
+      orderApprovalManager
+      orderBusinessUnit
+      orderAttention
+      orderShippingAddress
+      orderItem
+      orderTotal
+      orderComments
+      orderCategory
+      orderSla
+      orderItam{
         id
-        itamowner{
-          name
+        itamOwner{
+          id
+          userName
         }
-        status
-        verificationemailsent
-        productsource
-        oldassettag
-        oldmodel
-        modelofmonitor
-        numofmonitor
-        connectortypes
-        orderpendingemailsent
-        confirmednewhire
-        poordernum
-        dellordernum
-        dellemailnotif
+        itamStatus
+        itamVerificationEmailSent
+        itamProductSource
+        itamOldAssetTag
+        itamOldModel
+        itamMonitorModel
+        itamMonitorNum
+        itamConnectorTypes
+        itamOrderPendingEmail
+        itamConfirmedNewHire
+        itamPoOrderId
+        itamDellOrderId
+        itamDellEmailNotif
       }
-      tech{
+      orderTech{
         id
-        techowner{
-          name
+        techOwner{
+          id
+          userName
         }
-        status
-        confirmeduser
-        costcenter
-        servicetag
-        initialemailsent
-        followupemailsent
-        datefollowuptemp
-        datecompleted
+        techStatus
+        techConfirmedUser
+        techCostCenter
+        techServiceTag
+        techInitialEmail
+        techDateFollowupTemp
+        techFollowupEmailSent
+        techDateCompleted
       }
     }
   }
@@ -135,8 +151,18 @@ class PortalOrders extends React.Component {
       isITAM: false,
       isTech: false,
       isAll: true,
-      orderCategory: "New Order"
+      orderCategory: "New Order",
+      lastID: "",
+      listOfOrders: [],
+      loadedAllOrders: false,
+      ordersToBeDeleted: []
     };
+  }
+
+  componentDidMount() {
+    this.setState({ lastID: "", listOfOrders: [] }, () => {
+      this.loadMore.click();
+    });
   }
 
   ITAMToggle = () => {
@@ -161,39 +187,76 @@ class PortalOrders extends React.Component {
     }
   };
 
+  setLastOrder = (newId) => {
+    this.setState({ lastID: newId });
+  };
+
+  handleScroll = (e) => {
+    try {
+      const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      if ( bottom * !this.state.loadedAllOrders ) {
+        this.loadMore.click();
+      }
+    }
+    catch(e){
+    }
+  };
+
+  updateCategory = (e) => {
+    this.setState({ orderCategory: e.target.value, listOfOrders: [], lastID: "" }, ()=> {
+      this.allOrders.scrollTo( 0, 0 ); this.loadMore.click();
+    });
+  };
+
   render() {
 
     const {
-      ITAMToggle,
-      techToggle,
-      allToggle,
-      orderCategory
+      orderCategory,
+      lastID,
+      listOfOrders
     } = this.state;
+
+    const Row = ({ index, style }) => (
+      <div className="row" style={style}>
+        {listOfOrders.length && listOfOrders [ index ] ?
+            <div className="col-sm-12">
+              <Orders
+                orders={listOfOrders[ index ]}
+                isITAM={this.state.isITAM}
+                isTech={this.state.isTech}
+              />
+            </div>
+            :
+            "Loading"
+        }
+      </div>
+    );
 
     return (
       <Styles>
-        <div class ="container-fluid">
-          <div class="row optionsBackground">
-            <div class="col-sm-6 blackBackground">
+        <div className="container-fluid">
+          <div className="row optionsBackground">
+            <div className="col-sm-6 blackBackground">
               <h5>Order Filter</h5>
-              <div class="input-group">
+              <div className="input-group">
                 <select
-                  class="custom-select"
+                  className="custom-select"
                   id="orderFilter"
-                  onChange={e=>this.setState({ orderCategory: e.target.value })}
+                  onChange={e=> this.updateCategory( e )}
                 >
                   <option value="New Order">New Order</option>
                   <option value="Accessory">Accessory</option>
                   <option value="New Hire">New Hire</option>
                   <option value="Priority Deployment">Priority Deployment</option>
                   <option value="Cancelled">Cancelled</option>
+                  <option value="Done">Done</option>
                 </select>
               </div>
             </div>
-            <div class="col-sm-6 blackBackground">
+            <div className="col-sm-6 blackBackground">
               <h5>User Filter</h5>
-              <div class="input-group">
-                <select class="custom-select" id="orderFilter">
+              <div className="input-group">
+                <select className="custom-select" id="orderFilter">
                   <option value="All">All</option>
                   <option value="None">None</option>
                   <option value="Lianne">Lianne</option>
@@ -203,47 +266,99 @@ class PortalOrders extends React.Component {
                 </select>
               </div>
             </div>
-            <div class="col-sm-12 blackBackground">
-              <div class="btn-group btn-group-justified">
+            <div className="col-sm-12 blackBackground">
+              <div className="btn-group btn-group-justified">
                 <button
                   type="button"
-                  class="btn btn-primary"
+                  className="btn btn-primary"
                   onClick={this.ITAMToggle}
                 >
                 ITAM
                 </button>
-                <button type="button" class="btn btn-info" onClick={this.techToggle}>Tech</button>
-                <button type="button" class="btn btn-dark" onClick={this.allToggle}>All</button>
+                <button
+                  type="button"
+                  className="btn btn-info"
+                  onClick={this.techToggle}
+                >
+                  Tech
+                </button>
+                <button type="button" className="btn btn-dark" onClick={this.allToggle}>All</button>
               </div>
             </div>
           </div>
-          <div class="row ordersStyles">
-            <div class="col-sm-12">
+          <div
+            className="row ordersStyles"
+            ref={ allOrders => this.allOrders = allOrders }
+            onScroll={this.handleScroll}
+          >
+            <div className="col-sm-12">
               <h1>Portal <img src={OImage} alt="O"/>rders</h1>
             </div>
-            <div class="col-sm-12">
-            <CreateOrder/>
-            <Query query={QUERY_ORDERS} variables={{
-              ordercategory: orderCategory
-            }}>
-              {({ loading, error, data }) => {
-                if ( loading ) { return <div>Fetching</div>;}
-                if ( error ) { return <div>Error</div>;}
-                const ordersToRender = data.filteredOrders;
-                return (
-                  <div>
-                    {ordersToRender.slice( 0 ).reverse().map( orders =>
-                      <Orders
-                        key={orders.id}
-                        orders={orders}
-                        isITAM={this.state.isITAM}
-                        isTech={this.state.isTech}
-                      />
+            <div className="col-sm-12">
+              <div className="row">
+                <div className="col-sm-12">
+                  <CreateOrder/>
+                </div>
+              </div>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    <List
+                      className="List"
+                      height={height * 4/5}
+                      itemCount={listOfOrders.length}
+                      itemSize={1000}
+                      width={width}
+                      onScroll={this.handleScroll}
+                    >
+                      {Row}
+                    </List>
+                  )}
+                </AutoSizer>
+
+              <div className="row">
+                <div className="col-sm-12">
+                  <ApolloConsumer>
+                    { client => (
+                      <button
+                        type="button"
+                        className="btn btn-dark"
+                        style={{display:"none"}}
+                        ref={ loadMore => this.loadMore = loadMore }
+                        onClick={async () => {
+                          const { loading, error, data } = await client.query({
+                            query: QUERY_NEXT_ORDERS,
+                            variables: {
+                              input: {
+                                orderCategory: orderCategory,
+                                before: lastID
+                              }
+                            }
+                          });
+                          if ( loading ) { return <div>Fetching</div>;}
+                          if ( error ) { return <div>Error</div>;}
+                          let newOrders = [ ...data.nextOrders ];
+                          if ( newOrders.length ) {
+                            this.setState({
+                              listOfOrders: this.state.listOfOrders.concat( newOrders.reverse() ),
+                              lastID: newOrders[ newOrders.length - 1 ].id,
+                              loadedAllOrders: false
+                            });
+                          } else {
+                            this.setState({ loadedAllOrders: true });
+                          }
+                        }}
+                      >
+                        Next
+                      </button>
                     )}
-                  </div>
-                );
-              }}
-            </Query>
+                  </ApolloConsumer>
+                </div>
+              </div>
+            </div>
+            <div
+              className="col-sm-12"
+              style={{ display: `${!this.state.loadedAllOrders ? "inline" : "none"}` }}
+            >
             </div>
           </div>
         </div>

@@ -1,63 +1,63 @@
 type Order{
   id: ID! @unique
-  orderid: Float!
-  datecreated: DateTime!
-  dateapproved: DateTime!
-  createdby: String!
-  createdbyemail: String!
-  recipient: String!
-  newhire: Boolean @default(value: "false")
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String!
-  businessunit: String!
-  attention: String!
-  shippingaddress: String!
-  items: String!
-  total: Float!
-  comments: String!
-  ordercategory: String!
-  sla: Int
-  itam: ITAMProgress! @relation(name: "ITAMOrderProgress" onDelete: CASCADE)
-  tech: TechnicianProgress! @relation(name: "TechOrderProgress" onDelete: CASCADE)
+  orderSimplexId: Float!
+  orderDateCreated: DateTime!
+  orderDateApproved: DateTime!
+  orderCreatedBy: String!
+  orderCreatedByEmail: String!
+  orderNewHire: Boolean @default(value: "false")
+  orderRecipient: String!
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String!
+  orderBusinessUnit: String!
+  orderAttention: String!
+  orderShippingAddress: String!
+  orderItem: String!
+  orderTotal: Float!
+  orderComments: String!
+  orderCategory: String!
+  orderSla: Int
+  orderItam: ItamProgress! @relation(name: "ItamOrderProgress" onDelete: CASCADE)
+  orderTech: TechProgress! @relation(name: "TechOrderProgress" onDelete: CASCADE)
 }
 
-type ITAMProgress{
+type ItamProgress{
   id: ID! @unique
-  order: Order! @relation(name: "ITAMOrderProgress")
-  itamowner: User
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
+  itamOrder: Order! @relation(name: "ItamOrderProgress")
+  itamOwner: User!
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
 }
 
-type TechnicianProgress{
+type TechProgress{
   id: ID! @unique
-  order: Order @relation(name: "TechOrderProgress")
-  techowner: User
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
+  techOrder: Order @relation(name: "TechOrderProgress")
+  techOwner: User!
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
 }
 
 type User{
   id: ID! @unique
-  name: String! @unique
-  itamorders: [ITAMProgress!]!
-  techorders: [TechnicianProgress!]!
+  userName: String! @unique
+  userItamOrders: [ItamProgress!]!
+  userTechOrders: [TechProgress!]!
 }

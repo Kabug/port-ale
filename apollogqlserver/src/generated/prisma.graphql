@@ -1,7 +1,7 @@
 # source: http://localhost:4466
-# timestamp: Thu Jan 30 2020 11:24:04 GMT-0800 (Pacific Standard Time)
+# timestamp: Fri Feb 21 2020 16:40:11 GMT-0800 (Pacific Standard Time)
 
-type AggregateITAMProgress {
+type AggregateItamProgress {
   count: Int!
 }
 
@@ -9,7 +9,7 @@ type AggregateOrder {
   count: Int!
 }
 
-type AggregateTechnicianProgress {
+type AggregateTechProgress {
   count: Int!
 }
 
@@ -24,174 +24,174 @@ type BatchPayload {
 
 scalar DateTime
 
-type ITAMProgress implements Node {
+type ItamProgress implements Node {
   id: ID!
-  order(where: OrderWhereInput): Order!
-  itamowner(where: UserWhereInput): User
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
+  itamOrder(where: OrderWhereInput): Order!
+  itamOwner(where: UserWhereInput): User!
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
 }
 
 """A connection to a list of items."""
-type ITAMProgressConnection {
+type ItamProgressConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [ITAMProgressEdge]!
-  aggregate: AggregateITAMProgress!
+  edges: [ItamProgressEdge]!
+  aggregate: AggregateItamProgress!
 }
 
-input ITAMProgressCreateInput {
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
-  order: OrderCreateOneWithoutItamInput!
-  itamowner: UserCreateOneWithoutItamordersInput
+input ItamProgressCreateInput {
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
+  itamOrder: OrderCreateOneWithoutOrderItamInput!
+  itamOwner: UserCreateOneWithoutUserItamOrdersInput!
 }
 
-input ITAMProgressCreateManyWithoutItamownerInput {
-  create: [ITAMProgressCreateWithoutItamownerInput!]
-  connect: [ITAMProgressWhereUniqueInput!]
+input ItamProgressCreateManyWithoutItamOwnerInput {
+  create: [ItamProgressCreateWithoutItamOwnerInput!]
+  connect: [ItamProgressWhereUniqueInput!]
 }
 
-input ITAMProgressCreateOneWithoutOrderInput {
-  create: ITAMProgressCreateWithoutOrderInput
-  connect: ITAMProgressWhereUniqueInput
+input ItamProgressCreateOneWithoutItamOrderInput {
+  create: ItamProgressCreateWithoutItamOrderInput
+  connect: ItamProgressWhereUniqueInput
 }
 
-input ITAMProgressCreateWithoutItamownerInput {
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
-  order: OrderCreateOneWithoutItamInput!
+input ItamProgressCreateWithoutItamOrderInput {
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
+  itamOwner: UserCreateOneWithoutUserItamOrdersInput!
 }
 
-input ITAMProgressCreateWithoutOrderInput {
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
-  itamowner: UserCreateOneWithoutItamordersInput
+input ItamProgressCreateWithoutItamOwnerInput {
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
+  itamOrder: OrderCreateOneWithoutOrderItamInput!
 }
 
 """An edge in a connection."""
-type ITAMProgressEdge {
+type ItamProgressEdge {
   """The item at the end of the edge."""
-  node: ITAMProgress!
+  node: ItamProgress!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum ITAMProgressOrderByInput {
+enum ItamProgressOrderByInput {
   id_ASC
   id_DESC
-  status_ASC
-  status_DESC
-  verificationemailsent_ASC
-  verificationemailsent_DESC
-  productsource_ASC
-  productsource_DESC
-  oldassettag_ASC
-  oldassettag_DESC
-  oldmodel_ASC
-  oldmodel_DESC
-  modelofmonitor_ASC
-  modelofmonitor_DESC
-  numofmonitor_ASC
-  numofmonitor_DESC
-  connectortypes_ASC
-  connectortypes_DESC
-  orderpendingemailsent_ASC
-  orderpendingemailsent_DESC
-  confirmednewhire_ASC
-  confirmednewhire_DESC
-  poordernum_ASC
-  poordernum_DESC
-  dellordernum_ASC
-  dellordernum_DESC
-  dellemailnotif_ASC
-  dellemailnotif_DESC
+  itamStatus_ASC
+  itamStatus_DESC
+  itamVerificationEmailSent_ASC
+  itamVerificationEmailSent_DESC
+  itamProductSource_ASC
+  itamProductSource_DESC
+  itamOldAssetTag_ASC
+  itamOldAssetTag_DESC
+  itamOldModel_ASC
+  itamOldModel_DESC
+  itamMonitorModel_ASC
+  itamMonitorModel_DESC
+  itamMonitorNum_ASC
+  itamMonitorNum_DESC
+  itamConnectorTypes_ASC
+  itamConnectorTypes_DESC
+  itamOrderPendingEmail_ASC
+  itamOrderPendingEmail_DESC
+  itamConfirmedNewHire_ASC
+  itamConfirmedNewHire_DESC
+  itamPoOrderId_ASC
+  itamPoOrderId_DESC
+  itamDellOrderId_ASC
+  itamDellOrderId_DESC
+  itamDellEmailNotif_ASC
+  itamDellEmailNotif_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
-type ITAMProgressPreviousValues {
+type ItamProgressPreviousValues {
   id: ID!
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
 }
 
-type ITAMProgressSubscriptionPayload {
+type ItamProgressSubscriptionPayload {
   mutation: MutationType!
-  node: ITAMProgress
+  node: ItamProgress
   updatedFields: [String!]
-  previousValues: ITAMProgressPreviousValues
+  previousValues: ItamProgressPreviousValues
 }
 
-input ITAMProgressSubscriptionWhereInput {
+input ItamProgressSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [ITAMProgressSubscriptionWhereInput!]
+  AND: [ItamProgressSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [ITAMProgressSubscriptionWhereInput!]
+  OR: [ItamProgressSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [ITAMProgressSubscriptionWhereInput!]
+  NOT: [ItamProgressSubscriptionWhereInput!]
 
   """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
@@ -210,103 +210,103 @@ input ITAMProgressSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: ITAMProgressWhereInput
+  node: ItamProgressWhereInput
 }
 
-input ITAMProgressUpdateInput {
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
-  order: OrderUpdateOneWithoutItamInput
-  itamowner: UserUpdateOneWithoutItamordersInput
+input ItamProgressUpdateInput {
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
+  itamOrder: OrderUpdateOneWithoutOrderItamInput
+  itamOwner: UserUpdateOneWithoutUserItamOrdersInput
 }
 
-input ITAMProgressUpdateManyWithoutItamownerInput {
-  create: [ITAMProgressCreateWithoutItamownerInput!]
-  connect: [ITAMProgressWhereUniqueInput!]
-  disconnect: [ITAMProgressWhereUniqueInput!]
-  delete: [ITAMProgressWhereUniqueInput!]
-  update: [ITAMProgressUpdateWithWhereUniqueWithoutItamownerInput!]
-  upsert: [ITAMProgressUpsertWithWhereUniqueWithoutItamownerInput!]
+input ItamProgressUpdateManyWithoutItamOwnerInput {
+  create: [ItamProgressCreateWithoutItamOwnerInput!]
+  connect: [ItamProgressWhereUniqueInput!]
+  disconnect: [ItamProgressWhereUniqueInput!]
+  delete: [ItamProgressWhereUniqueInput!]
+  update: [ItamProgressUpdateWithWhereUniqueWithoutItamOwnerInput!]
+  upsert: [ItamProgressUpsertWithWhereUniqueWithoutItamOwnerInput!]
 }
 
-input ITAMProgressUpdateOneWithoutOrderInput {
-  create: ITAMProgressCreateWithoutOrderInput
-  connect: ITAMProgressWhereUniqueInput
+input ItamProgressUpdateOneWithoutItamOrderInput {
+  create: ItamProgressCreateWithoutItamOrderInput
+  connect: ItamProgressWhereUniqueInput
   delete: Boolean
-  update: ITAMProgressUpdateWithoutOrderDataInput
-  upsert: ITAMProgressUpsertWithoutOrderInput
+  update: ItamProgressUpdateWithoutItamOrderDataInput
+  upsert: ItamProgressUpsertWithoutItamOrderInput
 }
 
-input ITAMProgressUpdateWithoutItamownerDataInput {
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
-  order: OrderUpdateOneWithoutItamInput
+input ItamProgressUpdateWithoutItamOrderDataInput {
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
+  itamOwner: UserUpdateOneWithoutUserItamOrdersInput
 }
 
-input ITAMProgressUpdateWithoutOrderDataInput {
-  status: String
-  verificationemailsent: DateTime
-  productsource: String
-  oldassettag: String
-  oldmodel: String
-  modelofmonitor: String
-  numofmonitor: Float
-  connectortypes: String
-  orderpendingemailsent: DateTime
-  confirmednewhire: DateTime
-  poordernum: Float
-  dellordernum: Float
-  dellemailnotif: DateTime
-  itamowner: UserUpdateOneWithoutItamordersInput
+input ItamProgressUpdateWithoutItamOwnerDataInput {
+  itamStatus: String
+  itamVerificationEmailSent: DateTime
+  itamProductSource: String
+  itamOldAssetTag: String
+  itamOldModel: String
+  itamMonitorModel: String
+  itamMonitorNum: Float
+  itamConnectorTypes: String
+  itamOrderPendingEmail: DateTime
+  itamConfirmedNewHire: DateTime
+  itamPoOrderId: Float
+  itamDellOrderId: Float
+  itamDellEmailNotif: DateTime
+  itamOrder: OrderUpdateOneWithoutOrderItamInput
 }
 
-input ITAMProgressUpdateWithWhereUniqueWithoutItamownerInput {
-  where: ITAMProgressWhereUniqueInput!
-  data: ITAMProgressUpdateWithoutItamownerDataInput!
+input ItamProgressUpdateWithWhereUniqueWithoutItamOwnerInput {
+  where: ItamProgressWhereUniqueInput!
+  data: ItamProgressUpdateWithoutItamOwnerDataInput!
 }
 
-input ITAMProgressUpsertWithoutOrderInput {
-  update: ITAMProgressUpdateWithoutOrderDataInput!
-  create: ITAMProgressCreateWithoutOrderInput!
+input ItamProgressUpsertWithoutItamOrderInput {
+  update: ItamProgressUpdateWithoutItamOrderDataInput!
+  create: ItamProgressCreateWithoutItamOrderInput!
 }
 
-input ITAMProgressUpsertWithWhereUniqueWithoutItamownerInput {
-  where: ITAMProgressWhereUniqueInput!
-  update: ITAMProgressUpdateWithoutItamownerDataInput!
-  create: ITAMProgressCreateWithoutItamownerInput!
+input ItamProgressUpsertWithWhereUniqueWithoutItamOwnerInput {
+  where: ItamProgressWhereUniqueInput!
+  update: ItamProgressUpdateWithoutItamOwnerDataInput!
+  create: ItamProgressCreateWithoutItamOwnerInput!
 }
 
-input ITAMProgressWhereInput {
+input ItamProgressWhereInput {
   """Logical AND on all given filters."""
-  AND: [ITAMProgressWhereInput!]
+  AND: [ItamProgressWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [ITAMProgressWhereInput!]
+  OR: [ItamProgressWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [ITAMProgressWhereInput!]
+  NOT: [ItamProgressWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -347,405 +347,405 @@ input ITAMProgressWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  status: String
+  itamStatus: String
 
   """All values that are not equal to given value."""
-  status_not: String
+  itamStatus_not: String
 
   """All values that are contained in given list."""
-  status_in: [String!]
+  itamStatus_in: [String!]
 
   """All values that are not contained in given list."""
-  status_not_in: [String!]
+  itamStatus_not_in: [String!]
 
   """All values less than the given value."""
-  status_lt: String
+  itamStatus_lt: String
 
   """All values less than or equal the given value."""
-  status_lte: String
+  itamStatus_lte: String
 
   """All values greater than the given value."""
-  status_gt: String
+  itamStatus_gt: String
 
   """All values greater than or equal the given value."""
-  status_gte: String
+  itamStatus_gte: String
 
   """All values containing the given string."""
-  status_contains: String
+  itamStatus_contains: String
 
   """All values not containing the given string."""
-  status_not_contains: String
+  itamStatus_not_contains: String
 
   """All values starting with the given string."""
-  status_starts_with: String
+  itamStatus_starts_with: String
 
   """All values not starting with the given string."""
-  status_not_starts_with: String
+  itamStatus_not_starts_with: String
 
   """All values ending with the given string."""
-  status_ends_with: String
+  itamStatus_ends_with: String
 
   """All values not ending with the given string."""
-  status_not_ends_with: String
-  verificationemailsent: DateTime
+  itamStatus_not_ends_with: String
+  itamVerificationEmailSent: DateTime
 
   """All values that are not equal to given value."""
-  verificationemailsent_not: DateTime
+  itamVerificationEmailSent_not: DateTime
 
   """All values that are contained in given list."""
-  verificationemailsent_in: [DateTime!]
+  itamVerificationEmailSent_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  verificationemailsent_not_in: [DateTime!]
+  itamVerificationEmailSent_not_in: [DateTime!]
 
   """All values less than the given value."""
-  verificationemailsent_lt: DateTime
+  itamVerificationEmailSent_lt: DateTime
 
   """All values less than or equal the given value."""
-  verificationemailsent_lte: DateTime
+  itamVerificationEmailSent_lte: DateTime
 
   """All values greater than the given value."""
-  verificationemailsent_gt: DateTime
+  itamVerificationEmailSent_gt: DateTime
 
   """All values greater than or equal the given value."""
-  verificationemailsent_gte: DateTime
-  productsource: String
+  itamVerificationEmailSent_gte: DateTime
+  itamProductSource: String
 
   """All values that are not equal to given value."""
-  productsource_not: String
+  itamProductSource_not: String
 
   """All values that are contained in given list."""
-  productsource_in: [String!]
+  itamProductSource_in: [String!]
 
   """All values that are not contained in given list."""
-  productsource_not_in: [String!]
+  itamProductSource_not_in: [String!]
 
   """All values less than the given value."""
-  productsource_lt: String
+  itamProductSource_lt: String
 
   """All values less than or equal the given value."""
-  productsource_lte: String
+  itamProductSource_lte: String
 
   """All values greater than the given value."""
-  productsource_gt: String
+  itamProductSource_gt: String
 
   """All values greater than or equal the given value."""
-  productsource_gte: String
+  itamProductSource_gte: String
 
   """All values containing the given string."""
-  productsource_contains: String
+  itamProductSource_contains: String
 
   """All values not containing the given string."""
-  productsource_not_contains: String
+  itamProductSource_not_contains: String
 
   """All values starting with the given string."""
-  productsource_starts_with: String
+  itamProductSource_starts_with: String
 
   """All values not starting with the given string."""
-  productsource_not_starts_with: String
+  itamProductSource_not_starts_with: String
 
   """All values ending with the given string."""
-  productsource_ends_with: String
+  itamProductSource_ends_with: String
 
   """All values not ending with the given string."""
-  productsource_not_ends_with: String
-  oldassettag: String
+  itamProductSource_not_ends_with: String
+  itamOldAssetTag: String
 
   """All values that are not equal to given value."""
-  oldassettag_not: String
+  itamOldAssetTag_not: String
 
   """All values that are contained in given list."""
-  oldassettag_in: [String!]
+  itamOldAssetTag_in: [String!]
 
   """All values that are not contained in given list."""
-  oldassettag_not_in: [String!]
+  itamOldAssetTag_not_in: [String!]
 
   """All values less than the given value."""
-  oldassettag_lt: String
+  itamOldAssetTag_lt: String
 
   """All values less than or equal the given value."""
-  oldassettag_lte: String
+  itamOldAssetTag_lte: String
 
   """All values greater than the given value."""
-  oldassettag_gt: String
+  itamOldAssetTag_gt: String
 
   """All values greater than or equal the given value."""
-  oldassettag_gte: String
+  itamOldAssetTag_gte: String
 
   """All values containing the given string."""
-  oldassettag_contains: String
+  itamOldAssetTag_contains: String
 
   """All values not containing the given string."""
-  oldassettag_not_contains: String
+  itamOldAssetTag_not_contains: String
 
   """All values starting with the given string."""
-  oldassettag_starts_with: String
+  itamOldAssetTag_starts_with: String
 
   """All values not starting with the given string."""
-  oldassettag_not_starts_with: String
+  itamOldAssetTag_not_starts_with: String
 
   """All values ending with the given string."""
-  oldassettag_ends_with: String
+  itamOldAssetTag_ends_with: String
 
   """All values not ending with the given string."""
-  oldassettag_not_ends_with: String
-  oldmodel: String
+  itamOldAssetTag_not_ends_with: String
+  itamOldModel: String
 
   """All values that are not equal to given value."""
-  oldmodel_not: String
+  itamOldModel_not: String
 
   """All values that are contained in given list."""
-  oldmodel_in: [String!]
+  itamOldModel_in: [String!]
 
   """All values that are not contained in given list."""
-  oldmodel_not_in: [String!]
+  itamOldModel_not_in: [String!]
 
   """All values less than the given value."""
-  oldmodel_lt: String
+  itamOldModel_lt: String
 
   """All values less than or equal the given value."""
-  oldmodel_lte: String
+  itamOldModel_lte: String
 
   """All values greater than the given value."""
-  oldmodel_gt: String
+  itamOldModel_gt: String
 
   """All values greater than or equal the given value."""
-  oldmodel_gte: String
+  itamOldModel_gte: String
 
   """All values containing the given string."""
-  oldmodel_contains: String
+  itamOldModel_contains: String
 
   """All values not containing the given string."""
-  oldmodel_not_contains: String
+  itamOldModel_not_contains: String
 
   """All values starting with the given string."""
-  oldmodel_starts_with: String
+  itamOldModel_starts_with: String
 
   """All values not starting with the given string."""
-  oldmodel_not_starts_with: String
+  itamOldModel_not_starts_with: String
 
   """All values ending with the given string."""
-  oldmodel_ends_with: String
+  itamOldModel_ends_with: String
 
   """All values not ending with the given string."""
-  oldmodel_not_ends_with: String
-  modelofmonitor: String
+  itamOldModel_not_ends_with: String
+  itamMonitorModel: String
 
   """All values that are not equal to given value."""
-  modelofmonitor_not: String
+  itamMonitorModel_not: String
 
   """All values that are contained in given list."""
-  modelofmonitor_in: [String!]
+  itamMonitorModel_in: [String!]
 
   """All values that are not contained in given list."""
-  modelofmonitor_not_in: [String!]
+  itamMonitorModel_not_in: [String!]
 
   """All values less than the given value."""
-  modelofmonitor_lt: String
+  itamMonitorModel_lt: String
 
   """All values less than or equal the given value."""
-  modelofmonitor_lte: String
+  itamMonitorModel_lte: String
 
   """All values greater than the given value."""
-  modelofmonitor_gt: String
+  itamMonitorModel_gt: String
 
   """All values greater than or equal the given value."""
-  modelofmonitor_gte: String
+  itamMonitorModel_gte: String
 
   """All values containing the given string."""
-  modelofmonitor_contains: String
+  itamMonitorModel_contains: String
 
   """All values not containing the given string."""
-  modelofmonitor_not_contains: String
+  itamMonitorModel_not_contains: String
 
   """All values starting with the given string."""
-  modelofmonitor_starts_with: String
+  itamMonitorModel_starts_with: String
 
   """All values not starting with the given string."""
-  modelofmonitor_not_starts_with: String
+  itamMonitorModel_not_starts_with: String
 
   """All values ending with the given string."""
-  modelofmonitor_ends_with: String
+  itamMonitorModel_ends_with: String
 
   """All values not ending with the given string."""
-  modelofmonitor_not_ends_with: String
-  numofmonitor: Float
+  itamMonitorModel_not_ends_with: String
+  itamMonitorNum: Float
 
   """All values that are not equal to given value."""
-  numofmonitor_not: Float
+  itamMonitorNum_not: Float
 
   """All values that are contained in given list."""
-  numofmonitor_in: [Float!]
+  itamMonitorNum_in: [Float!]
 
   """All values that are not contained in given list."""
-  numofmonitor_not_in: [Float!]
+  itamMonitorNum_not_in: [Float!]
 
   """All values less than the given value."""
-  numofmonitor_lt: Float
+  itamMonitorNum_lt: Float
 
   """All values less than or equal the given value."""
-  numofmonitor_lte: Float
+  itamMonitorNum_lte: Float
 
   """All values greater than the given value."""
-  numofmonitor_gt: Float
+  itamMonitorNum_gt: Float
 
   """All values greater than or equal the given value."""
-  numofmonitor_gte: Float
-  connectortypes: String
+  itamMonitorNum_gte: Float
+  itamConnectorTypes: String
 
   """All values that are not equal to given value."""
-  connectortypes_not: String
+  itamConnectorTypes_not: String
 
   """All values that are contained in given list."""
-  connectortypes_in: [String!]
+  itamConnectorTypes_in: [String!]
 
   """All values that are not contained in given list."""
-  connectortypes_not_in: [String!]
+  itamConnectorTypes_not_in: [String!]
 
   """All values less than the given value."""
-  connectortypes_lt: String
+  itamConnectorTypes_lt: String
 
   """All values less than or equal the given value."""
-  connectortypes_lte: String
+  itamConnectorTypes_lte: String
 
   """All values greater than the given value."""
-  connectortypes_gt: String
+  itamConnectorTypes_gt: String
 
   """All values greater than or equal the given value."""
-  connectortypes_gte: String
+  itamConnectorTypes_gte: String
 
   """All values containing the given string."""
-  connectortypes_contains: String
+  itamConnectorTypes_contains: String
 
   """All values not containing the given string."""
-  connectortypes_not_contains: String
+  itamConnectorTypes_not_contains: String
 
   """All values starting with the given string."""
-  connectortypes_starts_with: String
+  itamConnectorTypes_starts_with: String
 
   """All values not starting with the given string."""
-  connectortypes_not_starts_with: String
+  itamConnectorTypes_not_starts_with: String
 
   """All values ending with the given string."""
-  connectortypes_ends_with: String
+  itamConnectorTypes_ends_with: String
 
   """All values not ending with the given string."""
-  connectortypes_not_ends_with: String
-  orderpendingemailsent: DateTime
+  itamConnectorTypes_not_ends_with: String
+  itamOrderPendingEmail: DateTime
 
   """All values that are not equal to given value."""
-  orderpendingemailsent_not: DateTime
+  itamOrderPendingEmail_not: DateTime
 
   """All values that are contained in given list."""
-  orderpendingemailsent_in: [DateTime!]
+  itamOrderPendingEmail_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  orderpendingemailsent_not_in: [DateTime!]
+  itamOrderPendingEmail_not_in: [DateTime!]
 
   """All values less than the given value."""
-  orderpendingemailsent_lt: DateTime
+  itamOrderPendingEmail_lt: DateTime
 
   """All values less than or equal the given value."""
-  orderpendingemailsent_lte: DateTime
+  itamOrderPendingEmail_lte: DateTime
 
   """All values greater than the given value."""
-  orderpendingemailsent_gt: DateTime
+  itamOrderPendingEmail_gt: DateTime
 
   """All values greater than or equal the given value."""
-  orderpendingemailsent_gte: DateTime
-  confirmednewhire: DateTime
+  itamOrderPendingEmail_gte: DateTime
+  itamConfirmedNewHire: DateTime
 
   """All values that are not equal to given value."""
-  confirmednewhire_not: DateTime
+  itamConfirmedNewHire_not: DateTime
 
   """All values that are contained in given list."""
-  confirmednewhire_in: [DateTime!]
+  itamConfirmedNewHire_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  confirmednewhire_not_in: [DateTime!]
+  itamConfirmedNewHire_not_in: [DateTime!]
 
   """All values less than the given value."""
-  confirmednewhire_lt: DateTime
+  itamConfirmedNewHire_lt: DateTime
 
   """All values less than or equal the given value."""
-  confirmednewhire_lte: DateTime
+  itamConfirmedNewHire_lte: DateTime
 
   """All values greater than the given value."""
-  confirmednewhire_gt: DateTime
+  itamConfirmedNewHire_gt: DateTime
 
   """All values greater than or equal the given value."""
-  confirmednewhire_gte: DateTime
-  poordernum: Float
+  itamConfirmedNewHire_gte: DateTime
+  itamPoOrderId: Float
 
   """All values that are not equal to given value."""
-  poordernum_not: Float
+  itamPoOrderId_not: Float
 
   """All values that are contained in given list."""
-  poordernum_in: [Float!]
+  itamPoOrderId_in: [Float!]
 
   """All values that are not contained in given list."""
-  poordernum_not_in: [Float!]
+  itamPoOrderId_not_in: [Float!]
 
   """All values less than the given value."""
-  poordernum_lt: Float
+  itamPoOrderId_lt: Float
 
   """All values less than or equal the given value."""
-  poordernum_lte: Float
+  itamPoOrderId_lte: Float
 
   """All values greater than the given value."""
-  poordernum_gt: Float
+  itamPoOrderId_gt: Float
 
   """All values greater than or equal the given value."""
-  poordernum_gte: Float
-  dellordernum: Float
+  itamPoOrderId_gte: Float
+  itamDellOrderId: Float
 
   """All values that are not equal to given value."""
-  dellordernum_not: Float
+  itamDellOrderId_not: Float
 
   """All values that are contained in given list."""
-  dellordernum_in: [Float!]
+  itamDellOrderId_in: [Float!]
 
   """All values that are not contained in given list."""
-  dellordernum_not_in: [Float!]
+  itamDellOrderId_not_in: [Float!]
 
   """All values less than the given value."""
-  dellordernum_lt: Float
+  itamDellOrderId_lt: Float
 
   """All values less than or equal the given value."""
-  dellordernum_lte: Float
+  itamDellOrderId_lte: Float
 
   """All values greater than the given value."""
-  dellordernum_gt: Float
+  itamDellOrderId_gt: Float
 
   """All values greater than or equal the given value."""
-  dellordernum_gte: Float
-  dellemailnotif: DateTime
+  itamDellOrderId_gte: Float
+  itamDellEmailNotif: DateTime
 
   """All values that are not equal to given value."""
-  dellemailnotif_not: DateTime
+  itamDellEmailNotif_not: DateTime
 
   """All values that are contained in given list."""
-  dellemailnotif_in: [DateTime!]
+  itamDellEmailNotif_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  dellemailnotif_not_in: [DateTime!]
+  itamDellEmailNotif_not_in: [DateTime!]
 
   """All values less than the given value."""
-  dellemailnotif_lt: DateTime
+  itamDellEmailNotif_lt: DateTime
 
   """All values less than or equal the given value."""
-  dellemailnotif_lte: DateTime
+  itamDellEmailNotif_lte: DateTime
 
   """All values greater than the given value."""
-  dellemailnotif_gt: DateTime
+  itamDellEmailNotif_gt: DateTime
 
   """All values greater than or equal the given value."""
-  dellemailnotif_gte: DateTime
-  order: OrderWhereInput
-  itamowner: UserWhereInput
+  itamDellEmailNotif_gte: DateTime
+  itamOrder: OrderWhereInput
+  itamOwner: UserWhereInput
 }
 
-input ITAMProgressWhereUniqueInput {
+input ItamProgressWhereUniqueInput {
   id: ID
 }
 
@@ -757,28 +757,28 @@ scalar Long
 
 type Mutation {
   createOrder(data: OrderCreateInput!): Order!
-  createITAMProgress(data: ITAMProgressCreateInput!): ITAMProgress!
-  createTechnicianProgress(data: TechnicianProgressCreateInput!): TechnicianProgress!
+  createItamProgress(data: ItamProgressCreateInput!): ItamProgress!
+  createTechProgress(data: TechProgressCreateInput!): TechProgress!
   createUser(data: UserCreateInput!): User!
   updateOrder(data: OrderUpdateInput!, where: OrderWhereUniqueInput!): Order
-  updateITAMProgress(data: ITAMProgressUpdateInput!, where: ITAMProgressWhereUniqueInput!): ITAMProgress
-  updateTechnicianProgress(data: TechnicianProgressUpdateInput!, where: TechnicianProgressWhereUniqueInput!): TechnicianProgress
+  updateItamProgress(data: ItamProgressUpdateInput!, where: ItamProgressWhereUniqueInput!): ItamProgress
+  updateTechProgress(data: TechProgressUpdateInput!, where: TechProgressWhereUniqueInput!): TechProgress
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteOrder(where: OrderWhereUniqueInput!): Order
-  deleteITAMProgress(where: ITAMProgressWhereUniqueInput!): ITAMProgress
-  deleteTechnicianProgress(where: TechnicianProgressWhereUniqueInput!): TechnicianProgress
+  deleteItamProgress(where: ItamProgressWhereUniqueInput!): ItamProgress
+  deleteTechProgress(where: TechProgressWhereUniqueInput!): TechProgress
   deleteUser(where: UserWhereUniqueInput!): User
   upsertOrder(where: OrderWhereUniqueInput!, create: OrderCreateInput!, update: OrderUpdateInput!): Order!
-  upsertITAMProgress(where: ITAMProgressWhereUniqueInput!, create: ITAMProgressCreateInput!, update: ITAMProgressUpdateInput!): ITAMProgress!
-  upsertTechnicianProgress(where: TechnicianProgressWhereUniqueInput!, create: TechnicianProgressCreateInput!, update: TechnicianProgressUpdateInput!): TechnicianProgress!
+  upsertItamProgress(where: ItamProgressWhereUniqueInput!, create: ItamProgressCreateInput!, update: ItamProgressUpdateInput!): ItamProgress!
+  upsertTechProgress(where: TechProgressWhereUniqueInput!, create: TechProgressCreateInput!, update: TechProgressUpdateInput!): TechProgress!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyOrders(data: OrderUpdateInput!, where: OrderWhereInput): BatchPayload!
-  updateManyITAMProgresses(data: ITAMProgressUpdateInput!, where: ITAMProgressWhereInput): BatchPayload!
-  updateManyTechnicianProgresses(data: TechnicianProgressUpdateInput!, where: TechnicianProgressWhereInput): BatchPayload!
+  updateManyItamProgresses(data: ItamProgressUpdateInput!, where: ItamProgressWhereInput): BatchPayload!
+  updateManyTechProgresses(data: TechProgressUpdateInput!, where: TechProgressWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   deleteManyOrders(where: OrderWhereInput): BatchPayload!
-  deleteManyITAMProgresses(where: ITAMProgressWhereInput): BatchPayload!
-  deleteManyTechnicianProgresses(where: TechnicianProgressWhereInput): BatchPayload!
+  deleteManyItamProgresses(where: ItamProgressWhereInput): BatchPayload!
+  deleteManyTechProgresses(where: TechProgressWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
@@ -796,26 +796,26 @@ interface Node {
 
 type Order implements Node {
   id: ID!
-  orderid: Float!
-  datecreated: DateTime!
-  dateapproved: DateTime!
-  createdby: String!
-  createdbyemail: String!
-  recipient: String!
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String!
-  businessunit: String!
-  attention: String!
-  shippingaddress: String!
-  items: String!
-  total: Float!
-  comments: String!
-  ordercategory: String!
-  sla: Int
-  itam(where: ITAMProgressWhereInput): ITAMProgress!
-  tech(where: TechnicianProgressWhereInput): TechnicianProgress!
+  orderSimplexId: Float!
+  orderDateCreated: DateTime!
+  orderDateApproved: DateTime!
+  orderCreatedBy: String!
+  orderCreatedByEmail: String!
+  orderNewHire: Boolean
+  orderRecipient: String!
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String!
+  orderBusinessUnit: String!
+  orderAttention: String!
+  orderShippingAddress: String!
+  orderItem: String!
+  orderTotal: Float!
+  orderComments: String!
+  orderCategory: String!
+  orderSla: Int
+  orderItam(where: ItamProgressWhereInput): ItamProgress!
+  orderTech(where: TechProgressWhereInput): TechProgress!
 }
 
 """A connection to a list of items."""
@@ -829,80 +829,80 @@ type OrderConnection {
 }
 
 input OrderCreateInput {
-  orderid: Float!
-  datecreated: DateTime!
-  dateapproved: DateTime!
-  createdby: String!
-  createdbyemail: String!
-  recipient: String!
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String!
-  businessunit: String!
-  attention: String!
-  shippingaddress: String!
-  items: String!
-  total: Float!
-  comments: String!
-  ordercategory: String!
-  sla: Int
-  itam: ITAMProgressCreateOneWithoutOrderInput!
-  tech: TechnicianProgressCreateOneWithoutOrderInput!
+  orderSimplexId: Float!
+  orderDateCreated: DateTime!
+  orderDateApproved: DateTime!
+  orderCreatedBy: String!
+  orderCreatedByEmail: String!
+  orderNewHire: Boolean
+  orderRecipient: String!
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String!
+  orderBusinessUnit: String!
+  orderAttention: String!
+  orderShippingAddress: String!
+  orderItem: String!
+  orderTotal: Float!
+  orderComments: String!
+  orderCategory: String!
+  orderSla: Int
+  orderItam: ItamProgressCreateOneWithoutItamOrderInput!
+  orderTech: TechProgressCreateOneWithoutTechOrderInput!
 }
 
-input OrderCreateOneWithoutItamInput {
-  create: OrderCreateWithoutItamInput
+input OrderCreateOneWithoutOrderItamInput {
+  create: OrderCreateWithoutOrderItamInput
   connect: OrderWhereUniqueInput
 }
 
-input OrderCreateOneWithoutTechInput {
-  create: OrderCreateWithoutTechInput
+input OrderCreateOneWithoutOrderTechInput {
+  create: OrderCreateWithoutOrderTechInput
   connect: OrderWhereUniqueInput
 }
 
-input OrderCreateWithoutItamInput {
-  orderid: Float!
-  datecreated: DateTime!
-  dateapproved: DateTime!
-  createdby: String!
-  createdbyemail: String!
-  recipient: String!
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String!
-  businessunit: String!
-  attention: String!
-  shippingaddress: String!
-  items: String!
-  total: Float!
-  comments: String!
-  ordercategory: String!
-  sla: Int
-  tech: TechnicianProgressCreateOneWithoutOrderInput!
+input OrderCreateWithoutOrderItamInput {
+  orderSimplexId: Float!
+  orderDateCreated: DateTime!
+  orderDateApproved: DateTime!
+  orderCreatedBy: String!
+  orderCreatedByEmail: String!
+  orderNewHire: Boolean
+  orderRecipient: String!
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String!
+  orderBusinessUnit: String!
+  orderAttention: String!
+  orderShippingAddress: String!
+  orderItem: String!
+  orderTotal: Float!
+  orderComments: String!
+  orderCategory: String!
+  orderSla: Int
+  orderTech: TechProgressCreateOneWithoutTechOrderInput!
 }
 
-input OrderCreateWithoutTechInput {
-  orderid: Float!
-  datecreated: DateTime!
-  dateapproved: DateTime!
-  createdby: String!
-  createdbyemail: String!
-  recipient: String!
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String!
-  businessunit: String!
-  attention: String!
-  shippingaddress: String!
-  items: String!
-  total: Float!
-  comments: String!
-  ordercategory: String!
-  sla: Int
-  itam: ITAMProgressCreateOneWithoutOrderInput!
+input OrderCreateWithoutOrderTechInput {
+  orderSimplexId: Float!
+  orderDateCreated: DateTime!
+  orderDateApproved: DateTime!
+  orderCreatedBy: String!
+  orderCreatedByEmail: String!
+  orderNewHire: Boolean
+  orderRecipient: String!
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String!
+  orderBusinessUnit: String!
+  orderAttention: String!
+  orderShippingAddress: String!
+  orderItem: String!
+  orderTotal: Float!
+  orderComments: String!
+  orderCategory: String!
+  orderSla: Int
+  orderItam: ItamProgressCreateOneWithoutItamOrderInput!
 }
 
 """An edge in a connection."""
@@ -917,42 +917,42 @@ type OrderEdge {
 enum OrderOrderByInput {
   id_ASC
   id_DESC
-  orderid_ASC
-  orderid_DESC
-  datecreated_ASC
-  datecreated_DESC
-  dateapproved_ASC
-  dateapproved_DESC
-  createdby_ASC
-  createdby_DESC
-  createdbyemail_ASC
-  createdbyemail_DESC
-  recipient_ASC
-  recipient_DESC
-  newhire_ASC
-  newhire_DESC
-  hirestartdate_ASC
-  hirestartdate_DESC
-  hirename_ASC
-  hirename_DESC
-  approvalmanager_ASC
-  approvalmanager_DESC
-  businessunit_ASC
-  businessunit_DESC
-  attention_ASC
-  attention_DESC
-  shippingaddress_ASC
-  shippingaddress_DESC
-  items_ASC
-  items_DESC
-  total_ASC
-  total_DESC
-  comments_ASC
-  comments_DESC
-  ordercategory_ASC
-  ordercategory_DESC
-  sla_ASC
-  sla_DESC
+  orderSimplexId_ASC
+  orderSimplexId_DESC
+  orderDateCreated_ASC
+  orderDateCreated_DESC
+  orderDateApproved_ASC
+  orderDateApproved_DESC
+  orderCreatedBy_ASC
+  orderCreatedBy_DESC
+  orderCreatedByEmail_ASC
+  orderCreatedByEmail_DESC
+  orderNewHire_ASC
+  orderNewHire_DESC
+  orderRecipient_ASC
+  orderRecipient_DESC
+  orderHireStartDate_ASC
+  orderHireStartDate_DESC
+  orderHireName_ASC
+  orderHireName_DESC
+  orderApprovalManager_ASC
+  orderApprovalManager_DESC
+  orderBusinessUnit_ASC
+  orderBusinessUnit_DESC
+  orderAttention_ASC
+  orderAttention_DESC
+  orderShippingAddress_ASC
+  orderShippingAddress_DESC
+  orderItem_ASC
+  orderItem_DESC
+  orderTotal_ASC
+  orderTotal_DESC
+  orderComments_ASC
+  orderComments_DESC
+  orderCategory_ASC
+  orderCategory_DESC
+  orderSla_ASC
+  orderSla_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -961,24 +961,24 @@ enum OrderOrderByInput {
 
 type OrderPreviousValues {
   id: ID!
-  orderid: Float!
-  datecreated: DateTime!
-  dateapproved: DateTime!
-  createdby: String!
-  createdbyemail: String!
-  recipient: String!
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String!
-  businessunit: String!
-  attention: String!
-  shippingaddress: String!
-  items: String!
-  total: Float!
-  comments: String!
-  ordercategory: String!
-  sla: Int
+  orderSimplexId: Float!
+  orderDateCreated: DateTime!
+  orderDateApproved: DateTime!
+  orderCreatedBy: String!
+  orderCreatedByEmail: String!
+  orderNewHire: Boolean
+  orderRecipient: String!
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String!
+  orderBusinessUnit: String!
+  orderAttention: String!
+  orderShippingAddress: String!
+  orderItem: String!
+  orderTotal: Float!
+  orderComments: String!
+  orderCategory: String!
+  orderSla: Int
 }
 
 type OrderSubscriptionPayload {
@@ -1019,97 +1019,97 @@ input OrderSubscriptionWhereInput {
 }
 
 input OrderUpdateInput {
-  orderid: Float
-  datecreated: DateTime
-  dateapproved: DateTime
-  createdby: String
-  createdbyemail: String
-  recipient: String
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String
-  businessunit: String
-  attention: String
-  shippingaddress: String
-  items: String
-  total: Float
-  comments: String
-  ordercategory: String
-  sla: Int
-  itam: ITAMProgressUpdateOneWithoutOrderInput
-  tech: TechnicianProgressUpdateOneWithoutOrderInput
+  orderSimplexId: Float
+  orderDateCreated: DateTime
+  orderDateApproved: DateTime
+  orderCreatedBy: String
+  orderCreatedByEmail: String
+  orderNewHire: Boolean
+  orderRecipient: String
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String
+  orderBusinessUnit: String
+  orderAttention: String
+  orderShippingAddress: String
+  orderItem: String
+  orderTotal: Float
+  orderComments: String
+  orderCategory: String
+  orderSla: Int
+  orderItam: ItamProgressUpdateOneWithoutItamOrderInput
+  orderTech: TechProgressUpdateOneWithoutTechOrderInput
 }
 
-input OrderUpdateOneWithoutItamInput {
-  create: OrderCreateWithoutItamInput
+input OrderUpdateOneWithoutOrderItamInput {
+  create: OrderCreateWithoutOrderItamInput
   connect: OrderWhereUniqueInput
   delete: Boolean
-  update: OrderUpdateWithoutItamDataInput
-  upsert: OrderUpsertWithoutItamInput
+  update: OrderUpdateWithoutOrderItamDataInput
+  upsert: OrderUpsertWithoutOrderItamInput
 }
 
-input OrderUpdateOneWithoutTechInput {
-  create: OrderCreateWithoutTechInput
+input OrderUpdateOneWithoutOrderTechInput {
+  create: OrderCreateWithoutOrderTechInput
   connect: OrderWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: OrderUpdateWithoutTechDataInput
-  upsert: OrderUpsertWithoutTechInput
+  update: OrderUpdateWithoutOrderTechDataInput
+  upsert: OrderUpsertWithoutOrderTechInput
 }
 
-input OrderUpdateWithoutItamDataInput {
-  orderid: Float
-  datecreated: DateTime
-  dateapproved: DateTime
-  createdby: String
-  createdbyemail: String
-  recipient: String
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String
-  businessunit: String
-  attention: String
-  shippingaddress: String
-  items: String
-  total: Float
-  comments: String
-  ordercategory: String
-  sla: Int
-  tech: TechnicianProgressUpdateOneWithoutOrderInput
+input OrderUpdateWithoutOrderItamDataInput {
+  orderSimplexId: Float
+  orderDateCreated: DateTime
+  orderDateApproved: DateTime
+  orderCreatedBy: String
+  orderCreatedByEmail: String
+  orderNewHire: Boolean
+  orderRecipient: String
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String
+  orderBusinessUnit: String
+  orderAttention: String
+  orderShippingAddress: String
+  orderItem: String
+  orderTotal: Float
+  orderComments: String
+  orderCategory: String
+  orderSla: Int
+  orderTech: TechProgressUpdateOneWithoutTechOrderInput
 }
 
-input OrderUpdateWithoutTechDataInput {
-  orderid: Float
-  datecreated: DateTime
-  dateapproved: DateTime
-  createdby: String
-  createdbyemail: String
-  recipient: String
-  newhire: Boolean
-  hirestartdate: DateTime
-  hirename: String
-  approvalmanager: String
-  businessunit: String
-  attention: String
-  shippingaddress: String
-  items: String
-  total: Float
-  comments: String
-  ordercategory: String
-  sla: Int
-  itam: ITAMProgressUpdateOneWithoutOrderInput
+input OrderUpdateWithoutOrderTechDataInput {
+  orderSimplexId: Float
+  orderDateCreated: DateTime
+  orderDateApproved: DateTime
+  orderCreatedBy: String
+  orderCreatedByEmail: String
+  orderNewHire: Boolean
+  orderRecipient: String
+  orderHireStartDate: DateTime
+  orderHireName: String
+  orderApprovalManager: String
+  orderBusinessUnit: String
+  orderAttention: String
+  orderShippingAddress: String
+  orderItem: String
+  orderTotal: Float
+  orderComments: String
+  orderCategory: String
+  orderSla: Int
+  orderItam: ItamProgressUpdateOneWithoutItamOrderInput
 }
 
-input OrderUpsertWithoutItamInput {
-  update: OrderUpdateWithoutItamDataInput!
-  create: OrderCreateWithoutItamInput!
+input OrderUpsertWithoutOrderItamInput {
+  update: OrderUpdateWithoutOrderItamDataInput!
+  create: OrderCreateWithoutOrderItamInput!
 }
 
-input OrderUpsertWithoutTechInput {
-  update: OrderUpdateWithoutTechDataInput!
-  create: OrderCreateWithoutTechInput!
+input OrderUpsertWithoutOrderTechInput {
+  update: OrderUpdateWithoutOrderTechDataInput!
+  create: OrderCreateWithoutOrderTechInput!
 }
 
 input OrderWhereInput {
@@ -1161,584 +1161,584 @@ input OrderWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  orderid: Float
+  orderSimplexId: Float
 
   """All values that are not equal to given value."""
-  orderid_not: Float
+  orderSimplexId_not: Float
 
   """All values that are contained in given list."""
-  orderid_in: [Float!]
+  orderSimplexId_in: [Float!]
 
   """All values that are not contained in given list."""
-  orderid_not_in: [Float!]
+  orderSimplexId_not_in: [Float!]
 
   """All values less than the given value."""
-  orderid_lt: Float
+  orderSimplexId_lt: Float
 
   """All values less than or equal the given value."""
-  orderid_lte: Float
+  orderSimplexId_lte: Float
 
   """All values greater than the given value."""
-  orderid_gt: Float
+  orderSimplexId_gt: Float
 
   """All values greater than or equal the given value."""
-  orderid_gte: Float
-  datecreated: DateTime
+  orderSimplexId_gte: Float
+  orderDateCreated: DateTime
 
   """All values that are not equal to given value."""
-  datecreated_not: DateTime
+  orderDateCreated_not: DateTime
 
   """All values that are contained in given list."""
-  datecreated_in: [DateTime!]
+  orderDateCreated_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  datecreated_not_in: [DateTime!]
+  orderDateCreated_not_in: [DateTime!]
 
   """All values less than the given value."""
-  datecreated_lt: DateTime
+  orderDateCreated_lt: DateTime
 
   """All values less than or equal the given value."""
-  datecreated_lte: DateTime
+  orderDateCreated_lte: DateTime
 
   """All values greater than the given value."""
-  datecreated_gt: DateTime
+  orderDateCreated_gt: DateTime
 
   """All values greater than or equal the given value."""
-  datecreated_gte: DateTime
-  dateapproved: DateTime
+  orderDateCreated_gte: DateTime
+  orderDateApproved: DateTime
 
   """All values that are not equal to given value."""
-  dateapproved_not: DateTime
+  orderDateApproved_not: DateTime
 
   """All values that are contained in given list."""
-  dateapproved_in: [DateTime!]
+  orderDateApproved_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  dateapproved_not_in: [DateTime!]
+  orderDateApproved_not_in: [DateTime!]
 
   """All values less than the given value."""
-  dateapproved_lt: DateTime
+  orderDateApproved_lt: DateTime
 
   """All values less than or equal the given value."""
-  dateapproved_lte: DateTime
+  orderDateApproved_lte: DateTime
 
   """All values greater than the given value."""
-  dateapproved_gt: DateTime
+  orderDateApproved_gt: DateTime
 
   """All values greater than or equal the given value."""
-  dateapproved_gte: DateTime
-  createdby: String
+  orderDateApproved_gte: DateTime
+  orderCreatedBy: String
 
   """All values that are not equal to given value."""
-  createdby_not: String
+  orderCreatedBy_not: String
 
   """All values that are contained in given list."""
-  createdby_in: [String!]
+  orderCreatedBy_in: [String!]
 
   """All values that are not contained in given list."""
-  createdby_not_in: [String!]
+  orderCreatedBy_not_in: [String!]
 
   """All values less than the given value."""
-  createdby_lt: String
+  orderCreatedBy_lt: String
 
   """All values less than or equal the given value."""
-  createdby_lte: String
+  orderCreatedBy_lte: String
 
   """All values greater than the given value."""
-  createdby_gt: String
+  orderCreatedBy_gt: String
 
   """All values greater than or equal the given value."""
-  createdby_gte: String
+  orderCreatedBy_gte: String
 
   """All values containing the given string."""
-  createdby_contains: String
+  orderCreatedBy_contains: String
 
   """All values not containing the given string."""
-  createdby_not_contains: String
+  orderCreatedBy_not_contains: String
 
   """All values starting with the given string."""
-  createdby_starts_with: String
+  orderCreatedBy_starts_with: String
 
   """All values not starting with the given string."""
-  createdby_not_starts_with: String
+  orderCreatedBy_not_starts_with: String
 
   """All values ending with the given string."""
-  createdby_ends_with: String
+  orderCreatedBy_ends_with: String
 
   """All values not ending with the given string."""
-  createdby_not_ends_with: String
-  createdbyemail: String
+  orderCreatedBy_not_ends_with: String
+  orderCreatedByEmail: String
 
   """All values that are not equal to given value."""
-  createdbyemail_not: String
+  orderCreatedByEmail_not: String
 
   """All values that are contained in given list."""
-  createdbyemail_in: [String!]
+  orderCreatedByEmail_in: [String!]
 
   """All values that are not contained in given list."""
-  createdbyemail_not_in: [String!]
+  orderCreatedByEmail_not_in: [String!]
 
   """All values less than the given value."""
-  createdbyemail_lt: String
+  orderCreatedByEmail_lt: String
 
   """All values less than or equal the given value."""
-  createdbyemail_lte: String
+  orderCreatedByEmail_lte: String
 
   """All values greater than the given value."""
-  createdbyemail_gt: String
+  orderCreatedByEmail_gt: String
 
   """All values greater than or equal the given value."""
-  createdbyemail_gte: String
+  orderCreatedByEmail_gte: String
 
   """All values containing the given string."""
-  createdbyemail_contains: String
+  orderCreatedByEmail_contains: String
 
   """All values not containing the given string."""
-  createdbyemail_not_contains: String
+  orderCreatedByEmail_not_contains: String
 
   """All values starting with the given string."""
-  createdbyemail_starts_with: String
+  orderCreatedByEmail_starts_with: String
 
   """All values not starting with the given string."""
-  createdbyemail_not_starts_with: String
+  orderCreatedByEmail_not_starts_with: String
 
   """All values ending with the given string."""
-  createdbyemail_ends_with: String
+  orderCreatedByEmail_ends_with: String
 
   """All values not ending with the given string."""
-  createdbyemail_not_ends_with: String
-  recipient: String
+  orderCreatedByEmail_not_ends_with: String
+  orderNewHire: Boolean
 
   """All values that are not equal to given value."""
-  recipient_not: String
+  orderNewHire_not: Boolean
+  orderRecipient: String
+
+  """All values that are not equal to given value."""
+  orderRecipient_not: String
 
   """All values that are contained in given list."""
-  recipient_in: [String!]
+  orderRecipient_in: [String!]
 
   """All values that are not contained in given list."""
-  recipient_not_in: [String!]
+  orderRecipient_not_in: [String!]
 
   """All values less than the given value."""
-  recipient_lt: String
+  orderRecipient_lt: String
 
   """All values less than or equal the given value."""
-  recipient_lte: String
+  orderRecipient_lte: String
 
   """All values greater than the given value."""
-  recipient_gt: String
+  orderRecipient_gt: String
 
   """All values greater than or equal the given value."""
-  recipient_gte: String
+  orderRecipient_gte: String
 
   """All values containing the given string."""
-  recipient_contains: String
+  orderRecipient_contains: String
 
   """All values not containing the given string."""
-  recipient_not_contains: String
+  orderRecipient_not_contains: String
 
   """All values starting with the given string."""
-  recipient_starts_with: String
+  orderRecipient_starts_with: String
 
   """All values not starting with the given string."""
-  recipient_not_starts_with: String
+  orderRecipient_not_starts_with: String
 
   """All values ending with the given string."""
-  recipient_ends_with: String
+  orderRecipient_ends_with: String
 
   """All values not ending with the given string."""
-  recipient_not_ends_with: String
-  newhire: Boolean
+  orderRecipient_not_ends_with: String
+  orderHireStartDate: DateTime
 
   """All values that are not equal to given value."""
-  newhire_not: Boolean
-  hirestartdate: DateTime
-
-  """All values that are not equal to given value."""
-  hirestartdate_not: DateTime
+  orderHireStartDate_not: DateTime
 
   """All values that are contained in given list."""
-  hirestartdate_in: [DateTime!]
+  orderHireStartDate_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  hirestartdate_not_in: [DateTime!]
+  orderHireStartDate_not_in: [DateTime!]
 
   """All values less than the given value."""
-  hirestartdate_lt: DateTime
+  orderHireStartDate_lt: DateTime
 
   """All values less than or equal the given value."""
-  hirestartdate_lte: DateTime
+  orderHireStartDate_lte: DateTime
 
   """All values greater than the given value."""
-  hirestartdate_gt: DateTime
+  orderHireStartDate_gt: DateTime
 
   """All values greater than or equal the given value."""
-  hirestartdate_gte: DateTime
-  hirename: String
+  orderHireStartDate_gte: DateTime
+  orderHireName: String
 
   """All values that are not equal to given value."""
-  hirename_not: String
+  orderHireName_not: String
 
   """All values that are contained in given list."""
-  hirename_in: [String!]
+  orderHireName_in: [String!]
 
   """All values that are not contained in given list."""
-  hirename_not_in: [String!]
+  orderHireName_not_in: [String!]
 
   """All values less than the given value."""
-  hirename_lt: String
+  orderHireName_lt: String
 
   """All values less than or equal the given value."""
-  hirename_lte: String
+  orderHireName_lte: String
 
   """All values greater than the given value."""
-  hirename_gt: String
+  orderHireName_gt: String
 
   """All values greater than or equal the given value."""
-  hirename_gte: String
+  orderHireName_gte: String
 
   """All values containing the given string."""
-  hirename_contains: String
+  orderHireName_contains: String
 
   """All values not containing the given string."""
-  hirename_not_contains: String
+  orderHireName_not_contains: String
 
   """All values starting with the given string."""
-  hirename_starts_with: String
+  orderHireName_starts_with: String
 
   """All values not starting with the given string."""
-  hirename_not_starts_with: String
+  orderHireName_not_starts_with: String
 
   """All values ending with the given string."""
-  hirename_ends_with: String
+  orderHireName_ends_with: String
 
   """All values not ending with the given string."""
-  hirename_not_ends_with: String
-  approvalmanager: String
+  orderHireName_not_ends_with: String
+  orderApprovalManager: String
 
   """All values that are not equal to given value."""
-  approvalmanager_not: String
+  orderApprovalManager_not: String
 
   """All values that are contained in given list."""
-  approvalmanager_in: [String!]
+  orderApprovalManager_in: [String!]
 
   """All values that are not contained in given list."""
-  approvalmanager_not_in: [String!]
+  orderApprovalManager_not_in: [String!]
 
   """All values less than the given value."""
-  approvalmanager_lt: String
+  orderApprovalManager_lt: String
 
   """All values less than or equal the given value."""
-  approvalmanager_lte: String
+  orderApprovalManager_lte: String
 
   """All values greater than the given value."""
-  approvalmanager_gt: String
+  orderApprovalManager_gt: String
 
   """All values greater than or equal the given value."""
-  approvalmanager_gte: String
+  orderApprovalManager_gte: String
 
   """All values containing the given string."""
-  approvalmanager_contains: String
+  orderApprovalManager_contains: String
 
   """All values not containing the given string."""
-  approvalmanager_not_contains: String
+  orderApprovalManager_not_contains: String
 
   """All values starting with the given string."""
-  approvalmanager_starts_with: String
+  orderApprovalManager_starts_with: String
 
   """All values not starting with the given string."""
-  approvalmanager_not_starts_with: String
+  orderApprovalManager_not_starts_with: String
 
   """All values ending with the given string."""
-  approvalmanager_ends_with: String
+  orderApprovalManager_ends_with: String
 
   """All values not ending with the given string."""
-  approvalmanager_not_ends_with: String
-  businessunit: String
+  orderApprovalManager_not_ends_with: String
+  orderBusinessUnit: String
 
   """All values that are not equal to given value."""
-  businessunit_not: String
+  orderBusinessUnit_not: String
 
   """All values that are contained in given list."""
-  businessunit_in: [String!]
+  orderBusinessUnit_in: [String!]
 
   """All values that are not contained in given list."""
-  businessunit_not_in: [String!]
+  orderBusinessUnit_not_in: [String!]
 
   """All values less than the given value."""
-  businessunit_lt: String
+  orderBusinessUnit_lt: String
 
   """All values less than or equal the given value."""
-  businessunit_lte: String
+  orderBusinessUnit_lte: String
 
   """All values greater than the given value."""
-  businessunit_gt: String
+  orderBusinessUnit_gt: String
 
   """All values greater than or equal the given value."""
-  businessunit_gte: String
+  orderBusinessUnit_gte: String
 
   """All values containing the given string."""
-  businessunit_contains: String
+  orderBusinessUnit_contains: String
 
   """All values not containing the given string."""
-  businessunit_not_contains: String
+  orderBusinessUnit_not_contains: String
 
   """All values starting with the given string."""
-  businessunit_starts_with: String
+  orderBusinessUnit_starts_with: String
 
   """All values not starting with the given string."""
-  businessunit_not_starts_with: String
+  orderBusinessUnit_not_starts_with: String
 
   """All values ending with the given string."""
-  businessunit_ends_with: String
+  orderBusinessUnit_ends_with: String
 
   """All values not ending with the given string."""
-  businessunit_not_ends_with: String
-  attention: String
+  orderBusinessUnit_not_ends_with: String
+  orderAttention: String
 
   """All values that are not equal to given value."""
-  attention_not: String
+  orderAttention_not: String
 
   """All values that are contained in given list."""
-  attention_in: [String!]
+  orderAttention_in: [String!]
 
   """All values that are not contained in given list."""
-  attention_not_in: [String!]
+  orderAttention_not_in: [String!]
 
   """All values less than the given value."""
-  attention_lt: String
+  orderAttention_lt: String
 
   """All values less than or equal the given value."""
-  attention_lte: String
+  orderAttention_lte: String
 
   """All values greater than the given value."""
-  attention_gt: String
+  orderAttention_gt: String
 
   """All values greater than or equal the given value."""
-  attention_gte: String
+  orderAttention_gte: String
 
   """All values containing the given string."""
-  attention_contains: String
+  orderAttention_contains: String
 
   """All values not containing the given string."""
-  attention_not_contains: String
+  orderAttention_not_contains: String
 
   """All values starting with the given string."""
-  attention_starts_with: String
+  orderAttention_starts_with: String
 
   """All values not starting with the given string."""
-  attention_not_starts_with: String
+  orderAttention_not_starts_with: String
 
   """All values ending with the given string."""
-  attention_ends_with: String
+  orderAttention_ends_with: String
 
   """All values not ending with the given string."""
-  attention_not_ends_with: String
-  shippingaddress: String
+  orderAttention_not_ends_with: String
+  orderShippingAddress: String
 
   """All values that are not equal to given value."""
-  shippingaddress_not: String
+  orderShippingAddress_not: String
 
   """All values that are contained in given list."""
-  shippingaddress_in: [String!]
+  orderShippingAddress_in: [String!]
 
   """All values that are not contained in given list."""
-  shippingaddress_not_in: [String!]
+  orderShippingAddress_not_in: [String!]
 
   """All values less than the given value."""
-  shippingaddress_lt: String
+  orderShippingAddress_lt: String
 
   """All values less than or equal the given value."""
-  shippingaddress_lte: String
+  orderShippingAddress_lte: String
 
   """All values greater than the given value."""
-  shippingaddress_gt: String
+  orderShippingAddress_gt: String
 
   """All values greater than or equal the given value."""
-  shippingaddress_gte: String
+  orderShippingAddress_gte: String
 
   """All values containing the given string."""
-  shippingaddress_contains: String
+  orderShippingAddress_contains: String
 
   """All values not containing the given string."""
-  shippingaddress_not_contains: String
+  orderShippingAddress_not_contains: String
 
   """All values starting with the given string."""
-  shippingaddress_starts_with: String
+  orderShippingAddress_starts_with: String
 
   """All values not starting with the given string."""
-  shippingaddress_not_starts_with: String
+  orderShippingAddress_not_starts_with: String
 
   """All values ending with the given string."""
-  shippingaddress_ends_with: String
+  orderShippingAddress_ends_with: String
 
   """All values not ending with the given string."""
-  shippingaddress_not_ends_with: String
-  items: String
+  orderShippingAddress_not_ends_with: String
+  orderItem: String
 
   """All values that are not equal to given value."""
-  items_not: String
+  orderItem_not: String
 
   """All values that are contained in given list."""
-  items_in: [String!]
+  orderItem_in: [String!]
 
   """All values that are not contained in given list."""
-  items_not_in: [String!]
+  orderItem_not_in: [String!]
 
   """All values less than the given value."""
-  items_lt: String
+  orderItem_lt: String
 
   """All values less than or equal the given value."""
-  items_lte: String
+  orderItem_lte: String
 
   """All values greater than the given value."""
-  items_gt: String
+  orderItem_gt: String
 
   """All values greater than or equal the given value."""
-  items_gte: String
+  orderItem_gte: String
 
   """All values containing the given string."""
-  items_contains: String
+  orderItem_contains: String
 
   """All values not containing the given string."""
-  items_not_contains: String
+  orderItem_not_contains: String
 
   """All values starting with the given string."""
-  items_starts_with: String
+  orderItem_starts_with: String
 
   """All values not starting with the given string."""
-  items_not_starts_with: String
+  orderItem_not_starts_with: String
 
   """All values ending with the given string."""
-  items_ends_with: String
+  orderItem_ends_with: String
 
   """All values not ending with the given string."""
-  items_not_ends_with: String
-  total: Float
+  orderItem_not_ends_with: String
+  orderTotal: Float
 
   """All values that are not equal to given value."""
-  total_not: Float
+  orderTotal_not: Float
 
   """All values that are contained in given list."""
-  total_in: [Float!]
+  orderTotal_in: [Float!]
 
   """All values that are not contained in given list."""
-  total_not_in: [Float!]
+  orderTotal_not_in: [Float!]
 
   """All values less than the given value."""
-  total_lt: Float
+  orderTotal_lt: Float
 
   """All values less than or equal the given value."""
-  total_lte: Float
+  orderTotal_lte: Float
 
   """All values greater than the given value."""
-  total_gt: Float
+  orderTotal_gt: Float
 
   """All values greater than or equal the given value."""
-  total_gte: Float
-  comments: String
+  orderTotal_gte: Float
+  orderComments: String
 
   """All values that are not equal to given value."""
-  comments_not: String
+  orderComments_not: String
 
   """All values that are contained in given list."""
-  comments_in: [String!]
+  orderComments_in: [String!]
 
   """All values that are not contained in given list."""
-  comments_not_in: [String!]
+  orderComments_not_in: [String!]
 
   """All values less than the given value."""
-  comments_lt: String
+  orderComments_lt: String
 
   """All values less than or equal the given value."""
-  comments_lte: String
+  orderComments_lte: String
 
   """All values greater than the given value."""
-  comments_gt: String
+  orderComments_gt: String
 
   """All values greater than or equal the given value."""
-  comments_gte: String
+  orderComments_gte: String
 
   """All values containing the given string."""
-  comments_contains: String
+  orderComments_contains: String
 
   """All values not containing the given string."""
-  comments_not_contains: String
+  orderComments_not_contains: String
 
   """All values starting with the given string."""
-  comments_starts_with: String
+  orderComments_starts_with: String
 
   """All values not starting with the given string."""
-  comments_not_starts_with: String
+  orderComments_not_starts_with: String
 
   """All values ending with the given string."""
-  comments_ends_with: String
+  orderComments_ends_with: String
 
   """All values not ending with the given string."""
-  comments_not_ends_with: String
-  ordercategory: String
+  orderComments_not_ends_with: String
+  orderCategory: String
 
   """All values that are not equal to given value."""
-  ordercategory_not: String
+  orderCategory_not: String
 
   """All values that are contained in given list."""
-  ordercategory_in: [String!]
+  orderCategory_in: [String!]
 
   """All values that are not contained in given list."""
-  ordercategory_not_in: [String!]
+  orderCategory_not_in: [String!]
 
   """All values less than the given value."""
-  ordercategory_lt: String
+  orderCategory_lt: String
 
   """All values less than or equal the given value."""
-  ordercategory_lte: String
+  orderCategory_lte: String
 
   """All values greater than the given value."""
-  ordercategory_gt: String
+  orderCategory_gt: String
 
   """All values greater than or equal the given value."""
-  ordercategory_gte: String
+  orderCategory_gte: String
 
   """All values containing the given string."""
-  ordercategory_contains: String
+  orderCategory_contains: String
 
   """All values not containing the given string."""
-  ordercategory_not_contains: String
+  orderCategory_not_contains: String
 
   """All values starting with the given string."""
-  ordercategory_starts_with: String
+  orderCategory_starts_with: String
 
   """All values not starting with the given string."""
-  ordercategory_not_starts_with: String
+  orderCategory_not_starts_with: String
 
   """All values ending with the given string."""
-  ordercategory_ends_with: String
+  orderCategory_ends_with: String
 
   """All values not ending with the given string."""
-  ordercategory_not_ends_with: String
-  sla: Int
+  orderCategory_not_ends_with: String
+  orderSla: Int
 
   """All values that are not equal to given value."""
-  sla_not: Int
+  orderSla_not: Int
 
   """All values that are contained in given list."""
-  sla_in: [Int!]
+  orderSla_in: [Int!]
 
   """All values that are not contained in given list."""
-  sla_not_in: [Int!]
+  orderSla_not_in: [Int!]
 
   """All values less than the given value."""
-  sla_lt: Int
+  orderSla_lt: Int
 
   """All values less than or equal the given value."""
-  sla_lte: Int
+  orderSla_lte: Int
 
   """All values greater than the given value."""
-  sla_gt: Int
+  orderSla_gt: Int
 
   """All values greater than or equal the given value."""
-  sla_gte: Int
-  itam: ITAMProgressWhereInput
-  tech: TechnicianProgressWhereInput
+  orderSla_gte: Int
+  orderItam: ItamProgressWhereInput
+  orderTech: TechProgressWhereInput
 }
 
 input OrderWhereUniqueInput {
@@ -1762,16 +1762,16 @@ type PageInfo {
 
 type Query {
   orders(where: OrderWhereInput, orderBy: OrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Order]!
-  iTAMProgresses(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ITAMProgress]!
-  technicianProgresses(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechnicianProgress]!
+  itamProgresses(where: ItamProgressWhereInput, orderBy: ItamProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ItamProgress]!
+  techProgresses(where: TechProgressWhereInput, orderBy: TechProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechProgress]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   order(where: OrderWhereUniqueInput!): Order
-  iTAMProgress(where: ITAMProgressWhereUniqueInput!): ITAMProgress
-  technicianProgress(where: TechnicianProgressWhereUniqueInput!): TechnicianProgress
+  itamProgress(where: ItamProgressWhereUniqueInput!): ItamProgress
+  techProgress(where: TechProgressWhereUniqueInput!): TechProgress
   user(where: UserWhereUniqueInput!): User
   ordersConnection(where: OrderWhereInput, orderBy: OrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OrderConnection!
-  iTAMProgressesConnection(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ITAMProgressConnection!
-  technicianProgressesConnection(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TechnicianProgressConnection!
+  itamProgressesConnection(where: ItamProgressWhereInput, orderBy: ItamProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ItamProgressConnection!
+  techProgressesConnection(where: TechProgressWhereInput, orderBy: TechProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TechProgressConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
@@ -1783,144 +1783,144 @@ type Query {
 
 type Subscription {
   order(where: OrderSubscriptionWhereInput): OrderSubscriptionPayload
-  iTAMProgress(where: ITAMProgressSubscriptionWhereInput): ITAMProgressSubscriptionPayload
-  technicianProgress(where: TechnicianProgressSubscriptionWhereInput): TechnicianProgressSubscriptionPayload
+  itamProgress(where: ItamProgressSubscriptionWhereInput): ItamProgressSubscriptionPayload
+  techProgress(where: TechProgressSubscriptionWhereInput): TechProgressSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
-type TechnicianProgress implements Node {
+type TechProgress implements Node {
   id: ID!
-  order(where: OrderWhereInput): Order
-  techowner(where: UserWhereInput): User
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
+  techOrder(where: OrderWhereInput): Order
+  techOwner(where: UserWhereInput): User!
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
 }
 
 """A connection to a list of items."""
-type TechnicianProgressConnection {
+type TechProgressConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [TechnicianProgressEdge]!
-  aggregate: AggregateTechnicianProgress!
+  edges: [TechProgressEdge]!
+  aggregate: AggregateTechProgress!
 }
 
-input TechnicianProgressCreateInput {
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
-  order: OrderCreateOneWithoutTechInput
-  techowner: UserCreateOneWithoutTechordersInput
+input TechProgressCreateInput {
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
+  techOrder: OrderCreateOneWithoutOrderTechInput
+  techOwner: UserCreateOneWithoutUserTechOrdersInput!
 }
 
-input TechnicianProgressCreateManyWithoutTechownerInput {
-  create: [TechnicianProgressCreateWithoutTechownerInput!]
-  connect: [TechnicianProgressWhereUniqueInput!]
+input TechProgressCreateManyWithoutTechOwnerInput {
+  create: [TechProgressCreateWithoutTechOwnerInput!]
+  connect: [TechProgressWhereUniqueInput!]
 }
 
-input TechnicianProgressCreateOneWithoutOrderInput {
-  create: TechnicianProgressCreateWithoutOrderInput
-  connect: TechnicianProgressWhereUniqueInput
+input TechProgressCreateOneWithoutTechOrderInput {
+  create: TechProgressCreateWithoutTechOrderInput
+  connect: TechProgressWhereUniqueInput
 }
 
-input TechnicianProgressCreateWithoutOrderInput {
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
-  techowner: UserCreateOneWithoutTechordersInput
+input TechProgressCreateWithoutTechOrderInput {
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
+  techOwner: UserCreateOneWithoutUserTechOrdersInput!
 }
 
-input TechnicianProgressCreateWithoutTechownerInput {
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
-  order: OrderCreateOneWithoutTechInput
+input TechProgressCreateWithoutTechOwnerInput {
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
+  techOrder: OrderCreateOneWithoutOrderTechInput
 }
 
 """An edge in a connection."""
-type TechnicianProgressEdge {
+type TechProgressEdge {
   """The item at the end of the edge."""
-  node: TechnicianProgress!
+  node: TechProgress!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum TechnicianProgressOrderByInput {
+enum TechProgressOrderByInput {
   id_ASC
   id_DESC
-  status_ASC
-  status_DESC
-  confirmeduser_ASC
-  confirmeduser_DESC
-  costcenter_ASC
-  costcenter_DESC
-  servicetag_ASC
-  servicetag_DESC
-  initialemailsent_ASC
-  initialemailsent_DESC
-  datefollowuptemp_ASC
-  datefollowuptemp_DESC
-  followupemailsent_ASC
-  followupemailsent_DESC
-  datecompleted_ASC
-  datecompleted_DESC
+  techStatus_ASC
+  techStatus_DESC
+  techConfirmedUser_ASC
+  techConfirmedUser_DESC
+  techCostCenter_ASC
+  techCostCenter_DESC
+  techServiceTag_ASC
+  techServiceTag_DESC
+  techInitialEmail_ASC
+  techInitialEmail_DESC
+  techDateFollowupTemp_ASC
+  techDateFollowupTemp_DESC
+  techFollowupEmailSent_ASC
+  techFollowupEmailSent_DESC
+  techDateCompleted_ASC
+  techDateCompleted_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
-type TechnicianProgressPreviousValues {
+type TechProgressPreviousValues {
   id: ID!
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
 }
 
-type TechnicianProgressSubscriptionPayload {
+type TechProgressSubscriptionPayload {
   mutation: MutationType!
-  node: TechnicianProgress
+  node: TechProgress
   updatedFields: [String!]
-  previousValues: TechnicianProgressPreviousValues
+  previousValues: TechProgressPreviousValues
 }
 
-input TechnicianProgressSubscriptionWhereInput {
+input TechProgressSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [TechnicianProgressSubscriptionWhereInput!]
+  AND: [TechProgressSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [TechnicianProgressSubscriptionWhereInput!]
+  OR: [TechProgressSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [TechnicianProgressSubscriptionWhereInput!]
+  NOT: [TechProgressSubscriptionWhereInput!]
 
   """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
@@ -1939,88 +1939,88 @@ input TechnicianProgressSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: TechnicianProgressWhereInput
+  node: TechProgressWhereInput
 }
 
-input TechnicianProgressUpdateInput {
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
-  order: OrderUpdateOneWithoutTechInput
-  techowner: UserUpdateOneWithoutTechordersInput
+input TechProgressUpdateInput {
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
+  techOrder: OrderUpdateOneWithoutOrderTechInput
+  techOwner: UserUpdateOneWithoutUserTechOrdersInput
 }
 
-input TechnicianProgressUpdateManyWithoutTechownerInput {
-  create: [TechnicianProgressCreateWithoutTechownerInput!]
-  connect: [TechnicianProgressWhereUniqueInput!]
-  disconnect: [TechnicianProgressWhereUniqueInput!]
-  delete: [TechnicianProgressWhereUniqueInput!]
-  update: [TechnicianProgressUpdateWithWhereUniqueWithoutTechownerInput!]
-  upsert: [TechnicianProgressUpsertWithWhereUniqueWithoutTechownerInput!]
+input TechProgressUpdateManyWithoutTechOwnerInput {
+  create: [TechProgressCreateWithoutTechOwnerInput!]
+  connect: [TechProgressWhereUniqueInput!]
+  disconnect: [TechProgressWhereUniqueInput!]
+  delete: [TechProgressWhereUniqueInput!]
+  update: [TechProgressUpdateWithWhereUniqueWithoutTechOwnerInput!]
+  upsert: [TechProgressUpsertWithWhereUniqueWithoutTechOwnerInput!]
 }
 
-input TechnicianProgressUpdateOneWithoutOrderInput {
-  create: TechnicianProgressCreateWithoutOrderInput
-  connect: TechnicianProgressWhereUniqueInput
+input TechProgressUpdateOneWithoutTechOrderInput {
+  create: TechProgressCreateWithoutTechOrderInput
+  connect: TechProgressWhereUniqueInput
   delete: Boolean
-  update: TechnicianProgressUpdateWithoutOrderDataInput
-  upsert: TechnicianProgressUpsertWithoutOrderInput
+  update: TechProgressUpdateWithoutTechOrderDataInput
+  upsert: TechProgressUpsertWithoutTechOrderInput
 }
 
-input TechnicianProgressUpdateWithoutOrderDataInput {
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
-  techowner: UserUpdateOneWithoutTechordersInput
+input TechProgressUpdateWithoutTechOrderDataInput {
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
+  techOwner: UserUpdateOneWithoutUserTechOrdersInput
 }
 
-input TechnicianProgressUpdateWithoutTechownerDataInput {
-  status: String
-  confirmeduser: String
-  costcenter: String
-  servicetag: String
-  initialemailsent: DateTime
-  datefollowuptemp: DateTime
-  followupemailsent: DateTime
-  datecompleted: DateTime
-  order: OrderUpdateOneWithoutTechInput
+input TechProgressUpdateWithoutTechOwnerDataInput {
+  techStatus: String
+  techConfirmedUser: String
+  techCostCenter: String
+  techServiceTag: String
+  techInitialEmail: DateTime
+  techDateFollowupTemp: DateTime
+  techFollowupEmailSent: DateTime
+  techDateCompleted: DateTime
+  techOrder: OrderUpdateOneWithoutOrderTechInput
 }
 
-input TechnicianProgressUpdateWithWhereUniqueWithoutTechownerInput {
-  where: TechnicianProgressWhereUniqueInput!
-  data: TechnicianProgressUpdateWithoutTechownerDataInput!
+input TechProgressUpdateWithWhereUniqueWithoutTechOwnerInput {
+  where: TechProgressWhereUniqueInput!
+  data: TechProgressUpdateWithoutTechOwnerDataInput!
 }
 
-input TechnicianProgressUpsertWithoutOrderInput {
-  update: TechnicianProgressUpdateWithoutOrderDataInput!
-  create: TechnicianProgressCreateWithoutOrderInput!
+input TechProgressUpsertWithoutTechOrderInput {
+  update: TechProgressUpdateWithoutTechOrderDataInput!
+  create: TechProgressCreateWithoutTechOrderInput!
 }
 
-input TechnicianProgressUpsertWithWhereUniqueWithoutTechownerInput {
-  where: TechnicianProgressWhereUniqueInput!
-  update: TechnicianProgressUpdateWithoutTechownerDataInput!
-  create: TechnicianProgressCreateWithoutTechownerInput!
+input TechProgressUpsertWithWhereUniqueWithoutTechOwnerInput {
+  where: TechProgressWhereUniqueInput!
+  update: TechProgressUpdateWithoutTechOwnerDataInput!
+  create: TechProgressCreateWithoutTechOwnerInput!
 }
 
-input TechnicianProgressWhereInput {
+input TechProgressWhereInput {
   """Logical AND on all given filters."""
-  AND: [TechnicianProgressWhereInput!]
+  AND: [TechProgressWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [TechnicianProgressWhereInput!]
+  OR: [TechProgressWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [TechnicianProgressWhereInput!]
+  NOT: [TechProgressWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -2061,267 +2061,267 @@ input TechnicianProgressWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  status: String
+  techStatus: String
 
   """All values that are not equal to given value."""
-  status_not: String
+  techStatus_not: String
 
   """All values that are contained in given list."""
-  status_in: [String!]
+  techStatus_in: [String!]
 
   """All values that are not contained in given list."""
-  status_not_in: [String!]
+  techStatus_not_in: [String!]
 
   """All values less than the given value."""
-  status_lt: String
+  techStatus_lt: String
 
   """All values less than or equal the given value."""
-  status_lte: String
+  techStatus_lte: String
 
   """All values greater than the given value."""
-  status_gt: String
+  techStatus_gt: String
 
   """All values greater than or equal the given value."""
-  status_gte: String
+  techStatus_gte: String
 
   """All values containing the given string."""
-  status_contains: String
+  techStatus_contains: String
 
   """All values not containing the given string."""
-  status_not_contains: String
+  techStatus_not_contains: String
 
   """All values starting with the given string."""
-  status_starts_with: String
+  techStatus_starts_with: String
 
   """All values not starting with the given string."""
-  status_not_starts_with: String
+  techStatus_not_starts_with: String
 
   """All values ending with the given string."""
-  status_ends_with: String
+  techStatus_ends_with: String
 
   """All values not ending with the given string."""
-  status_not_ends_with: String
-  confirmeduser: String
+  techStatus_not_ends_with: String
+  techConfirmedUser: String
 
   """All values that are not equal to given value."""
-  confirmeduser_not: String
+  techConfirmedUser_not: String
 
   """All values that are contained in given list."""
-  confirmeduser_in: [String!]
+  techConfirmedUser_in: [String!]
 
   """All values that are not contained in given list."""
-  confirmeduser_not_in: [String!]
+  techConfirmedUser_not_in: [String!]
 
   """All values less than the given value."""
-  confirmeduser_lt: String
+  techConfirmedUser_lt: String
 
   """All values less than or equal the given value."""
-  confirmeduser_lte: String
+  techConfirmedUser_lte: String
 
   """All values greater than the given value."""
-  confirmeduser_gt: String
+  techConfirmedUser_gt: String
 
   """All values greater than or equal the given value."""
-  confirmeduser_gte: String
+  techConfirmedUser_gte: String
 
   """All values containing the given string."""
-  confirmeduser_contains: String
+  techConfirmedUser_contains: String
 
   """All values not containing the given string."""
-  confirmeduser_not_contains: String
+  techConfirmedUser_not_contains: String
 
   """All values starting with the given string."""
-  confirmeduser_starts_with: String
+  techConfirmedUser_starts_with: String
 
   """All values not starting with the given string."""
-  confirmeduser_not_starts_with: String
+  techConfirmedUser_not_starts_with: String
 
   """All values ending with the given string."""
-  confirmeduser_ends_with: String
+  techConfirmedUser_ends_with: String
 
   """All values not ending with the given string."""
-  confirmeduser_not_ends_with: String
-  costcenter: String
+  techConfirmedUser_not_ends_with: String
+  techCostCenter: String
 
   """All values that are not equal to given value."""
-  costcenter_not: String
+  techCostCenter_not: String
 
   """All values that are contained in given list."""
-  costcenter_in: [String!]
+  techCostCenter_in: [String!]
 
   """All values that are not contained in given list."""
-  costcenter_not_in: [String!]
+  techCostCenter_not_in: [String!]
 
   """All values less than the given value."""
-  costcenter_lt: String
+  techCostCenter_lt: String
 
   """All values less than or equal the given value."""
-  costcenter_lte: String
+  techCostCenter_lte: String
 
   """All values greater than the given value."""
-  costcenter_gt: String
+  techCostCenter_gt: String
 
   """All values greater than or equal the given value."""
-  costcenter_gte: String
+  techCostCenter_gte: String
 
   """All values containing the given string."""
-  costcenter_contains: String
+  techCostCenter_contains: String
 
   """All values not containing the given string."""
-  costcenter_not_contains: String
+  techCostCenter_not_contains: String
 
   """All values starting with the given string."""
-  costcenter_starts_with: String
+  techCostCenter_starts_with: String
 
   """All values not starting with the given string."""
-  costcenter_not_starts_with: String
+  techCostCenter_not_starts_with: String
 
   """All values ending with the given string."""
-  costcenter_ends_with: String
+  techCostCenter_ends_with: String
 
   """All values not ending with the given string."""
-  costcenter_not_ends_with: String
-  servicetag: String
+  techCostCenter_not_ends_with: String
+  techServiceTag: String
 
   """All values that are not equal to given value."""
-  servicetag_not: String
+  techServiceTag_not: String
 
   """All values that are contained in given list."""
-  servicetag_in: [String!]
+  techServiceTag_in: [String!]
 
   """All values that are not contained in given list."""
-  servicetag_not_in: [String!]
+  techServiceTag_not_in: [String!]
 
   """All values less than the given value."""
-  servicetag_lt: String
+  techServiceTag_lt: String
 
   """All values less than or equal the given value."""
-  servicetag_lte: String
+  techServiceTag_lte: String
 
   """All values greater than the given value."""
-  servicetag_gt: String
+  techServiceTag_gt: String
 
   """All values greater than or equal the given value."""
-  servicetag_gte: String
+  techServiceTag_gte: String
 
   """All values containing the given string."""
-  servicetag_contains: String
+  techServiceTag_contains: String
 
   """All values not containing the given string."""
-  servicetag_not_contains: String
+  techServiceTag_not_contains: String
 
   """All values starting with the given string."""
-  servicetag_starts_with: String
+  techServiceTag_starts_with: String
 
   """All values not starting with the given string."""
-  servicetag_not_starts_with: String
+  techServiceTag_not_starts_with: String
 
   """All values ending with the given string."""
-  servicetag_ends_with: String
+  techServiceTag_ends_with: String
 
   """All values not ending with the given string."""
-  servicetag_not_ends_with: String
-  initialemailsent: DateTime
+  techServiceTag_not_ends_with: String
+  techInitialEmail: DateTime
 
   """All values that are not equal to given value."""
-  initialemailsent_not: DateTime
+  techInitialEmail_not: DateTime
 
   """All values that are contained in given list."""
-  initialemailsent_in: [DateTime!]
+  techInitialEmail_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  initialemailsent_not_in: [DateTime!]
+  techInitialEmail_not_in: [DateTime!]
 
   """All values less than the given value."""
-  initialemailsent_lt: DateTime
+  techInitialEmail_lt: DateTime
 
   """All values less than or equal the given value."""
-  initialemailsent_lte: DateTime
+  techInitialEmail_lte: DateTime
 
   """All values greater than the given value."""
-  initialemailsent_gt: DateTime
+  techInitialEmail_gt: DateTime
 
   """All values greater than or equal the given value."""
-  initialemailsent_gte: DateTime
-  datefollowuptemp: DateTime
+  techInitialEmail_gte: DateTime
+  techDateFollowupTemp: DateTime
 
   """All values that are not equal to given value."""
-  datefollowuptemp_not: DateTime
+  techDateFollowupTemp_not: DateTime
 
   """All values that are contained in given list."""
-  datefollowuptemp_in: [DateTime!]
+  techDateFollowupTemp_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  datefollowuptemp_not_in: [DateTime!]
+  techDateFollowupTemp_not_in: [DateTime!]
 
   """All values less than the given value."""
-  datefollowuptemp_lt: DateTime
+  techDateFollowupTemp_lt: DateTime
 
   """All values less than or equal the given value."""
-  datefollowuptemp_lte: DateTime
+  techDateFollowupTemp_lte: DateTime
 
   """All values greater than the given value."""
-  datefollowuptemp_gt: DateTime
+  techDateFollowupTemp_gt: DateTime
 
   """All values greater than or equal the given value."""
-  datefollowuptemp_gte: DateTime
-  followupemailsent: DateTime
+  techDateFollowupTemp_gte: DateTime
+  techFollowupEmailSent: DateTime
 
   """All values that are not equal to given value."""
-  followupemailsent_not: DateTime
+  techFollowupEmailSent_not: DateTime
 
   """All values that are contained in given list."""
-  followupemailsent_in: [DateTime!]
+  techFollowupEmailSent_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  followupemailsent_not_in: [DateTime!]
+  techFollowupEmailSent_not_in: [DateTime!]
 
   """All values less than the given value."""
-  followupemailsent_lt: DateTime
+  techFollowupEmailSent_lt: DateTime
 
   """All values less than or equal the given value."""
-  followupemailsent_lte: DateTime
+  techFollowupEmailSent_lte: DateTime
 
   """All values greater than the given value."""
-  followupemailsent_gt: DateTime
+  techFollowupEmailSent_gt: DateTime
 
   """All values greater than or equal the given value."""
-  followupemailsent_gte: DateTime
-  datecompleted: DateTime
+  techFollowupEmailSent_gte: DateTime
+  techDateCompleted: DateTime
 
   """All values that are not equal to given value."""
-  datecompleted_not: DateTime
+  techDateCompleted_not: DateTime
 
   """All values that are contained in given list."""
-  datecompleted_in: [DateTime!]
+  techDateCompleted_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  datecompleted_not_in: [DateTime!]
+  techDateCompleted_not_in: [DateTime!]
 
   """All values less than the given value."""
-  datecompleted_lt: DateTime
+  techDateCompleted_lt: DateTime
 
   """All values less than or equal the given value."""
-  datecompleted_lte: DateTime
+  techDateCompleted_lte: DateTime
 
   """All values greater than the given value."""
-  datecompleted_gt: DateTime
+  techDateCompleted_gt: DateTime
 
   """All values greater than or equal the given value."""
-  datecompleted_gte: DateTime
-  order: OrderWhereInput
-  techowner: UserWhereInput
+  techDateCompleted_gte: DateTime
+  techOrder: OrderWhereInput
+  techOwner: UserWhereInput
 }
 
-input TechnicianProgressWhereUniqueInput {
+input TechProgressWhereUniqueInput {
   id: ID
 }
 
 type User implements Node {
   id: ID!
-  name: String!
-  itamorders(where: ITAMProgressWhereInput, orderBy: ITAMProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ITAMProgress!]
-  techorders(where: TechnicianProgressWhereInput, orderBy: TechnicianProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechnicianProgress!]
+  userName: String!
+  userItamOrders(where: ItamProgressWhereInput, orderBy: ItamProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ItamProgress!]
+  userTechOrders(where: TechProgressWhereInput, orderBy: TechProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TechProgress!]
 }
 
 """A connection to a list of items."""
@@ -2335,29 +2335,29 @@ type UserConnection {
 }
 
 input UserCreateInput {
-  name: String!
-  itamorders: ITAMProgressCreateManyWithoutItamownerInput
-  techorders: TechnicianProgressCreateManyWithoutTechownerInput
+  userName: String!
+  userItamOrders: ItamProgressCreateManyWithoutItamOwnerInput
+  userTechOrders: TechProgressCreateManyWithoutTechOwnerInput
 }
 
-input UserCreateOneWithoutItamordersInput {
-  create: UserCreateWithoutItamordersInput
+input UserCreateOneWithoutUserItamOrdersInput {
+  create: UserCreateWithoutUserItamOrdersInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateOneWithoutTechordersInput {
-  create: UserCreateWithoutTechordersInput
+input UserCreateOneWithoutUserTechOrdersInput {
+  create: UserCreateWithoutUserTechOrdersInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutItamordersInput {
-  name: String!
-  techorders: TechnicianProgressCreateManyWithoutTechownerInput
+input UserCreateWithoutUserItamOrdersInput {
+  userName: String!
+  userTechOrders: TechProgressCreateManyWithoutTechOwnerInput
 }
 
-input UserCreateWithoutTechordersInput {
-  name: String!
-  itamorders: ITAMProgressCreateManyWithoutItamownerInput
+input UserCreateWithoutUserTechOrdersInput {
+  userName: String!
+  userItamOrders: ItamProgressCreateManyWithoutItamOwnerInput
 }
 
 """An edge in a connection."""
@@ -2372,8 +2372,8 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
-  name_ASC
-  name_DESC
+  userName_ASC
+  userName_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -2382,7 +2382,7 @@ enum UserOrderByInput {
 
 type UserPreviousValues {
   id: ID!
-  name: String!
+  userName: String!
 }
 
 type UserSubscriptionPayload {
@@ -2423,47 +2423,45 @@ input UserSubscriptionWhereInput {
 }
 
 input UserUpdateInput {
-  name: String
-  itamorders: ITAMProgressUpdateManyWithoutItamownerInput
-  techorders: TechnicianProgressUpdateManyWithoutTechownerInput
+  userName: String
+  userItamOrders: ItamProgressUpdateManyWithoutItamOwnerInput
+  userTechOrders: TechProgressUpdateManyWithoutTechOwnerInput
 }
 
-input UserUpdateOneWithoutItamordersInput {
-  create: UserCreateWithoutItamordersInput
+input UserUpdateOneWithoutUserItamOrdersInput {
+  create: UserCreateWithoutUserItamOrdersInput
   connect: UserWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
-  update: UserUpdateWithoutItamordersDataInput
-  upsert: UserUpsertWithoutItamordersInput
+  update: UserUpdateWithoutUserItamOrdersDataInput
+  upsert: UserUpsertWithoutUserItamOrdersInput
 }
 
-input UserUpdateOneWithoutTechordersInput {
-  create: UserCreateWithoutTechordersInput
+input UserUpdateOneWithoutUserTechOrdersInput {
+  create: UserCreateWithoutUserTechOrdersInput
   connect: UserWhereUniqueInput
-  disconnect: Boolean
   delete: Boolean
-  update: UserUpdateWithoutTechordersDataInput
-  upsert: UserUpsertWithoutTechordersInput
+  update: UserUpdateWithoutUserTechOrdersDataInput
+  upsert: UserUpsertWithoutUserTechOrdersInput
 }
 
-input UserUpdateWithoutItamordersDataInput {
-  name: String
-  techorders: TechnicianProgressUpdateManyWithoutTechownerInput
+input UserUpdateWithoutUserItamOrdersDataInput {
+  userName: String
+  userTechOrders: TechProgressUpdateManyWithoutTechOwnerInput
 }
 
-input UserUpdateWithoutTechordersDataInput {
-  name: String
-  itamorders: ITAMProgressUpdateManyWithoutItamownerInput
+input UserUpdateWithoutUserTechOrdersDataInput {
+  userName: String
+  userItamOrders: ItamProgressUpdateManyWithoutItamOwnerInput
 }
 
-input UserUpsertWithoutItamordersInput {
-  update: UserUpdateWithoutItamordersDataInput!
-  create: UserCreateWithoutItamordersInput!
+input UserUpsertWithoutUserItamOrdersInput {
+  update: UserUpdateWithoutUserItamOrdersDataInput!
+  create: UserCreateWithoutUserItamOrdersInput!
 }
 
-input UserUpsertWithoutTechordersInput {
-  update: UserUpdateWithoutTechordersDataInput!
-  create: UserCreateWithoutTechordersInput!
+input UserUpsertWithoutUserTechOrdersInput {
+  update: UserUpdateWithoutUserTechOrdersDataInput!
+  create: UserCreateWithoutUserTechOrdersInput!
 }
 
 input UserWhereInput {
@@ -2515,55 +2513,55 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  name: String
+  userName: String
 
   """All values that are not equal to given value."""
-  name_not: String
+  userName_not: String
 
   """All values that are contained in given list."""
-  name_in: [String!]
+  userName_in: [String!]
 
   """All values that are not contained in given list."""
-  name_not_in: [String!]
+  userName_not_in: [String!]
 
   """All values less than the given value."""
-  name_lt: String
+  userName_lt: String
 
   """All values less than or equal the given value."""
-  name_lte: String
+  userName_lte: String
 
   """All values greater than the given value."""
-  name_gt: String
+  userName_gt: String
 
   """All values greater than or equal the given value."""
-  name_gte: String
+  userName_gte: String
 
   """All values containing the given string."""
-  name_contains: String
+  userName_contains: String
 
   """All values not containing the given string."""
-  name_not_contains: String
+  userName_not_contains: String
 
   """All values starting with the given string."""
-  name_starts_with: String
+  userName_starts_with: String
 
   """All values not starting with the given string."""
-  name_not_starts_with: String
+  userName_not_starts_with: String
 
   """All values ending with the given string."""
-  name_ends_with: String
+  userName_ends_with: String
 
   """All values not ending with the given string."""
-  name_not_ends_with: String
-  itamorders_every: ITAMProgressWhereInput
-  itamorders_some: ITAMProgressWhereInput
-  itamorders_none: ITAMProgressWhereInput
-  techorders_every: TechnicianProgressWhereInput
-  techorders_some: TechnicianProgressWhereInput
-  techorders_none: TechnicianProgressWhereInput
+  userName_not_ends_with: String
+  userItamOrders_every: ItamProgressWhereInput
+  userItamOrders_some: ItamProgressWhereInput
+  userItamOrders_none: ItamProgressWhereInput
+  userTechOrders_every: TechProgressWhereInput
+  userTechOrders_some: TechProgressWhereInput
+  userTechOrders_none: TechProgressWhereInput
 }
 
 input UserWhereUniqueInput {
   id: ID
-  name: String
+  userName: String
 }

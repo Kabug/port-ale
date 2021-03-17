@@ -29,51 +29,9 @@ const Styles = styled.div`
 `;
 
 const CREATE_ORDER = gql`
-  mutation createOrder(
-    $orderid: Float!,
-    $datecreated: DateTime!,
-    $dateapproved: DateTime!,
-    $createdby: String!,
-    $createdbyemail: String!,
-    $recipient: String!,
-    $newhire: Boolean!,
-    $hirename: String,
-    $hirestartdate: DateTime,
-    $approvalmanager: String!,
-    $businessunit: String!,
-    $attention: String!,
-    $shippingaddress: String!,
-    $items: String!,
-    $total: Float!,
-    $sla: Int,
-    $ordercategory: String!,
-    $comments: String!,
-    $itam: ITAMProgressCreateOneWithoutOrderInput,
-    $tech: TechnicianProgressCreateOneWithoutOrderInput
-  ) {
-    createOrder(
-      orderid: $orderid,
-      datecreated: $datecreated,
-      dateapproved: $dateapproved,
-      createdby: $createdby,
-      createdbyemail: $createdbyemail,
-      recipient: $recipient,
-      newhire: $newhire,
-      hirename: $hirename,
-      hirestartdate: $hirestartdate,
-      approvalmanager: $approvalmanager,
-      businessunit: $businessunit,
-      attention: $attention,
-      shippingaddress: $shippingaddress,
-      items: $items,
-      total: $total,
-      sla: $sla,
-      ordercategory: $ordercategory,
-      comments: $comments,
-      itam: $itam,
-      tech: $tech
-    ) {
-        id
+  mutation createOrder($input: createOrderInput!) {
+    createOrder(input: $input) {
+      id
     }
   }
 `;
@@ -82,7 +40,7 @@ const QUERY_USERS = gql`
   {
     users{
       id
-      name
+      userName
     }
   }
 `;
@@ -91,7 +49,6 @@ class CreateOrder extends React.Component {
   constructor(props) {
     super( props );
     this.state = {
-      isNotNewHire: true,
       orderid: 0,
       dateCreated: new Date().toISOString().split("T")[ 0 ],
       dateApproved: new Date().toISOString().split("T")[ 0 ],
@@ -107,7 +64,6 @@ class CreateOrder extends React.Component {
       attention: "",
       shippingAddress: "",
       item: "",
-      itemType: "Choose...",
       total: 0.00,
       comments: "",
       orderCategory: "New Order",
@@ -152,7 +108,7 @@ class CreateOrder extends React.Component {
   }
 
   newHireToggle = () => {
-    this.setState({ newHire: !this.state.newHire, isNotNewHire: !this.state.isNotNewHire });
+    this.setState({ newHire: !this.state.newHire });
   };
 
   toCashMoney = (usrInput) => {
@@ -161,7 +117,7 @@ class CreateOrder extends React.Component {
   };
 
   toValidFloat = (usrInput, selectedFloat) => {
-    var num;
+    let num;
     if ( usrInput && parseFloat( usrInput ) < 10000000000000000 ) {
       num = usrInput;
     } else {
@@ -185,7 +141,7 @@ class CreateOrder extends React.Component {
   };
 
   toValidDate = (usrInputDate, selectedDate) => {
-    var valid = false;
+    let valid = false;
     if ( usrInputDate.match( /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/g ) ) {
       valid = true;
     }
@@ -250,7 +206,6 @@ class CreateOrder extends React.Component {
   render() {
 
     const {
-      isNotNewHire,
       orderid,
       dateCreated,
       dateApproved,
@@ -265,7 +220,6 @@ class CreateOrder extends React.Component {
       attention,
       shippingAddress,
       item,
-      itemType,
       total,
       sla,
       orderCategory,
@@ -297,46 +251,46 @@ class CreateOrder extends React.Component {
 
     const itamOwner = {
       connect: {
-        name: itamName
+        userName: itamName
       }
     };
 
     const techOwner = {
       connect: {
-        name: techName
+        userName: techName
       }
     };
 
     const createITAM = {
       create: {
-        status: itamStatus,
-        verificationemailsent: itamVerifEmail,
-        productsource: itamProductSource,
-        oldassettag: itamOldAssetTag,
-        oldmodel: itamOldModel,
-        modelofmonitor: itamMonitorModel,
-        numofmonitor: itamMonitorNum,
-        connectortypes: itamConnectorType,
-        orderpendingemailsent: itamOrderPendEmail,
-        confirmednewhire: itamConfirmedNewhire,
-        poordernum: itamPOOrder,
-        dellordernum: itamDellOrder,
-        dellemailnotif: itamDellEmailNotif,
-        itamowner: itamOwner
+        itamStatus: itamStatus,
+        itamVerificationEmailSent: itamVerifEmail,
+        itamProductSource: itamProductSource,
+        itamOldAssetTag: itamOldAssetTag,
+        itamOldModel: itamOldModel,
+        itamMonitorModel: itamMonitorModel,
+        itamMonitorNum: itamMonitorNum,
+        itamConnectorTypes: itamConnectorType,
+        itamOrderPendingEmail: itamOrderPendEmail,
+        itamConfirmedNewHire: itamConfirmedNewhire,
+        itamPoOrderId: itamPOOrder,
+        itamDellOrderId: itamDellOrder,
+        itamDellEmailNotif: itamDellEmailNotif,
+        itamOwner: itamOwner
       }
     };
 
     const createTech = {
       create: {
-        status: techStatus,
-        confirmeduser: techConfirmedUser,
-        costcenter: techCostCenter,
-        servicetag: techServiceTag,
-        initialemailsent: techEmailPCSent,
-        followupemailsent: techFollowupEmail,
-        datefollowuptemp: techDateFollowupTemp,
-        datecompleted: techDateSetupCompleted,
-        techowner: techOwner
+        techStatus: techStatus,
+        techConfirmedUser: techConfirmedUser,
+        techCostCenter: techCostCenter,
+        techServiceTag: techServiceTag,
+        techInitialEmail: techEmailPCSent,
+        techDateFollowupTemp: techDateFollowupTemp,
+        techFollowupEmailSent: techFollowupEmail,
+        techDateCompleted: techDateSetupCompleted,
+        techOwner: techOwner
       }
     };
 
@@ -380,18 +334,20 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="orderCategory">Order Category</label>
+                  <label className="input-group-text" htmlFor="orderCategory">Order Category</label>
                 </div>
                 <select
                   className="custom-select"
                   id="orderCategory"
                   onChange={e=>this.setState({ orderCategory:e.target.value })}
+                  defaultValue="New Order"
                 >
-                  <option value="New Order" selected>New Order</option>
+                  <option value="New Order">New Order</option>
                   <option value="Accessory">Accessory</option>
                   <option value="New Hire">New Hire</option>
                   <option value="Priority Deployment">Priority Deployment</option>
                   <option value="Cancelled">Cancelled</option>
+                  <option value="Done">Done</option>
                 </select>
               </div>
             </div>
@@ -502,9 +458,9 @@ class CreateOrder extends React.Component {
             </div>
             <div
               className="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -516,7 +472,7 @@ class CreateOrder extends React.Component {
                       placeholder="Firstname  Lastname"
                       aria-label="Firstname  Lastname"
                       aria-describedby="hireName"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={hireName}
                       onChange={e=>this.setState({ hireName: e.target.value })}
                     />
@@ -526,9 +482,9 @@ class CreateOrder extends React.Component {
             </div>
             <div
               className="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none"}` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none"}` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -539,7 +495,7 @@ class CreateOrder extends React.Component {
                       placeholder="YYYY-MM-DD"
                       aria-label="YYYY-MM-DD"
                       aria-describedby="hireStartDate"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={hireStartDate}
                       onChange={e=>this.toValidDate( e.target.value, "hireStartDate" )}
                       className={
@@ -553,10 +509,10 @@ class CreateOrder extends React.Component {
             <div
               className="col-sm-4"
               style={{
-                display: `${!this.state.isNotNewHire ? "inline" : "none"}`
+                display: `${this.state.newHire ? "inline" : "none"}`
               }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -568,7 +524,7 @@ class CreateOrder extends React.Component {
                       placeholder="Natural Number"
                       aria-label="Natural Number"
                       aria-describedby="sla"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={sla}
                       onChange={e=>this.toValidFloat( e.target.value, "sla" )}
                     />
@@ -664,14 +620,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="ITAMStatus">ITAM Status</label>
+                  <label className="input-group-text" htmlFor="ITAMStatus">ITAM Status</label>
                 </div>
                 <select
                   className="custom-select"
                   id="ITAMStatus"
                   onChange={e=>this.setState({ itamStatus:e.target.value })}
+                  defaultValue="New"
                 >
-                  <option value="New" selected>New</option>
+                  <option value="New">New</option>
                   <option value="Emailed">Emailed</option>
                 </select>
               </div>
@@ -679,7 +636,7 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="ITAMName">ITAM Name</label>
+                  <label className="input-group-text" htmlFor="ITAMName">ITAM Name</label>
                 </div>
                 <Query query={QUERY_USERS}>
                   {({ loading, error, data }) => {
@@ -697,7 +654,7 @@ class CreateOrder extends React.Component {
                         onChange={e=>this.setState({ itamName: e.target.value })}
                       >
                         {usersToRender.slice( 0 ).map( user =>
-                          <option value={user.name}>{user.name}</option>
+                          <option value={user.userName}>{user.userName}</option>
                         )}
                       </select>
                     );
@@ -726,14 +683,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="productSource">Product Source</label>
+                  <label className="input-group-text" htmlFor="productSource">Product Source</label>
                 </div>
                 <select
                   className="custom-select"
                   id="productSource"
                   onChange={e=>this.setState({ itamProductSource:e.target.value })}
+                  defaultValue=""
                 >
-                  <option value="" Selected>Select...</option>
+                  <option value="">Select...</option>
                   <option value="Inhouse">Inhouse</option>
                   <option value="Emerge">Emerge</option>
                   <option value="Dell">Dell</option>
@@ -847,9 +805,9 @@ class CreateOrder extends React.Component {
             </div>
             <div
               className="col-sm-4"
-              style={{ display: `${!this.state.isNotNewHire ? "inline" : "none" }` }}
+              style={{ display: `${this.state.newHire ? "inline" : "none" }` }}
             >
-              <Fade in={!this.state.isNotNewHire}>
+              <Fade in={this.state.newHire}>
                 <div>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
@@ -865,7 +823,7 @@ class CreateOrder extends React.Component {
                       placeholder="YYYY-MM-DD"
                       aria-label="YYYY-MM-DD"
                       aria-describedby="confirmedNewHire"
-                      disabled={this.state.isNotNewHire}
+                      disabled={!this.state.newHire}
                       value={itamConfirmedNewhire}
                       onChange={e=>this.toValidDate( e.target.value, "confirmedNewHire")}
                       className={
@@ -940,7 +898,7 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="techName">Tech Name</label>
+                  <label className="input-group-text" htmlFor="techName">Tech Name</label>
                 </div>
                 <Query query={QUERY_USERS}>
                   {({ loading, error, data }) => {
@@ -958,7 +916,7 @@ class CreateOrder extends React.Component {
                         onChange={e=>this.setState({ techName:e.target.value })}
                       >
                         {usersToRender.slice( 0 ).map( user =>
-                          <option value={user.name}>{user.name}</option>
+                          <option value={user.userName}>{user.userName}</option>
                         )}
                       </select>
                     );
@@ -969,14 +927,15 @@ class CreateOrder extends React.Component {
             <div className="col-sm-4">
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
-                  <label className="input-group-text" for="techStatus">Tech Status</label>
+                  <label className="input-group-text" htmlFor="techStatus">Tech Status</label>
                 </div>
                 <select
                   className="custom-select"
                   id="techStatus"
                   onChange={e=>this.setState({ techStatus:e.target.value })}
+                  defaultValue="Not Started"
                 >
-                  <option value ="Not Started" selected>Not Started</option>
+                  <option value ="Not Started">Not Started</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Shipped to User">Shipped to User</option>
                   <option value="Done">Done</option>
@@ -1058,7 +1017,7 @@ class CreateOrder extends React.Component {
                     className="input-group-text"
                     id="dateFollowupTemp2"
                   >
-                    Date Followup Template #2
+                    Followup Temp. #2
                   </span>
                 </div>
                 <input
@@ -1101,7 +1060,7 @@ class CreateOrder extends React.Component {
                     className="input-group-text"
                     id="techFollowupEmail"
                   >
-                    Tech Followup Template #3
+                    Followup Temp #3
                   </span>
                 </div>
                 <input
@@ -1139,26 +1098,28 @@ class CreateOrder extends React.Component {
               <Mutation
                 mutation={CREATE_ORDER}
                 variables={{
-                  orderid: orderid,
-                  datecreated: dateCreated,
-                  dateapproved: dateApproved,
-                  createdby: createdBy,
-                  createdbyemail: createdByEmail,
-                  recipient: recipient,
-                  newhire: newHire,
-                  hirename: hireName,
-                  hirestartdate: hireStartDate,
-                  approvalmanager: approvalManager,
-                  businessunit: businessUnit,
-                  attention: attention,
-                  shippingaddress: shippingAddress,
-                  items: item,
-                  total: total,
-                  sla: sla,
-                  ordercategory: orderCategory,
-                  comments: comments,
-                  itam: createITAM,
-                  tech: createTech
+                  input: {
+                    orderSimplexId: orderid,
+                    orderDateCreated: dateCreated,
+                    orderDateApproved: dateApproved,
+                    orderCreatedBy: createdBy,
+                    orderCreatedByEmail: createdByEmail,
+                    orderNewHire: newHire,
+                    orderRecipient: recipient,
+                    orderHireStartDate: hireStartDate,
+                    orderHireName: hireName,
+                    orderApprovalManager: approvalManager,
+                    orderBusinessUnit: businessUnit,
+                    orderAttention: attention,
+                    orderShippingAddress: shippingAddress,
+                    orderItem: item,
+                    orderTotal: total,
+                    orderComments: comments,
+                    orderCategory: orderCategory,
+                    orderSla: sla,
+                    orderItam: createITAM,
+                    orderTech: createTech
+                  }
                 }}
               >
                 {createOrder =>

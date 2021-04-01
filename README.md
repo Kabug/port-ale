@@ -8,7 +8,7 @@ However, this was a good learning experience for me to practice React and learn 
 
 
 ## Examples
-### Mobile-friednly design
+### Mobile-friendly design
 ![UMvpod6zP3](https://user-images.githubusercontent.com/22303067/113353314-50300f80-92f2-11eb-8d99-0cf027047571.gif)
 
 ### Creating Orders Manually

@@ -24,16 +24,17 @@ However, this was a good learning experience for me to practice React and learn 
 ![xLFnKIvvr2](https://user-images.githubusercontent.com/22303067/113353445-840b3500-92f2-11eb-92d5-520f816b48a2.gif)
 
 
-### Filtering orders by type
+### Filtering Orders by Type
 ![2k4Qv1siaM](https://user-images.githubusercontent.com/22303067/113352879-b9635300-92f1-11eb-9a43-85c261b77cdb.gif)
 
 ### Deleting orders
 ![hulwkuUHSZ](https://user-images.githubusercontent.com/22303067/113352982-e0ba2000-92f1-11eb-8e39-59c7a57d5010.gif)
 
-### Exporting all orders to CSV
+### Exporting all Orders to CSV
 ![TsLXSE9CO3](https://user-images.githubusercontent.com/22303067/113353154-1c54ea00-92f2-11eb-8439-0c94f8c9f25a.gif)
 
-### Importing multiple orders from CSV
+### Importing Multiple Orders from CSV
+Some orders have multiple items so they get split up into individual orders.
 ![VyFxScFWhb](https://user-images.githubusercontent.com/22303067/113353190-28d94280-92f2-11eb-9f1a-07efe70436b3.gif)
 
 
